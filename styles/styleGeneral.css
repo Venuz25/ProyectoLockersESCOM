@@ -1,0 +1,56 @@
+body {
+    margin: 0;
+    font-family: "Josefin Sans", sans-serif;
+    background-color: #f4f6f9;
+    color: #333;
+}
+
+.logo {
+    height: 60px;  
+    width: auto;
+    padding: 0 10px;
+}
+
+nav {
+    position: fixed;
+    top: 0;
+    width: 100%;
+    z-index: 1000;
+}
+
+main{
+  margin-top: 175px;
+}
+
+header {
+    position: fixed;
+    top: 56px; 
+    width: 100%;
+    z-index: 999;
+    background: linear-gradient(to right, #310D20, #225560);
+    border-bottom: 1px solid white;
+}
+
+#titulo {
+    color: white;
+    padding: 0 25px;
+    font-weight: 600;
+    font-family: "Josefin Sans", sans-serif;
+    font-style: normal;
+    font-size: xx-large;
+}
+
+.derechos{
+    color: white;
+    padding: 40px 0;
+    background-color: #171219;
+}
+
+footer{
+    padding-top: 100px;
+}
+
+a {
+    color: white;
+    text-decoration: none;
+}

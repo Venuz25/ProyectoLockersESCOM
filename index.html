@@ -1,0 +1,220 @@
+<!DOCTYPE html>
+<html lang="es">
+  <head>
+      <meta charset="UTF-8">
+      <meta name="viewport" content="width=device-width, initial-scale=1.0">
+      <title>.::Lockers ESCOM::.</title>
+
+      <link rel="icon" href="img/iconos/inicio.png" type="image/x-icon">
+      <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
+      
+      <link rel="stylesheet" href="styles/styleIndex.css">
+      <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+
+      <!--General-->
+      <link rel="stylesheet" href="styles/styleGeneral.css">
+
+      <link rel="preconnect" href="https://fonts.googleapis.com">
+      <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+      <link href="https://fonts.googleapis.com/css2?family=Josefin+Sans:ital,wght@0,100..700;1,100..700&display=swap" rel="stylesheet">
+  </head>
+
+  <body>
+    
+    <!--Encabezado-->
+    <nav class="py-2 bg-body-tertiary">
+        <div class="d-flex flex-wrap px-2">
+          <ul class="nav me-auto">
+              <li class="nav-item"><a href="index.html" class="nav-link link-body-emphasis px-2 active" aria-current="page">Inicio</a></li>
+              <li class="nav-item"><a href="solicitud.html" class="nav-link link-body-emphasis px-2">Solicitud</a></li>
+              <li class="nav-item"><a href="https://www.escom.ipn.mx/" target="_blank" class="nav-link link-body-emphasis px-2">ESCOM</a></li>
+              <li class="nav-item"><a href="\" class="nav-link link-body-emphasis px-2">?</a></li>
+          </ul>
+          <ul class="nav text-end">
+              <button type="button" class="btn btn-light text-dark me-2"><a href="acuse.html" class="link-body-emphasis px-2" style="text-decoration: none;">Acuse</a></button>
+              <button type="button" class="btn btn-primary"><a href="admin.html" class="px-2">Admin</a></button>
+          </ul>            
+        </div>
+    </nav>
+
+    <header class="py-3 mb-4 border-bottom">
+        <div class="d-flex align-items-center justify-content-between px-2">
+            <a href="#" class="d-flex align-items-center link-body-emphasis text-decoration-none">
+                <img src="img/escudo_ESCOM.png" alt="Escudo ESCOM" class="logo">
+                <span id="titulo">Lockers ESCOM</span>
+            </a>
+            <img src="img/logotipo_ipn.png" alt="Logo IPN" class="logo">
+        </div>
+    </header>
+    <!--Encabezado-->
+
+    <main> 
+      <!-- Carrusel -->
+      <div id="carouselExampleCaptions" class="carousel slide">
+        <div class="carousel-indicators">
+          <button type="button" data-bs-target="#carouselExampleCaptions" data-bs-slide-to="0" class="active" aria-current="true" aria-label="Diapositiva 1"></button>
+          <button type="button" data-bs-target="#carouselExampleCaptions" data-bs-slide-to="1" aria-label="Diapositiva 2"></button>
+          <button type="button" data-bs-target="#carouselExampleCaptions" data-bs-slide-to="2" aria-label="Diapositiva 3"></button>
+        </div>
+
+        <div class="carousel-inner">
+          <div class="carousel-item active">
+            <a href="solicitud.html">
+            <div class="d-block position-relative">
+              <img src="img/solicitudLockers.jpeg" class="img-fluid d-block w-100" alt="Imagen de la primera diapositiva">
+            </div>
+            <div class="carousel-caption d-none d-md-block textoCarrusel">
+              <h3>Solicitud para Lockers Abiertas</h3>
+              <p>Realiza tu solicitud para obtener un locker personal en nuestra escuela. Mantén tus pertenencias seguras y accesibles durante todo el día académico.</p>
+            </div>
+          </a>
+          </div>
+      
+          <div class="carousel-item">
+            <a>
+            <div class="d-block position-relative">
+              <img src="img/celex.jpeg" class="img-fluid d-block w-100" alt="Imagen de la segunda diapositiva">
+            </div>
+            <div class="carousel-caption d-none d-md-block textoCarrusel">
+              <h3>Inscripciones al CENLEX</h3>
+              <p>¡Inscríbete para el examen de certificación CENLEX y evalúa tu nivel de inglés! Abierto para todos los estudiantes interesados en obtener una certificación oficial.</p>
+            </div>
+          </a>
+          </div>
+      
+          <div class="carousel-item">
+          <a>
+            <div class="d-block position-relative">
+              <img src="img/ETS.jpeg" class="img-fluid d-block w-100" alt="Imagen de la tercera diapositiva">
+            </div>
+            <div class="carousel-caption d-none d-md-block textoCarrusel">
+              <h3>Cursos de Regularización para los Exámenes ETS</h3>
+              <p>Prepárate para los exámenes ETS con nuestros cursos de regularización. Asegura tu éxito en los exámenes a título de suficiencia con el apoyo de nuestros expertos.</p>
+            </div>
+          </div>
+        </a>
+        </div>
+      
+        <button class="carousel-control-prev" type="button" data-bs-target="#carouselExampleCaptions" data-bs-slide="prev">
+          <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+          <span class="visually-hidden">Anterior</span>
+        </button>
+        <button class="carousel-control-next" type="button" data-bs-target="#carouselExampleCaptions" data-bs-slide="next">
+          <span class="carousel-control-next-icon" aria-hidden="true"></span>
+          <span class="visually-hidden">Siguiente</span>
+        </button>
+      </div>    
+      <!--Fin Carrusel-->
+      
+      <div id="extra">
+        <h1 class="featurette-heading fw-normal lh-1">¡Solicita tu Casillero <span class="text-body-secondary">y Asegura tu Espacio!</span></h1>
+
+        <hr class="featurette-divider">
+
+        <div class="row featurette cajon">
+          <div class="col-md-7">
+            <h2 class="featurette-heading fw-normal lh-1"><span class="capitular">1</span>Atento a la <span class="text-body-secondary">Convocatoria.</span></h2>
+            <p class="lead">¡El primer paso para conseguir tu casillero está por comenzar! Mantente al pendiente de la publicación de la convocatoria oficial. Una vez que esté disponible, podrás iniciar el proceso. <br> 
+            <b>¡Es tu oportunidad para asegurar un espacio personal y organizado durante el ciclo escolar!</b></p>
+          </div>
+          <div class="col-md-5">
+            <img src="img/pasos/1.webp" class="imgPasos" alt="paso 1">
+          </div>
+        </div>
+
+        <hr class="featurette-divider">
+
+        <div class="row featurette cajon">
+          <div class="col-md-7 order-md-2">
+            <h2 class="featurette-heading fw-normal lh-1"><span class="capitular">2</span>Llena tu <span class="text-body-secondary">Solicitud.</span></h2>
+            <p class="lead">Cuando la convocatoria esté activa, dirígete al apartado de solicitudes. Llena el formulario con los datos requeridos, es sencillo y solo te tomará unos minutos. Este paso es crucial para participar, así que asegúrate de que todo esté en orden.<br> 
+            <b> ¡Ya estás más cerca!</b></p>
+          </div>
+          <div class="col-md-5 order-md-1">
+            <img src="img/pasos/2.gif" class="imgPasos" alt="paso 2">
+          </div>
+        </div>
+
+        <hr class="featurette-divider">
+
+        <div class="row featurette cajon">
+          <div class="col-md-7">
+            <h2 class="featurette-heading fw-normal lh-1"><span class="capitular">3</span>Consulta los <span class="text-body-secondary">Resultados.</span></h2>
+            <p class="lead">¡El momento decisivo ha llegado! Una vez que los resultados estén listos, podrás consultarlos fácilmente iniciando sesión en el apartado de acuse. Allí encontrarás la confirmación de tu casillero asignado.<br> 
+            <b>¡Prepárate para usarlo y mantener tus cosas seguras!</b></p>
+          </div>
+          <div class="col-md-5">
+            <img src="img/pasos/3.gif" class="imgPasos" alt="paso 3">
+          </div>
+        </div>
+
+        <hr class="featurette-divider">
+        <h4 class="featurette-heading fw-normal lh-1">¡No esperes más, toma acción y asegura tu espacio!</h4>
+      </div>
+
+      <!--Descripciones-->
+      <div id="descripciones" class="row">
+        <div class="col-lg-3 individuo">
+          <img src="img/indv/su.jpg" class="img" alt="Imagen de Su">
+          <br>
+          <h4 class="fw-normal">Sunem Gizeht Ayala Fuentes</h4>
+          <p class="scrollable">Había oído decir que la verdad vuelve el mundo de colores.
+            Ese es el trato. Hasta que no la conozcas, no podrás ver la realidad con todos sus matices.
+            Pero algunas verdades tienen matices que nos anulan.
+            <b>Algunas verdades tienen historias que no estamos preparados para dejar atrás.</b></p>
+          <p class="autor">Fabricante de Lagrimas</p>
+        </div>
+
+        <div class="col-lg-3 individuo">
+          <img src="img/indv/are.jpg" class="img" alt="Imagen de Su">
+          <br>
+          <h4 class="fw-normal">Areli Alejandra Guevara Badillo</h4>
+          <p>Lo importante es que la música suene más fuertes que los problemas.</p>
+          <p class="autor">-Kurt Cobain</p>
+        </div>
+
+        <div class="col-lg-3 individuo">
+          <img src="img/indv/richi.jpg" class="img" alt="Imagen de Su">
+          <br>
+          <h4 class="fw-normal">Ricardo Mora Santillan</h4>
+          <p>Rendirse es lo que destruye a la gente, cuando te niegas con todo tu corazón a rendirte entonces trasciendes tu humanidad, incluso ante la muerte nunca te rindas.</p>
+          <p class="autor">-Alucard</p>
+        </div>
+
+        <div class="col-lg-3 individuo">
+          <img src="img/indv/rigel.jpg" class="img" alt="Imagen de Su">
+          <br>
+          <h4 class="fw-normal">Hector Rigel Ocaña Castro</h4>
+          <p class="scrollable">La vida de un crítico es sencilla en muchos aspectos, arriesgamos poco y tenemos poder sobre aquellos que ofrecen su trabajo y su servicio a nuestro juicio. <br>
+
+            Prosperamos con las críticas negativas, divertidas de escribir y de leer, pero la triste verdad que debemos afrontar es que en el gran orden de las cosas, cualquier basura tiene más significado que lo que deja ver nuestra crítica. <br>
+            
+            Pero en ocasiones el crítico si se arriesga cada vez que descubre y defiende algo nuevo, el mundo suele ser cruel con el nuevo talento; las nuevas creaciones, lo nuevo, necesita amigos. <br>
+            
+            Anoche experimente algo nuevo; una extraordinaria cena de una fuente singular e inesperada. Decir solo que la comida y su creador han desafiado mis prejuicios sobre la buena cocina, subestimaría la realidad; me han tocado en lo más profundo. <br>
+            
+            En el pasado jamás oculte mi desdén por el famoso lema del chef Gusteau: Cualquiera puede cocinar. Pero al fin me doy cuenta de lo que quiso decir en realidad; no cualquiera puede convertirse en un gran artista, pero un gran artista puede provenir de cualquier lado. <br>
+            
+            Es difícil imaginar un origen más humilde que el del genio que ahora cocina en el restaurante Gusteau's y quien, en opinión de este critico, es nada menos que el mejor chef de Francia. ¡Pronto volveré a Gusteau's hambriento!</p>
+          <p class="autor">-Anton Ego</p>
+        </div>
+      </div>
+      <!--Fin Descripciones-->
+
+    </main>
+
+    <footer>
+        <ul class="nav justify-content-center mb-3 border-top">
+            <li class="nav-item"><a href="index.html" class="nav-link px-2 text-body-secondary">Inicio</a></li>
+            <li class="nav-item"><a href="solicitud.html" class="nav-link px-2 text-body-secondary">Solicitud</a></li>
+            <li class="nav-item"><a href="acuse.html" class="nav-link px-2 text-body-secondary">Acuse</a></li>
+            <li class="nav-item"><a href="admin.html" class="nav-link px-2 text-body-secondary">Admin</a></li>
+        </ul>
+
+        <div class="border-top derechos">
+          <p class="text-center">© 2024 Tecnologías para el Desarrollo de Aplicaciones Web</p>
+          <p class="text-center">4CM4</p>
+        </div>
+    </footer>
+  </body>
+</html>

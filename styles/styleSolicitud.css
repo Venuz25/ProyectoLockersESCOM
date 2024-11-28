@@ -1,0 +1,67 @@
+#cuestionario, #casillero-anterior, #resumen {
+    display: none;
+}
+
+#formulario, #resumen {
+    margin: 20px auto;
+    max-width: 1000px;
+    padding: 30px;
+    background: white;
+    border-radius: 12px;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+}
+
+fieldset p{
+    font-size: small;
+    font-style: italic;
+    text-align: right;
+}
+
+#resumen span{
+    font-size: 2.5rem;
+    margin-bottom: 10px;
+    font-weight: 600;
+    color: #812255;
+    font-family: 'Courier New', Courier, monospace;
+}
+
+#resumen h4{
+    margin-bottom: 10px;
+    color: #171219;
+}
+
+#formulario fieldset {
+    margin-bottom: 15px;
+    border: 1px solid #ddd;
+    padding: 15px;
+    border-radius: 8px;
+}
+
+#formulario legend {
+    font-size: 1.2rem;
+    font-weight: bold;
+    margin-bottom: 10px;
+    color: #2C222F;
+}
+
+#formulario input:not([type="radio"]), #formulario select {
+    display: block;
+    width: 100%;
+    margin-bottom: 10px;
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 6px;
+    font-size: 1rem;
+}
+
+#formulario button, #confirmar button{
+    background-color: #225560;
+    color: white;
+    border: none;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+#formulario button:hover, #confirmar button:hover {
+    background-color: #f0803c;
+}
