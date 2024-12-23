@@ -33,7 +33,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
         // Validar nombre (letras y un solo espacio)
         var nombre = document.forms.locker['nombre'].value.trim();
-        if (!/^[a-zA-Z]+( [a-zA-Z]+)?$/.test(nombre)) {
+        if (!/^[A-ZÁÉÍÓÚÜÑa-záéíóúüñ]+(?: [A-ZÁÉÍÓÚÜÑa-záéíóúüñ]+)*$/.test(nombre)) {
             alert("El nombre solo debe contener letras.");
             return false;
         }
