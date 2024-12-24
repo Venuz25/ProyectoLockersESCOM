@@ -21,32 +21,34 @@
 
     <body>
         <!--Encabezado-->
-        <nav class="py-2 bg-body-tertiary border-bottom">
-            <div class="d-flex flex-wrap px-2">
-            <ul class="nav me-auto">
-                <li class="nav-item"><a href="index.html" class="nav-link link-body-emphasis px-2 active" aria-current="page">Inicio</a></li>
-                <li class="nav-item"><a href="solicitud.html" class="nav-link link-body-emphasis px-2">Solicitud</a></li>
-                <li class="nav-item"><a href="https://www.escom.ipn.mx/" target="_blank" class="nav-link link-body-emphasis px-2">ESCOM</a></li>
-                <li class="nav-item"><a href="\" class="nav-link link-body-emphasis px-2">?</a></li>
-            </ul>
-            <ul class="nav text-end">
-                <button type="button" class="btn btn-light text-dark me-2"><a href="acuse.html" class="link-body-emphasis px-2" style="text-decoration: none;">Acuse</a></button>
-                <button type="button" class="btn btn-primary"><a href="admin.html" class="px-2">Admin</a></button>
-            </ul>            
-            </div>
-        </nav>
+    <nav class="py-2 bg-body-tertiary">
+        <div class="d-flex flex-wrap px-2">
+          <ul class="nav me-auto">
+              <li class="nav-item"><a href="index.html" class="nav-link link-body-emphasis px-2 active" aria-current="page">Inicio</a></li>
+              <li class="nav-item"><a href="solicitud.html" class="nav-link link-body-emphasis px-2">Solicitud</a></li>
+              <li class="nav-item"><a href="\" class="nav-link link-body-emphasis px-2">?</a></li>
+          </ul>
+          <ul class="nav text-end">
+              <button type="button" class="btn btn-light text-dark me-2"><a href="acuse.html" class="link-body-emphasis px-2" style="text-decoration: none;">Acuse</a></button>
+              <button type="button" class="btn btn-primary"><a href="admin.html" class="px-2">Admin</a></button>
+          </ul>            
+        </div>
+    </nav>
 
-        <header class="py-3 mb-4 border-bottom">
-            <div class="d-flex align-items-center justify-content-between px-2">
-                <a href="#" class="d-flex align-items-center link-body-emphasis text-decoration-none">
-                    <img src="img/escudo_ESCOM.png" alt="Escudo ESCOM" class="logo">
-                    <span id="titulo">Solicitud de Lockers</span>
-                </a>
-                <img src="img/logotipo_ipn.png" alt="Logo IPN" class="logo">
-            </div>
-        </header>
-        <!--Encabezado-->
-
+    <header class="py-3 mb-4 border-bottom">
+        <div class="d-flex align-items-center justify-content-between px-2">
+            <a href="https://www.escom.ipn.mx" target="_blank">
+              <img src="img/escudo_ESCOM.png" alt="Escudo ESCOM" class="logo">
+            </a>
+            <a href="#" class="d-flex align-items-center link-body-emphasis text-decoration-none">
+                <span id="titulo">Solicitud Lockers</span>
+            </a>
+            <a href="https://www.ipn.mx" target="_blank">
+              <img src="img/logotipo_ipn.png" alt="Escudo ESCOM" class="logo">
+            </a>            
+        </div>
+    </header>
+    <!--Encabezado-->
         <main>
             <div id="formulario">
                 <form name="locker" autocomplete="off">
@@ -93,7 +95,7 @@
                             <input type="text" name="curp" id="curp" placeholder="18 caracteres" required>
                             
                             <label for="estatura">Estatura</label>
-                            <input type="text" name="estatura" id="estatura" placeholder="Ejemplo: 1.70 o 170">
+                            <input type="text" name="estatura" id="estatura" placeholder="Ejemplo: 1.70">
                         </fieldset>
                         
                         <fieldset>

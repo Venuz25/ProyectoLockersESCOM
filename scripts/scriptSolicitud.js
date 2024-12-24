@@ -21,33 +21,35 @@ document.addEventListener("DOMContentLoaded", () => {
     const validarFormulario = () => {
         const archivoCredencial = document.getElementById("credencial").files[0];
         const archivoHorario = document.getElementById("horario").files[0];
-
+    
         // Validar número de casillero
-        if(radioRenovacion.checked){
+        if (radioRenovacion.checked) {
             var numeroCasillero = document.forms.locker['numero-casillero'].value.trim();
             if (!/^\d{3}$/.test(numeroCasillero)) {
                 alert("El número de casillero debe tener exactamente 3 dígitos.");
                 return false;
             }
         }
-
-        // Validar nombre (letras y un solo espacio)
+    
+        // Validar nombre (acepta acentos y compuestos)
         var nombre = document.forms.locker['nombre'].value.trim();
         if (!/^[A-ZÁÉÍÓÚÜÑa-záéíóúüñ]+(?: [A-ZÁÉÍÓÚÜÑa-záéíóúüñ]+)*$/.test(nombre)) {
-            alert("El nombre solo debe contener letras.");
+            alert("El nombre solo debe contener letras y puede ser compuesto.");
             return false;
         }
     
+        // Validar primer apellido (acepta apellidos largos y compuestos)
         var apellidop = document.forms.locker['p_apellido'].value.trim();
-        if (!/^[a-zA-Z]+$/.test(apellidop)) {
-            alert("El primer apellido debe contener solo letras.");
-            return false; // Evita continuar si es inválido
+        if (!/^[A-ZÁÉÍÓÚÜÑa-záéíóúüñ]+(?: [A-ZÁÉÍÓÚÜÑa-záéíóúüñ]+)*$/.test(apellidop)) {
+            alert("El primer apellido solo debe contener letras y puede ser compuesto.");
+            return false;
         }
     
+        // Validar segundo apellido (acepta apellidos largos y compuestos)
         var apellidos = document.forms.locker['s_apellido'].value.trim();
-        if (!/^[a-zA-Z]+$/.test(apellidos)) {
-            alert("El segundo apellido debe contener solo letras.");
-            return false; // Evita continuar si es inválido
+        if (!/^[A-ZÁÉÍÓÚÜÑa-záéíóúüñ]+(?: [A-ZÁÉÍÓÚÜÑa-záéíóúüñ]+)*$/.test(apellidos)) {
+            alert("El segundo apellido solo debe contener letras y puede ser compuesto.");
+            return false;
         }
     
         // Validar teléfono (10 dígitos)
@@ -60,7 +62,7 @@ document.addEventListener("DOMContentLoaded", () => {
         // Validar correo (formato institucional)
         var correo = document.forms.locker['correo'].value.trim();
         if (!/^[a-z0-9._%+-]+@alumno\.ipn\.mx$/.test(correo)) {
-            alert("El correo no es valido.");
+            alert("El correo no es válido.");
             return false;
         }
     
@@ -71,31 +73,31 @@ document.addEventListener("DOMContentLoaded", () => {
             return false;
         }
     
-        // Validar CURP (18 caracteres alfanuméricos)
+        // Validar CURP (18 caracteres, años 1900-2000)
         var curp = document.forms.locker['curp'].value.trim();
         if (!/^[A-Z]{4}\d{6}[HM][A-Z]{5}[A-Z0-9]\d$/.test(curp)) {
-            alert("El CURP debe contener 18 caracteres válidos.");
+            alert("El CURP debe contener exactamente 18 caracteres válidos.");
             return false;
         }
     
-        // Validar estatura
+        // Validar estatura (en metros, formato 0.00 o 1.00+)
         var estatura = document.forms.locker['estatura'].value.trim();
-        if (!/^(\d{1}\.\d{2}|\d{3})$/.test(estatura)) {
-            alert("La estatura debe estar en formato 1.xx o 1xx.");
+        if (!/^([1-2]\.\d{2})$/.test(estatura)) {
+            alert("La estatura debe estar en metros.");
             return false;
-        } 
-
+        }
+    
         // Validar que se haya seleccionado un archivo y que sea PDF
         if (!archivoCredencial || archivoCredencial.type !== "application/pdf") {
             alert("Debes subir un archivo PDF válido para la credencial.");
             return false;
         }
-
+    
         if (!archivoHorario || archivoHorario.type !== "application/pdf") {
             alert("Debes subir un archivo PDF válido para el horario.");
             return false;
         }
-
+    
         // Valida que se ingrese algo en usuario y contraseña
         var usuario = document.forms.locker['user'].value.trim();
         if (usuario === "") {
@@ -108,11 +110,11 @@ document.addEventListener("DOMContentLoaded", () => {
             alert("Ingresa una contraseña.");
             return false;
         }
-
     
-        //Si todo está bien
+        // Si todo está bien
         return true;
-    }    
+    };
+        
 
     const mostrarResumen = () => {
         const tipoSolicitud = radioRenovacion.checked ? "Renovación" : "Primera vez";
