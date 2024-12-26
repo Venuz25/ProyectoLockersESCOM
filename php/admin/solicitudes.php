@@ -13,7 +13,7 @@ $sql = "SELECT
             solicitudes.estadoSolicitud 
         FROM solicitudes 
         JOIN alumnos ON solicitudes.noBoleta = alumnos.boleta 
-        WHERE solicitudes.estadoSolicitud IN ('Pendiente', 'Lista de Espera')";
+        WHERE solicitudes.estadoSolicitud IN ('Pendiente', 'Lista de Espera', 'Aprobada')";
 
 $result = $conn->query($sql);
 $solicitudes = [];
