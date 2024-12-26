@@ -8,7 +8,8 @@ if ($conn->connect_error) {
 $sql = "SELECT 
             alumnos.boleta, 
             CONCAT(alumnos.nombre, ' ', alumnos.primerAp, ' ', alumnos.segundoAp) AS nombre, 
-            alumnos.solicitud, 
+            alumnos.solicitud,
+            alumnos.estatura, 
             solicitudes.estadoSolicitud 
         FROM solicitudes 
         JOIN alumnos ON solicitudes.noBoleta = alumnos.boleta 
@@ -24,5 +25,6 @@ if ($result->num_rows > 0) {
 }
 
 echo json_encode($solicitudes);
+
 $conn->close();
 ?>
