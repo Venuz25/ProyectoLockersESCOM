@@ -1,3 +1,13 @@
+main {
+    margin: 0 auto;
+    max-width: 1000px;
+    padding: 30px;
+    background: white;
+    border-radius: 12px;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+    text-align: center;
+}
+
 #locker-container {
     display: flex;
     flex-wrap: wrap;
@@ -25,6 +35,6 @@
 
 .locker.asignado {
     background-color: gray;
-    color: black;
+    color: white;
 }
 

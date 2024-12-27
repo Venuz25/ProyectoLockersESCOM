@@ -63,7 +63,7 @@ function showLockerModal(data) {
     modalTitle.textContent = `Casillero #${data.noCasillero}`;
     modalBody.innerHTML = `
         <p><strong>Estado:</strong> ${data.estado}</p>
-        <p><strong>Altura:</strong> ${altura}</p>
+        <p><strong>Altura:</strong> ${altura} (${data.altura}m)</p>
         <p><strong>Asignado a:</strong> ${asignadoA}</p>
     `;
 
