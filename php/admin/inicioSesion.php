@@ -1,4 +1,6 @@
 <?php
+    session_start(); // Iniciar la sesión
+
     $conn = new mysqli("localhost", "root", "", "lockers_db");
 
     if ($conn -> connect_error) {
@@ -15,7 +17,8 @@
     $result = $stmt -> get_result();
     
     if ($result->num_rows > 0) {
-        header("Location: /ProyectoWeb/asignacion.html");
+        $_SESSION['usuario'] = $usuario; // Guardar el usuario en la sesión
+        header("Location: /ProyectoWeb/asignacion.php");
         exit();
     } else {
         echo "<script>alert('Usuario o contraseña incorrectos');</script>";

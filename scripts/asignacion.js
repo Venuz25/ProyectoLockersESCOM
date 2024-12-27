@@ -38,8 +38,7 @@ document.addEventListener('DOMContentLoaded', () => {
                     .catch(error => console.error('Error al cargar datos del casillero:', error));
             });
 
-            // Añadimos el número del casillero al interior del div
-            lockerDiv.innerHTML = `<span>${locker.noCasillero}</span>`;
+            lockerDiv.innerHTML = `<h2>${locker.noCasillero}</h2>`;
             container.appendChild(lockerDiv);
             });
         })
@@ -70,13 +69,11 @@ function showLockerModal(data) {
 
     if (data.estado === 'Disponible') {
         modalFooter.innerHTML = `
-            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
             <button type="button" class="btn btn-primary">Asignar</button>
         `;
     } else {
         modalFooter.innerHTML = `
             <button type="button" class="btn btn-primary">Reasignar</button>
-            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
         `;
     }
 

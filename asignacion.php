@@ -1,16 +1,4 @@
-<!DOCTYPE html>
-<html lang="es">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Asignación</title>
-</head>
-<body>
-    <h1>Bienvenido al panel de administración</h1>
-    <!-- Contenido de tu página -->
-</body>
-</html>
-
+<?php include('/C:/xampp/htdocs/ProyectoWeb/php/admin/verificarSesion.php'); ?>
 
 <!DOCTYPE html>
 <html lang="es">
@@ -41,7 +29,7 @@
             </ul>
             <ul class="nav text-end">
                 <button type="button" class="btn btn-light text-dark me-2"><a href="acuse.html" class="link-body-emphasis px-2" style="text-decoration: none;">Acuse</a></button>
-                <button type="button" class="btn btn-primary"><a href="admin.html" class="px-2">Admin</a></button>
+                <button type="button" class="btn btn-primary"><a href="/ProyectoWeb/php/admin/verificarSesion.php" class="px-2">Admin</a></button>
             </ul>            
             </div>
         </nav>
@@ -62,6 +50,9 @@
         <!--Encabezado-->
 
         <main class="container py-4">
+            <div>
+                <a href="/ProyectoWeb/php/admin/cerrarSesion.php">Cerrar sesión</a>
+            </div>
             <div id="locker-container" class="locker-container d-flex flex-wrap justify-content-center">
                 <!-- Los casilleros serán cargados aquí-->
             </div>
@@ -86,14 +77,14 @@
             <div class="modal-dialog">
             <div class="modal-content">
                 <div class="modal-header">
-                <h5 class="modal-title" id="lockerModalLabel">Casillero</h5>
+                <h5 class="modal-title" id="lockerModalLabel"></h5>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
+
                 <div class="modal-body">
-                <!-- Contenido dinámico del modal -->
                 </div>
+
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
                 </div>
             </div>
             </div>
