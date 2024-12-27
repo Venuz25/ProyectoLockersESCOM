@@ -1,6 +1,6 @@
 document.addEventListener('DOMContentLoaded', () => {
     //funcion para mostrar casilleros
-    fetch('/ProyectoWeb/php/admin/asignacion.php')
+    fetch('/ProyectoWeb/php/admin/casilleros.php')
         .then(response => response.json())
         .then(data => {
             const container = document.getElementById('locker-container');
@@ -51,11 +51,12 @@ function showLockerModal(data) {
     const modalElement = document.getElementById('lockerModal');
     const modalTitle = document.getElementById('lockerModalLabel');
     const modalBody = document.querySelector('.modal-body');
+    const modalFooter = document.querySelector('.modal-footer');
 
     modalTitle.textContent = '';
     modalBody.innerHTML = '';
 
-    const altura = data.altura <= 50 ? 'Alto' : 'Bajo';
+    const altura = data.altura > 0.55 ? 'Alto' : 'Bajo';
     const asignadoA = data.boleta
         ? `${data.nombre} ${data.primerAp} ${data.segundoAp} <br><strong>Boleta:</strong> ${data.boleta}`
         : 'Sin Asignar';
@@ -66,6 +67,18 @@ function showLockerModal(data) {
         <p><strong>Altura:</strong> ${altura} (${data.altura}m)</p>
         <p><strong>Asignado a:</strong> ${asignadoA}</p>
     `;
+
+    if (data.estado === 'Disponible') {
+        modalFooter.innerHTML = `
+            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
+            <button type="button" class="btn btn-primary">Asignar</button>
+        `;
+    } else {
+        modalFooter.innerHTML = `
+            <button type="button" class="btn btn-primary">Reasignar</button>
+            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
+        `;
+    }
 
     const modalInstance = bootstrap.Modal.getInstance(modalElement);
     if (modalInstance) {
