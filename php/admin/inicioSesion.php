@@ -1,5 +1,5 @@
 <?php
-    $conn = new mysqli("localhost", "root", "", "lockers_db");
+    $conn = new mysqli("localhost:3309", "root", "", "lockers_db");
 
     if ($conn -> connect_error) {
         die("Conexión fallida: " . $conn->connect_error);
