@@ -29,7 +29,7 @@
             </ul>
             <ul class="nav text-end">
                 <button type="button" class="btn btn-light text-dark me-2"><a href="acuse.html" class="link-body-emphasis px-2" style="text-decoration: none;">Acuse</a></button>
-                <button type="button" class="btn btn-primary"><a href="/ProyectoWeb/php/admin/verificarSesion.php" class="px-2">Admin</a></button>
+                <button type="button" class="btn btn-primary"><a href="/ProyectoWeb/php/admin/cerrarSesion.php" class="px-2">Cerrar Sesión</a></button>
             </ul>            
             </div>
         </nav>
@@ -50,9 +50,6 @@
         <!--Encabezado-->
 
         <main class="container py-4">
-            <div>
-                <a href="/ProyectoWeb/php/admin/cerrarSesion.php">Cerrar sesión</a>
-            </div>
             <div id="locker-container" class="locker-container d-flex flex-wrap justify-content-center">
                 <!-- Los casilleros serán cargados aquí-->
             </div>
