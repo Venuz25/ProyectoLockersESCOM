@@ -7,6 +7,7 @@ document.addEventListener("DOMContentLoaded", () => {
     const divResumen = document.getElementById("resumen");
     const divFormulario = document.getElementById("formulario");
     const enviarButton = document.getElementById("enviar");
+    const guardarButton = document.getElementById("guardar");
 
     const actualizarVisibilidad = () => {
         if (radioRenovacion.checked) {
@@ -25,8 +26,8 @@ document.addEventListener("DOMContentLoaded", () => {
         // Validar número de casillero
         if (radioRenovacion.checked) {
             var numeroCasillero = document.forms.locker['numero-casillero'].value.trim();
-            if (!/^\d{3}$/.test(numeroCasillero)) {
-                alert("El número de casillero debe tener exactamente 3 dígitos.");
+            if (!numeroCasillero) {
+                alert("Ingresa un numero de casillero anterior.");
                 return false;
             }
         }
@@ -115,7 +116,6 @@ document.addEventListener("DOMContentLoaded", () => {
         return true;
     };
         
-
     const mostrarResumen = () => {
         const tipoSolicitud = radioRenovacion.checked ? "Renovación" : "Primera vez";
         const numeroCasillero = document.getElementById("numero-casillero").value.trim();
@@ -167,4 +167,25 @@ document.addEventListener("DOMContentLoaded", () => {
             mostrarResumen();
         }
     });
+
+    // Enviar los datos al servidor
+    guardarButton.addEventListener("click", () => {
+        const formData = new FormData(formulario); 
+        fetch("/ProyectoWeb/php/registro/guardarDatos.php", {
+            method: "POST",
+            body: formData,
+        })
+            .then((response) => {
+                if (response.ok) {
+                    window.location.href = "confirmacion.html";
+                } else {
+                    alert("Error al procesar la solicitud.");
+                }
+            })
+            .catch((error) => {
+                console.error("Error:", error);
+                alert("Ocurrió un error al enviar los datos.");
+            });
+    });
+
 });

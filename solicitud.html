@@ -50,7 +50,7 @@
     <!--Encabezado-->
         <main>
             <div id="formulario">
-                <form name="locker" autocomplete="off">
+                <form name="locker" id="lockerForm" method="POST" enctype="multipart/form-data">
                     <fieldset>
                         <legend>Tipo de Solicitud</legend>
                         <div class="form-check form-check-inline">
@@ -126,7 +126,7 @@
             <div id="resumen" class="mt-4">
                 <div id="datos"></div>
                 <div id="confirmar" >
-                    <button type="button" class="btn btn-primary"><a href="confirmacion.html">Enviar</a></button>
+                    <button type="button" id="guardar" class="btn btn-primary">Enviar</button>
                     <button type="reset" class="btn btn-secondary" onclick="regresar()">Modificar</button>
                 </div>
             </div>
