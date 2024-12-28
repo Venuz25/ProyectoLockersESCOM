@@ -6,10 +6,10 @@ if (isset($_SESSION['usuario'])) {
     // Verificar el tipo de solicitud
     if (isset($_SESSION['solicitud'])) {
         if ($_SESSION['solicitud'] === 'Primera vez') {
-            header("Location: /ProyectoWeb/seguimiento.php");
+            header("Location: /ProyectoWeb/seguimiento.html");
             exit();
         } elseif ($_SESSION['solicitud'] === 'Renovación') {
-            header("Location: /ProyectoWeb/pendientes.php");
+            header("Location: /ProyectoWeb/pendientes.html");
             exit();
         } else {
             echo "Tipo de solicitud desconocido.";

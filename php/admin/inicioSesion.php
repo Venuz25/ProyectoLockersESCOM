@@ -13,7 +13,7 @@ $result = $stmt->get_result();
 
 if ($result->num_rows > 0) {
     $_SESSION['usuario'] = $usuario;
-    header("Location: /ProyectoWeb/asignacion.php");
+    header("Location: /ProyectoWeb/asignacion.html");
     exit();
 } else {
     echo "<script>alert('Usuario o contraseña incorrectos');</script>";

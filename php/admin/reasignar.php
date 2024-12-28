@@ -13,7 +13,7 @@
         if ($stmt->execute()) {
             echo json_encode(['success' => true]);
         } else {
-            echo json_encode(['success' => false, 'error' => 'No se pudo actualizar el casillero.']);
+            echo json_encode(['success' => false, 'error' => 'No se pudo revocar el casillero.']);
         }
 
         $stmt->close();

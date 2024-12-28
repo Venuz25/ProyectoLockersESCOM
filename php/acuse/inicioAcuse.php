@@ -26,9 +26,9 @@ if (!empty($_POST['Usuario']) && !empty($_POST['Correo']) && !empty($_POST['Cont
 
         // Redirigir según el tipo de solicitud
         if ($row['solicitud'] === 'Primera vez') {
-            header("Location: /ProyectoWeb/seguimiento.php");
+            header("Location: /ProyectoWeb/seguimiento.html");
         } else if ($row['solicitud'] === 'Renovación') {
-            header("Location: /ProyectoWeb/pendientes.php");
+            header("Location: /ProyectoWeb/pendientes.html");
         } else {
             echo "<script>alert('Tipo de solicitud desconocido');</script>";
             echo "<script>window.location.href = '/ProyectoWeb/acuse.html';</script>";
