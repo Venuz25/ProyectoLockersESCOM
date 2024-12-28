@@ -5,6 +5,8 @@
             a.boleta,
             CONCAT(a.nombre, ' ', a.primerAp, ' ', a.segundoAp) AS nombre,
             a.estatura,
+            a.solicitud,
+            a.casilleroAnt,
             s.fechaRegistro,
             s.estadoSolicitud
         FROM 

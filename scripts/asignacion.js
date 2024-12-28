@@ -101,50 +101,99 @@ function showLockerModal(data) {
 
         // Lógica para Asignar
         document.getElementById('asignar-btn').addEventListener('click', () => {
-            fetch(`/ProyectoWeb/php/admin/listaAlumnos.php?altura=${data.altura}`)
-            .then((response) => response.json())
-            .then((alumnos) => {
-                const modalBody = document.querySelector('.modal-body');
-
-                modalBody.innerHTML = `
-                    <h5>Lista de Alumnos</h5>
-                    <table class="table table-striped">
-                        <thead>
-                            <tr>
-                                <th>Fecha de Solicitud</th>
-                                <th>Boleta</th>
-                                <th>Nombre</th>
-                                <th>Estado</th>
-                                <th>Acción</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            ${alumnos
-                                .map(
-                                    (alumno) => data.altura <= 0.55 || (data.altura > 0.55 && alumno.estatura > 1.60) ? ` 
-                                <tr>
-                                    <td>${alumno.fechaRegistro}</td>
-                                    <td>${alumno.boleta}</td>
-                                    <td>${alumno.nombre}</td>
-                                    <td>${alumno.estadoSolicitud}</td>
-                                    <td>
-                                        <button class="btn btn-info btn-sm" onclick="mostrarDetallesAlumno(${alumno.boleta}, ${data.noCasillero})">Más</button>
-                                    </td>
-                                </tr>
-                            ` : ''
-                                )
-                                .join('')}
-                        </tbody>
-                    </table>
-                `;
+            fetch(`/ProyectoWeb/php/admin/listaAlumnos.php`)
+                .then((response) => response.json())
+                .then((alumnos) => {
+                    const modalBody = document.querySelector('.modal-body');
         
+                    // Filtrar condiciones de altura
+                    const alumnosFiltrados = alumnos.filter(
+                        (alumno) =>
+                            data.altura <= 0.55 || (data.altura > 0.55 && alumno.estatura > 1.60)
+                    );
+        
+                    if (alumnos.length === 0) {
+                        modalBody.innerHTML = `
+                            <h5>Lista de Alumnos</h5>
+                            <div class="alert alert-warning text-center" role="alert">
+                                Sin solicitudes pendientes.
+                            </div>
+                        `;
+                    } else if (alumnosFiltrados.length === 0) {
+                        modalBody.innerHTML = `
+                            <h5>Lista de Alumnos</h5>
+                            <div class="alert alert-warning text-center" role="alert">
+                                No hay alumnos que cumplan con las condiciones de altura.
+                            </div>
+                        `;
+                    } else {
+                        modalBody.innerHTML = `
+                            <h5>Lista de Alumnos</h5>
+                            <table class="table table-striped">
+                                <thead>
+                                    <tr>
+                                        <th>Fecha de Solicitud</th>
+                                        <th>Boleta</th>
+                                        <th>Nombre</th>
+                                        <th>Tipo</th>
+                                        <th>Acción</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    ${alumnosFiltrados
+                                        .map(
+                                            (alumno) => alumno.solicitud === 'Renovacion' || alumno.casilleroAnt == data.noCasillero ?` 
+                                            <tr>
+                                                <td>${alumno.fechaRegistro}</td>
+                                                <td>${alumno.boleta}</td>
+                                                <td>${alumno.nombre}</td>
+                                                <td>${alumno.solicitud}</td>
+                                                <td>
+                                                    <button class="btn btn-outline-primary" onclick="mostrarDetallesAlumno(${alumno.boleta}, ${data.noCasillero})">Más</button>
+                                                </td>
+                                            </tr>
+                                        ` : ''
+                                        ) 
+                                        .join('')}
+
+                                    ${alumnosFiltrados
+                                        .map(
+                                            (alumno) => alumno.solicitud === 'Primera vez' ?` 
+                                            <tr>
+                                                <td>${alumno.fechaRegistro}</td>
+                                                <td>${alumno.boleta}</td>
+                                                <td>${alumno.nombre}</td>
+                                                <td>${alumno.solicitud}</td>
+                                                <td>
+                                                    <button class="btn btn-outline-primary" onclick="mostrarDetallesAlumno(${alumno.boleta}, ${data.noCasillero})">Más</button>
+                                                </td>
+                                            </tr>
+                                        ` : ''
+                                        ) 
+                                        .join('')}
+                                </tbody>
+                            </table>
+                        `;
+                    }
+
+                    const tableBody = document.querySelector('table tbody');
+                    // Verificar si el tbody está vacío
+                    if (!tableBody || tableBody.children.length === 0) {
+                        modalBody.innerHTML = `
+                            <h5>Lista de Alumnos</h5>
+                            <div class="alert alert-warning text-center" role="alert">
+                                Sin solicitudes pendientes.
+                            </div>
+                        `;
+                    }
+        
+                    modalFooter.innerHTML = '';
+                });
         });
-    });
-
-
+        
     } else {
         modalFooter.innerHTML = `
-            <button type="button" id="reasignar-btn" class="btn btn-primary">Reasignar</button>
+            <button type="button" id="reasignar-btn" class="btn btn-primary">Revocar</button>
         `;
 
         // Lógica para Reasignar
