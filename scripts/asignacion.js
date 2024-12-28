@@ -306,7 +306,9 @@ function mostrarDetallesAlumno(boleta, noCasillero) {
                 });
 
             document.getElementById('regresar-btn').addEventListener('click', () => {
-                
+                fetch(`/ProyectoWeb/php/admin/modal.php?noCasillero=${noCasillero}`)
+                    .then(response => response.json())
+                    .then(modalData => {listaAlumnos(modalData);});
             });
         })
         .catch((error) => {
