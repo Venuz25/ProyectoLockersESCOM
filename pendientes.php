@@ -3,7 +3,7 @@
     <head>
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <title>.::Seguimiento::.</title>
+        <title>.::Solicitud::.</title>
 
         <link rel="icon" href="img/iconos/confirmacion.png" type="image/x-icon">
         <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
@@ -21,14 +21,14 @@
         <!--Encabezado-->
     <nav class="py-2 bg-body-tertiary">
         <div class="d-flex flex-wrap px-2">
-          <ul class="nav me-auto">
-              <li class="nav-item"><a href="index.html" class="nav-link link-body-emphasis px-2 active" aria-current="page">Inicio</a></li>
-              <li class="nav-item"><a href="solicitud.html" class="nav-link link-body-emphasis px-2">Registro</a></li>
-          </ul>
-          <ul class="nav text-end">
-              <button type="button" class="btn btn-light text-dark me-2"><a href="acuse.html" class="link-body-emphasis px-2" style="text-decoration: none;">Acuse</a></button>
-              <button type="button" class="btn btn-primary"><a href="/ProyectoWeb/php/admin/verificarSesion.php" class="px-2">Admin</a></button>
-            </ul>            
+            <ul class="nav me-auto">
+                <li class="nav-item"><a href="index.html" class="nav-link link-body-emphasis px-2 active" aria-current="page">Inicio</a></li>
+                <li class="nav-item"><a href="solicitud.html" class="nav-link link-body-emphasis px-2">Registro</a></li>
+            </ul>
+            <ul class="nav text-end">
+                <button type="button" class="btn btn-light text-dark me-2"><a href="acuse.html" class="link-body-emphasis px-2" style="text-decoration: none;">Acceso</a></button>
+                <button type="button" class="btn btn-primary"><a href="/ProyectoWeb/php/admin/verificarSesion.php" class="px-2">Admin</a></button>
+            </ul>           
         </div>
     </nav>
 
@@ -50,7 +50,7 @@
         <main>
             <div id="texto">
                 <h3>Sus datos fueron guardados correctamente</h3>
-                <img src="/ProyectoWeb/img/imgConfirmacion.gif" alt="Seguimiento" class="buentrabajo">
+                <img src="/ProyectoWeb/img/imgConfirmacion.gif" alt="Pendientes" class="buentrabajo">
             </div>
             <a href="index.html" class="btn btn-outline-dark btnReg">Volver</a>             
         </main>
