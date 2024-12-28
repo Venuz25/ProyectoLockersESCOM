@@ -43,7 +43,7 @@
                 <span id="titulo">Lockers ESCOM</span>
             </a>
             <a href="https://www.ipn.mx" target="_blank">
-              <img src="img/logotipo_ipn.png" alt="Escudo ESCOM" class="logo">
+              <img src="/ProyectoWeb/img/logotipo_ipn.png" alt="Escudo ESCOM" class="logo">
             </a>            
         </div>
     </header>
@@ -52,7 +52,7 @@
         <main>
             <div id="texto">
                 <h3>Sus datos fueron guardados correctamente</h3>
-                <img src="img/a.gif" alt="Seguimiento" class="buentrabajo">
+                <img src="/ProyectoWeb/img/imgConfirmacion.gif" alt="Seguimiento" class="buentrabajo">
             </div>
             <a href="index.html" class="btn btn-outline-dark btnReg">Volver</a>             
         </main>
