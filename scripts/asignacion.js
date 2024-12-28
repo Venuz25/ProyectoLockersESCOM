@@ -12,6 +12,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 lockerDiv.setAttribute('data-id', locker.noCasillero);
 
                 if (locker.estado === 'Disponible') {
+                    lockerDiv.classList.add('disponible');
                     lockerDiv.addEventListener('click', () => {
                         showLockerModal(locker.noCasillero, locker.estado);
                     });
@@ -22,7 +23,6 @@ document.addEventListener('DOMContentLoaded', () => {
                     });
                 }
 
-                  // Evento al hacer clic
             lockerDiv.addEventListener('click', () => {
                 const noCasillero = lockerDiv.getAttribute('data-id');
 
@@ -43,6 +43,33 @@ document.addEventListener('DOMContentLoaded', () => {
             });
         })
         .catch(error => console.error('Error al obtener los datos:', error));
+});
+
+//Funcion para el filtro
+document.addEventListener('DOMContentLoaded', () => {
+    const filterSelect = document.getElementById('filterSelect');
+    const lockerContainer = document.getElementById('locker-container');
+
+    filterSelect.addEventListener('change', () => {
+        const filterValue = filterSelect.value;
+        filterLockers(filterValue);
+    });
+
+    function filterLockers(filter) {
+        const lockers = lockerContainer.querySelectorAll('.locker');
+
+        lockers.forEach(locker => {
+            if (filter === 'todos') {
+                locker.style.display = 'block'; 
+            } else if (filter === 'disponibles' && locker.classList.contains('disponible')) {
+                locker.style.display = 'block'; 
+            } else if (filter === 'asignados' && locker.classList.contains('asignado')) {
+                locker.style.display = 'block'; 
+            } else {
+                locker.style.display = 'none';
+            }
+        });
+    }
 });
 
 // Función para mostrar el modal con datos
@@ -76,7 +103,7 @@ function showLockerModal(data) {
             <button type="button" id="reasignar-btn" class="btn btn-primary">Reasignar</button>
         `;
 
-        // Lógica para el botón "Reasignar"
+        // Lógica para Reasignar
         document.getElementById('reasignar-btn').addEventListener('click', () => {
             const confirmar = confirm(
                 `¿Estás seguro de que deseas revocar el casillero #${data.noCasillero} asignado a ${data.nombre}?`
@@ -101,6 +128,7 @@ function showLockerModal(data) {
         });
     }
 
+    //Correccion de bug de modal
     const modalInstance = bootstrap.Modal.getInstance(modalElement);
     if (modalInstance) {
         modalInstance.dispose();

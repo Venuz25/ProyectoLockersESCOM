@@ -50,8 +50,19 @@
         <!--Encabezado-->
 
         <main class="container py-4">
-            <div id="locker-container" class="locker-container d-flex flex-wrap justify-content-center">
-                <!-- Los casilleros serán cargados aquí-->
+            <div class="container mt-4">
+                <div class="row">
+                    <div class="col-md-4">
+                        <select id="filterSelect" class="form-select">
+                            <option value="todos">Todos los Casilleros</option>
+                            <option value="disponibles">Casilleros Disponibles</option>
+                            <option value="asignados">Casilleros Asignados</option>
+                        </select>
+                    </div>
+                </div>
+                <div id="locker-container" class="mt-4">
+                    <!-- Casilleros se generarán aquí -->
+                </div>
             </div>
         </main>
 
@@ -71,22 +82,22 @@
 
         <!--Modal -->
         <div class="modal fade" id="lockerModal" tabindex="-1" aria-labelledby="lockerModalLabel" aria-hidden="true">
-            <div class="modal-dialog">
-            <div class="modal-content">
-                <div class="modal-header">
-                <h5 class="modal-title" id="lockerModalLabel"></h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            <div class="modal-dialog modal-lg">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="lockerModalLabel"></h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        <!-- Contenido del modal -->
+                    </div>
+                    <div class="modal-footer">
+                        <!-- Botones del modal -->
+                    </div>
                 </div>
-
-                <div class="modal-body">
-                </div>
-
-                <div class="modal-footer">
-                </div>
-            </div>
             </div>
         </div>
-    
+        <!--Modal -->
 
         <script src="scripts/asignacion.js"></script>
     </body>
