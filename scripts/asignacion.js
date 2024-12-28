@@ -1,5 +1,6 @@
+
+//funcion para mostrar casilleros
 document.addEventListener('DOMContentLoaded', () => {
-    //funcion para mostrar casilleros
     fetch('/ProyectoWeb/php/admin/casilleros.php')
         .then(response => response.json())
         .then(data => {
@@ -239,6 +240,7 @@ function listaAlumnos(data) {
         });
 }
 
+//Funcion para mostrar detalles del alumno
 function mostrarDetallesAlumno(boleta, noCasillero) {
     fetch(`/ProyectoWeb/php/admin/detallesAlumnos.php?boleta=${boleta}`)
         .then((response) => response.json())
@@ -316,7 +318,6 @@ function mostrarDetallesAlumno(boleta, noCasillero) {
             alert('No se pudieron cargar los detalles del alumno.');
         });
 }
-
 
 //Correccion de bug de modal
 document.getElementById('lockerModal').addEventListener('hidden.bs.modal', () => {

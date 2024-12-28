@@ -1,5 +1,5 @@
 <?php
-$servername = "localhost:3309";
+$servername = "localhost";
 $username = "root";
 $password = "";
 $dbname = "lockers_db";
