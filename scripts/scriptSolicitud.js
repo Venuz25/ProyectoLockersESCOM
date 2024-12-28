@@ -7,7 +7,6 @@ document.addEventListener("DOMContentLoaded", () => {
     const divResumen = document.getElementById("resumen");
     const divFormulario = document.getElementById("formulario");
     const enviarButton = document.getElementById("enviar");
-    const guardarButton = document.getElementById("guardar");
 
     const actualizarVisibilidad = () => {
         if (radioRenovacion.checked) {
@@ -168,9 +167,13 @@ document.addEventListener("DOMContentLoaded", () => {
         }
     });
 
-    // Enviar los datos al servidor
+    const formularioB = document.getElementById("lockerForm");
+    const guardarButton = document.getElementById("guardar");
+
     guardarButton.addEventListener("click", () => {
-        const formData = new FormData(formulario); 
+        const formData = new FormData(formularioB);
+
+        // Enviar los datos al backend
         fetch("/ProyectoWeb/php/registro/guardarDatos.php", {
             method: "POST",
             body: formData,
@@ -179,12 +182,12 @@ document.addEventListener("DOMContentLoaded", () => {
                 if (response.ok) {
                     window.location.href = "confirmacion.html";
                 } else {
-                    alert("Error al procesar la solicitud.");
+                    alert("Error al guardar la solicitud.");
                 }
             })
             .catch((error) => {
-                console.error("Error:", error);
-                alert("Ocurrió un error al enviar los datos.");
+                console.error("Error al procesar la solicitud:", error);
+                alert("Error inesperado al guardar los datos.");
             });
     });
 
