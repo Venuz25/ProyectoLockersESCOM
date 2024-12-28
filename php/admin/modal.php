@@ -1,9 +1,5 @@
 <?php
-    $conn = new mysqli("localhost", "root", "", "lockers_db");
-
-    if ($conn->connect_error) {
-        die(json_encode(['error' => 'Error de conexión: ' . $conn->connect_error]));
-    }
+    include('../conexion.php');
     
     $noCasillero = intval($_GET['noCasillero']);
     

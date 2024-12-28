@@ -1,9 +1,6 @@
 <?php
-    $conn = new mysqli("localhost", "root", "", "lockers_db");
+    include('../conexion.php');
 
-    if ($conn->connect_error) {
-        die("Conexión fallida: " . $conn->connect_error);
-    }
 
     // Disponibilidad Casilleros
     $casilleros = "SELECT noCasillero, estado, altura FROM casilleros";

@@ -91,7 +91,7 @@ function showLockerModal(data) {
                     .then(result => {
                         if (result.success) {
                             alert('El casillero ha sido revocado exitosamente.');
-                            location.reload(); // Recargar la página para reflejar los cambios
+                            location.reload();
                         } else {
                             alert('Ocurrió un error al intentar revocar el casillero.');
                         }

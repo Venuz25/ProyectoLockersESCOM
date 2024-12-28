@@ -1,12 +1,5 @@
 <?php
-    header('Content-Type: application/json');
-
-    $conn = new mysqli("localhost", "root", "", "lockers_db");
-
-    if ($conn->connect_error) {
-        echo json_encode(['success' => false, 'error' => 'Error en la conexión a la base de datos.']);
-        exit();
-    }
+    include('../conexion.php');
 
     $data = json_decode(file_get_contents('php://input'), true);
 

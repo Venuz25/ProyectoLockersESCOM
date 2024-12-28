@@ -1,11 +1,6 @@
 <?php
 session_start();
-
-$conn = new mysqli("localhost", "root", "", "lockers_db");
-
-if ($conn->connect_error) {
-    die("Conexión fallida: " . $conn->connect_error);
-}
+include('../conexion.php');
 
 // Validar si se recibieron los datos del formulario
 if (!empty($_POST['Usuario']) && !empty($_POST['Correo']) && !empty($_POST['Contraseña'])) {
