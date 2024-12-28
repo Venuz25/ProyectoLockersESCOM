@@ -1,3 +1,5 @@
+<?php include('/ProyectoWeb/php/acuse/verificarAcuse.php'); ?>
+
 <!DOCTYPE html>
 <html lang="es">
     <head>
