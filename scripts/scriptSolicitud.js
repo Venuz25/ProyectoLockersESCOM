@@ -25,8 +25,8 @@ document.addEventListener("DOMContentLoaded", () => {
         // Validar número de casillero
         if (radioRenovacion.checked) {
             var numeroCasillero = document.forms.locker['numero-casillero'].value.trim();
-            if (!numeroCasillero) {
-                alert("Ingresa un numero de casillero anterior.");
+            if (!/^\d+$/.test(numeroCasillero)) {
+                alert("Ingresa un numero de casillero anterior valido.");
                 return false;
             }
         }
