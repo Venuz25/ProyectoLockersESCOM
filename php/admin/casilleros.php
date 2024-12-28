@@ -1,7 +1,6 @@
 <?php
     include('../conexion.php');
-
-
+    
     // Disponibilidad Casilleros
     $casilleros = "SELECT noCasillero, estado, altura FROM casilleros";
     $resultCasillero = $conn->query($casilleros);

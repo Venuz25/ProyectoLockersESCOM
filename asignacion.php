@@ -1,4 +1,4 @@
-<?php include('/C:/xampp/htdocs/ProyectoWeb/php/admin/verificarSesion.php'); ?>
+<?php include('/ProyectoWeb/php/admin/verificarSesion.php'); ?>
 
 <!DOCTYPE html>
 <html lang="es">

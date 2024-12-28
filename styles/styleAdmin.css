@@ -22,7 +22,6 @@ main {
     background-image: url('/ProyectoWeb/img/admin/casillero.png'); 
     background-size: cover; 
     background-position: center; 
-    color: white;
     display: flex;
     justify-content: center;
     align-items: center;
@@ -38,7 +37,6 @@ main {
     background-image: url('/ProyectoWeb/img/admin/casillero.png'); 
     background-size: cover; 
     background-position: center; 
-    color: white;
     display: flex;
     justify-content: center;
     align-items: center;
@@ -47,6 +45,7 @@ main {
     cursor: pointer;
 }
 
-.locker h2 {          
+.locker h2 {     
+    color: white;    
     margin: 56px auto;
 }

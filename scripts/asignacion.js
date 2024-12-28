@@ -96,8 +96,52 @@ function showLockerModal(data) {
 
     if (data.estado === 'Disponible') {
         modalFooter.innerHTML = `
-            <button type="button" class="btn btn-primary">Asignar</button>
+            <button type="button" id="asignar-btn" class="btn btn-primary">Asignar</button>
         `;
+
+        // Lógica para Asignar
+        document.getElementById('asignar-btn').addEventListener('click', () => {
+            fetch(`/ProyectoWeb/php/admin/listaAlumnos.php?altura=${data.altura}`)
+            .then((response) => response.json())
+            .then((alumnos) => {
+                const modalBody = document.querySelector('.modal-body');
+
+                modalBody.innerHTML = `
+                    <h5>Lista de Alumnos</h5>
+                    <table class="table table-striped">
+                        <thead>
+                            <tr>
+                                <th>Fecha de Solicitud</th>
+                                <th>Boleta</th>
+                                <th>Nombre</th>
+                                <th>Estado</th>
+                                <th>Acción</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            ${alumnos
+                                .map(
+                                    (alumno) => data.altura <= 0.55 || (data.altura > 0.55 && alumno.estatura > 1.60) ? ` 
+                                <tr>
+                                    <td>${alumno.fechaRegistro}</td>
+                                    <td>${alumno.boleta}</td>
+                                    <td>${alumno.nombre}</td>
+                                    <td>${alumno.estadoSolicitud}</td>
+                                    <td>
+                                        <button class="btn btn-info btn-sm" onclick="mostrarDetallesAlumno(${alumno.boleta}, ${data.noCasillero})">Más</button>
+                                    </td>
+                                </tr>
+                            ` : ''
+                                )
+                                .join('')}
+                        </tbody>
+                    </table>
+                `;
+        
+        });
+    });
+
+
     } else {
         modalFooter.innerHTML = `
             <button type="button" id="reasignar-btn" class="btn btn-primary">Reasignar</button>
@@ -114,16 +158,16 @@ function showLockerModal(data) {
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({ noCasillero: data.noCasillero })
                 })
-                    .then(response => response.json())
-                    .then(result => {
-                        if (result.success) {
-                            alert('El casillero ha sido revocado exitosamente.');
-                            location.reload();
-                        } else {
-                            alert('Ocurrió un error al intentar revocar el casillero.');
-                        }
-                    })
-                    .catch(error => console.error('Error al revocar el casillero:', error));
+                .then(response => response.json())
+                .then(result => {
+                    if (result.success) {
+                        alert('El casillero ha sido revocado exitosamente.');
+                        location.reload();
+                    } else {
+                        alert('Ocurrió un error al intentar revocar el casillero.');
+                    }
+                })
+                .catch(error => console.error('Error al revocar el casillero:', error));
             }
         });
     }
@@ -138,6 +182,9 @@ function showLockerModal(data) {
     modal.show();
 }
 
+
+
+//Correccion de bug de modal
 document.getElementById('lockerModal').addEventListener('hidden.bs.modal', () => {
     document.body.classList.remove('modal-open');
     document.body.style.overflow = '';
