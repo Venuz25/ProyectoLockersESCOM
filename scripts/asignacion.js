@@ -73,8 +73,32 @@ function showLockerModal(data) {
         `;
     } else {
         modalFooter.innerHTML = `
-            <button type="button" class="btn btn-primary">Reasignar</button>
+            <button type="button" id="reasignar-btn" class="btn btn-primary">Reasignar</button>
         `;
+
+        // Lógica para el botón "Reasignar"
+        document.getElementById('reasignar-btn').addEventListener('click', () => {
+            const confirmar = confirm(
+                `¿Estás seguro de que deseas revocar el casillero #${data.noCasillero} asignado a ${data.nombre}?`
+            );
+            if (confirmar) {
+                fetch('/ProyectoWeb/php/admin/reasignar.php', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ noCasillero: data.noCasillero })
+                })
+                    .then(response => response.json())
+                    .then(result => {
+                        if (result.success) {
+                            alert('El casillero ha sido revocado exitosamente.');
+                            location.reload(); // Recargar la página para reflejar los cambios
+                        } else {
+                            alert('Ocurrió un error al intentar revocar el casillero.');
+                        }
+                    })
+                    .catch(error => console.error('Error al revocar el casillero:', error));
+            }
+        });
     }
 
     const modalInstance = bootstrap.Modal.getInstance(modalElement);
