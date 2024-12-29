@@ -26,7 +26,7 @@ document.addEventListener("DOMContentLoaded", () => {
         if (radioRenovacion.checked) {
             var numeroCasillero = document.forms.locker['numero-casillero'].value.trim();
             if (!/^\d+$/.test(numeroCasillero)) {
-                alert("Ingresa un numero de casillero anterior valido.");
+                alert("El número de casillero debe tener exactamente 3 dígitos.");
                 return false;
             }
         }
@@ -100,14 +100,14 @@ document.addEventListener("DOMContentLoaded", () => {
     
         // Valida que se ingrese algo en usuario y contraseña
         var usuario = document.forms.locker['user'].value.trim();
-        if (usuario === "") {
-            alert("Ingresa un usuario.");
+        if (/^.{1,2}$/.test(usuario)) {
+            alert("Ingresa un usuario valido.");
             return false;
         }
     
         var contraseña = document.forms.locker['contraseña'].value.trim();
-        if (contraseña === "") {
-            alert("Ingresa una contraseña.");
+        if (/^.{1,2}$/.test(contraseña)) {
+            alert("Ingresa una contraseña valida.");
             return false;
         }
     
@@ -115,6 +115,7 @@ document.addEventListener("DOMContentLoaded", () => {
         return true;
     };
         
+
     const mostrarResumen = () => {
         const tipoSolicitud = radioRenovacion.checked ? "Renovación" : "Primera vez";
         const numeroCasillero = document.getElementById("numero-casillero").value.trim();
@@ -166,29 +167,4 @@ document.addEventListener("DOMContentLoaded", () => {
             mostrarResumen();
         }
     });
-
-    const formularioB = document.getElementById("lockerForm");
-    const guardarButton = document.getElementById("guardar");
-
-    guardarButton.addEventListener("click", () => {
-        const formData = new FormData(formularioB);
-
-        // Enviar los datos al backend
-        fetch("/ProyectoWeb/php/registro/guardarDatos.php", {
-            method: "POST",
-            body: formData,
-        })
-            .then((response) => {
-                if (response.ok) {
-                    window.location.href = "confirmacion.html";
-                } else {
-                    alert("Error al guardar la solicitud.");
-                }
-            })
-            .catch((error) => {
-                console.error("Error al procesar la solicitud:", error);
-                alert("Error inesperado al guardar los datos.");
-            });
-    });
-
 });
