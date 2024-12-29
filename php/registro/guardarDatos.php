@@ -20,6 +20,16 @@
     $credencialPath = '/ProyectoWeb/Docs/Credenciales/' . $credencial;
     $horarioPath = '/ProyectoWeb/Docs/Horarios/' . $horario;
 
+    echo $tipoSolicitud;
+    echo $casilleroAnt;
+    echo $nombre;
+    echo $primerApellido;
+    echo $segundoApellido;
+    echo $telefono;
+    echo $correo;
+    echo $curp;
+    echo $estatura;
+
     // Verificar si la solicitud es de tipo "Renovación"
     if ($tipoSolicitud == "Renovación" && $casilleroAnt) {
         $sqlCasillero = "SELECT estado FROM Casilleros WHERE numero = '$casilleroAnt'";
