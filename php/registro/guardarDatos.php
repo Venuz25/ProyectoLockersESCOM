@@ -3,7 +3,7 @@
 
     //Datos del formulario
     $tipoSolicitud = $_POST['tipo_solicitud'];
-    $casilleroAnt = isset($_POST['numero-casillero']) ? $_POST['numero-casillero'] : NULL;
+    $casilleroAnt = $_POST['numero-casillero'];
     $nombre = $_POST['nombre'];
     $primerApellido = $_POST['p_apellido'];
     $segundoApellido = $_POST['s_apellido'];
@@ -20,19 +20,9 @@
     $credencialPath = '/ProyectoWeb/Docs/Credenciales/' . $credencial;
     $horarioPath = '/ProyectoWeb/Docs/Horarios/' . $horario;
 
-    echo $tipoSolicitud;
-    echo $casilleroAnt;
-    echo $nombre;
-    echo $primerApellido;
-    echo $segundoApellido;
-    echo $telefono;
-    echo $correo;
-    echo $curp;
-    echo $estatura;
-
     // Verificar si la solicitud es de tipo "Renovación"
-    if ($tipoSolicitud == "Renovación" && $casilleroAnt) {
-        $sqlCasillero = "SELECT estado FROM Casilleros WHERE numero = '$casilleroAnt'";
+    if ($tipoSolicitud == "Renovación") {
+        $sqlCasillero = "SELECT estado FROM casilleros WHERE noCasillero = '$casilleroAnt'";
         $result = $conn->query($sqlCasillero);
         
         if ($result->num_rows > 0) {
@@ -43,39 +33,30 @@
                 move_uploaded_file($_FILES['horario']['tmp_name'], $_SERVER['DOCUMENT_ROOT'] . $horarioPath);
 
                 // Insertar datos en la tabla Alumnos
-                $sqlAlumno = "INSERT INTO Alumnos (tipo_solicitud, casilleroAnt, nombre, primerAp, segundoAp, telefono, correo, curp, estatura, credencial, horario, usuario, contrasena)
-                            VALUES ('$tipoSolicitud', '$casilleroAnt', '$nombre', '$primerApellido', '$segundoApellido', '$telefono', '$correo', '$curp', '$estatura', '$credencialPath', '$horarioPath', '$usuario', '$contrasena')";
+                $sqlAlumno = "INSERT INTO alumnos (boleta, solicitud, casilleroAnt, nombre, primerAp, segundoAp, telefono, correo, curp, estatura, credencial, horario, usuario, contrasena)
+                    VALUES ('$boleta', '$tipoSolicitud', '$casilleroAnt', '$nombre', '$primerApellido', '$segundoApellido', '$telefono', '$correo', '$curp', '$estatura', '$credencialPath', '$horarioPath', '$usuario', '$contrasena')";
 
-                if ($conn->query($sqlAlumno) === TRUE) {
-                    echo "Nuevo registro de alumno creado exitosamente.";
-                } else {
-                    echo "Error: " . $sqlAlumno . "<br>" . $conn->error;
-                }
+                if ($conn->query($sqlAlumno) === TRUE) { echo "Nuevo registro de alumno creado exitosamente."; } 
+                else { echo "Error: " . $sqlAlumno . "<br>" . $conn->error; }
 
                 // Insertar datos en la tabla Solicitudes
                 $fechaRegistro = date("Y-m-d H:i:s");
-                $sqlSolicitud = "INSERT INTO Solicitudes (noBoleta, fechaRegistro, estadoSolicitud, comprobantePago)
-                                VALUES ('$boleta', '$fechaRegistro', 'Aprobado', NULL)";
-                if ($conn->query($sqlSolicitud) === TRUE) {
-                    echo "<script>alert('La solicitud se registro correctamente.'); window.history.back();</script>";
-                } else {
-                    echo "Error: " . $sqlSolicitud . "<br>" . $conn->error;
-                }
+                $sqlSolicitud = "INSERT INTO solicitudes (noBoleta, fechaRegistro, estadoSolicitud, comprobantePago)
+                    VALUES ('$boleta', '$fechaRegistro', 'Aprobada', NULL)";
+                    
+                if ($conn->query($sqlSolicitud) === TRUE) { echo "La solicitud se registro correctamente."; } 
+                else { echo "Error: " . $sqlSolicitud . "<br>" . $conn->error; }
 
                 // Actualizar el casillero
-                $sqlActualizarCasillero = "UPDATE Casilleros SET estado = 'Asignado', boletaAsignada = '$boleta' WHERE noCasillero = '$casilleroAnt'";
-                if ($conn->query($sqlActualizarCasillero) === TRUE) {
-                    echo "Casillero actualizado exitosamente.";
-                } else {
-                    echo "Error al actualizar el casillero: " . $conn->error;
-                }
-            } else {
-                echo "<script>alert('El casillero solicitado ya está en uso.'); window.history.back();</script>";
-                exit();
-            }
-        } else {
-            echo "<script>alert('El casillero no existe.'); window.history.back();</script>";
-            exit();
+                $sqlActualizarCasillero = "UPDATE casilleros SET estado = 'Asignado', boletaAsignada = '$boleta' WHERE noCasillero = '$casilleroAnt'";
+
+                if ($conn->query($sqlActualizarCasillero) === TRUE) { echo "Casillero actualizado exitosamente.";} 
+                else { echo "Error al actualizar el casillero: " . $conn->error;}
+
+            } else { echo "<script>alert('El casillero solicitado no está disponible.'); window.history.back();</script>";
+                exit(); }
+
+        } else { echo "<script>alert('El casillero solicitado no existe.'); window.history.back();</script>"; exit();
         }
     } 
     // Caso de solicitud de tipo "Primera vez"
@@ -85,25 +66,26 @@
         move_uploaded_file($_FILES['horario']['tmp_name'], $_SERVER['DOCUMENT_ROOT'] . $horarioPath);
 
         // Insertar datos en la tabla Alumnos
-        $sqlAlumno = "INSERT INTO Alumnos (tipo_solicitud, casilleroAnt, nombre, primerAp, segundoAp, telefono, correo, curp, estatura, credencial, horario, usuario, contrasena)
-                    VALUES ('$tipoSolicitud', NULL, '$nombre', '$primerApellido', '$segundoApellido', '$telefono', '$correo', '$curp', '$estatura', '$credencialPath', '$horarioPath', '$usuario', '$contrasena')";
+        $sqlAlumno = "INSERT INTO alumnos (boleta, solicitud, casilleroAnt, nombre, primerAp, segundoAp, telefono, correo, curp, estatura, credencial, horario, usuario, contrasena)
+            VALUES ('$boleta', '$tipoSolicitud', NUll , '$nombre', '$primerApellido', '$segundoApellido', '$telefono', '$correo', '$curp', '$estatura', '$credencialPath', '$horarioPath', '$usuario', '$contrasena')";
 
-        if ($conn->query($sqlAlumno) === TRUE) {
-            echo "Nuevo registro de alumno creado exitosamente.";
-        } else {
-            echo "Error: " . $sqlAlumno . "<br>" . $conn->error;
-        }
+
+        if ($conn->query($sqlAlumno) === TRUE) { echo "Nuevo registro de alumno creado exitosamente."; } 
+        else { echo "Error: " . $sqlAlumno . "<br>" . $conn->error; }
 
         // Insertar datos en la tabla Solicitudes
         $fechaRegistro = date("Y-m-d H:i:s");
         $sqlSolicitud = "INSERT INTO Solicitudes (noBoleta, fechaRegistro, estadoSolicitud, comprobantePago)
-                        VALUES ('$boleta', '$fechaRegistro', 'Pendiente', NULL)";
-        if ($conn->query($sqlSolicitud) === TRUE) {
-            echo "Solicitud registrada exitosamente.";
-        } else {
-            echo "Error: " . $sqlSolicitud . "<br>" . $conn->error;
-        }
+            VALUES ('$boleta', '$fechaRegistro', 'Pendiente', NULL)";
+
+        if ($conn->query($sqlSolicitud) === TRUE) { echo "Solicitud registrada exitosamente."; } 
+        else { echo "Error: " . $sqlSolicitud . "<br>" . $conn->error; }
+    } else {
+        echo "<script>alert('Error al registrar la solicitud.'); window.history.back();</script>";
+        exit();
     }
+
+    echo "<script>window.location.href = '/ProyectoWeb/confirmacion.html';</script>";
 
     $conn->close();
 ?>
