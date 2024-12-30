@@ -79,7 +79,7 @@
                 $sqlActualizarCasillero = "UPDATE casilleros SET estado = 'Asignado', boletaAsignada = '$boleta' WHERE noCasillero = '$casilleroAnt'";
 
                 if ($conn->query($sqlSolicitud) === FALSE || $conn->query($sqlAlumno) === FALSE || $conn->query($sqlActualizarCasillero) === FALSE) {
-                    echo "Error al registrar la solicitud.";
+                    echo "Error al registrar la solicitud de $usuario..";
                     exit();
                 }
             } else {
@@ -107,7 +107,7 @@
             VALUES ('$boleta', '$fechaRegistro', '$estadoSolicitud', NULL)";
 
         if ($conn->query($sqlSolicitud) === FALSE || $conn->query($sqlAlumno) === FALSE) {
-            echo "Error al registrar la solicitud.";
+            echo "Error al registrar la solicitud de $usuario.";
             exit();
         }
     } else {
