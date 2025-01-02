@@ -1,6 +1,10 @@
 .buentrabajo {
-    max-width: 600px;
+    max-width: 500px;
     width: calc(100% - 20px); 
+}
+
+#renovacion, #p_vez {
+    display: none;
 }
 
 main {

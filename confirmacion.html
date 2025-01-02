@@ -38,7 +38,7 @@
               <img src="img/escudo_ESCOM.png" alt="Escudo ESCOM" class="logo">
             </a>
             <a href="#" class="d-flex align-items-center link-body-emphasis text-decoration-none">
-                <span id="titulo">Lockers ESCOM</span>
+                <span id="titulo">Casilleros ESCOM</span>
             </a>
             <a href="https://www.ipn.mx" target="_blank">
               <img src="img/logotipo_ipn.png" alt="Escudo ESCOM" class="logo">
@@ -49,10 +49,36 @@
 
         <main>
             <div id="texto">
-                <h3>Sus datos fueron guardados correctamente</h3>
+                <h3>Sus datos fueron guardados correctamente :D</h3>
+                <h4 id="renovacion">Para respetar su número de casillero tienes <b>24hrs</b> para iniciar sesión y subir el comprobante de pago.</h4>
+                <h4 id="p_vez">Debera ingresar a revisar el resultado de su asignación despues de <b>48hrs</b>.</h4>
+
                 <img src="img/imgConfirmacion.gif" alt="Nueva Imagen" class="buentrabajo">
             </div>
             <a href="index.html" class="btn btn-outline-dark btnReg">Volver</a>             
         </main>
+
+        <script>
+            // Obtener el tipo de solicitud desde la URL
+            const urlParams = new URLSearchParams(window.location.search);
+            const tipoSolicitud = urlParams.get('tipo_solicitud');
+        
+            // Seleccionar los elementos del DOM
+            const renovacionElement = document.getElementById('renovacion');
+            const pVezElement = document.getElementById('p_vez');
+        
+            // Mostrar/ocultar mensajes según el tipo de solicitud
+            if (tipoSolicitud === 'Renovación') {
+                renovacionElement.style.display = 'block';
+                pVezElement.style.display = 'none';
+            } else if (tipoSolicitud === 'Primera vez') {
+                renovacionElement.style.display = 'none';
+                pVezElement.style.display = 'block';
+            } else {
+                renovacionElement.style.display = 'none';
+                pVezElement.style.display = 'none';
+            }
+        </script>
+        
     </body>
 </html>

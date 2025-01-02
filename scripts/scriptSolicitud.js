@@ -97,6 +97,20 @@ document.addEventListener("DOMContentLoaded", () => {
             alert("Debes subir un archivo PDF válido para el horario.");
             return false;
         }
+
+        // Validar el nombre de los archivos
+        const nombreArchivoCredencial = archivoCredencial.name;
+        const nombreArchivoHorario = archivoHorario.name;
+
+        if (!nombreArchivoCredencial.startsWith(`${boleta}_credencial`)) {
+            alert(`El archivo de la credencial debe llamarse "${boleta}_credencial.pdf".`);
+            return false;
+        }
+
+        if (!nombreArchivoHorario.startsWith(`${boleta}_horario`)) {
+            alert(`El archivo del horario debe llamarse "${boleta}_horario.pdf".`);
+            return false;
+        }
     
         // Valida que se ingrese algo en usuario y contraseña
         var usuario = document.forms.locker['user'].value.trim();

@@ -6,7 +6,7 @@
 
         // Datos del formulario
         $tipoSolicitud = $_POST['tipo_solicitud'];
-        $casilleroAnt = $_POST['numero-casillero'];
+        $casilleroAnt = $tipoSolicitud	== 'Renovación' ? $_POST['casillero_ant'] : NULL;
         $nombre = $_POST['nombre'];
         $primerApellido = $_POST['p_apellido'];
         $segundoApellido = $_POST['s_apellido'];
@@ -74,7 +74,7 @@
         // Confirmar la transacción
         $conn->commit();
 
-        echo "<script>window.location.href = '/ProyectoWeb/confirmacion.html';</script>";
+        echo "<script>window.location.href = '/ProyectoWeb/confirmacion.html?tipo_solicitud=$tipoSolicitud';</script>";
 
     } catch (Exception $e) {
         $conn->rollback(); // Revertir cambios en caso de error
