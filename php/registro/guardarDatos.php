@@ -6,7 +6,7 @@
 
         // Datos del formulario
         $tipoSolicitud = $_POST['tipo_solicitud'];
-        $casilleroAnt = $tipoSolicitud	== 'Renovación' ? $_POST['casillero_ant'] : NULL;
+        $casilleroAnt = $tipoSolicitud	== 'Renovación' ? $_POST['numero-casillero'] : NULL;
         $nombre = $_POST['nombre'];
         $primerApellido = $_POST['p_apellido'];
         $segundoApellido = $_POST['s_apellido'];
@@ -78,7 +78,7 @@
 
     } catch (Exception $e) {
         $conn->rollback(); // Revertir cambios en caso de error
-        echo "<script>alert('" . $e->getMessage() . "'); window.history.back();</script>";
+        echo "<script>alert('" . $e->getMessage() . "');/*  window.history.back() */;</script>";
     } finally {
         $conn->close();
     }
