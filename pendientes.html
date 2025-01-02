@@ -3,7 +3,7 @@
     <head>
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <title>.::Solicitud::.</title>
+        <title>.::Pendientes::.</title>
 
         <link rel="icon" href="img/iconos/confirmacion.png" type="image/x-icon">
         <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
@@ -15,6 +15,19 @@
         <link rel="preconnect" href="https://fonts.googleapis.com">
         <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
         <link href="https://fonts.googleapis.com/css2?family=Josefin+Sans:ital,wght@0,100..700;1,100..700&display=swap" rel="stylesheet">
+        <script>
+            // Verificar la sesión antes de cargar la página
+            fetch('/ProyectoWeb/php/acuse/validaSesA.php')
+                .then(response => {
+                    if (!response.ok) {
+                        // Si no está autorizado
+                        window.location.href = '/ProyectoWeb/acuse.html';
+                    }
+                })
+                .catch(() => {
+                    window.location.href = '/ProyectoWeb/acuse.html';
+                });
+        </script>  
     </head>
     
     <body>
@@ -36,7 +49,7 @@
               <img src="img/escudo_ESCOM.png" alt="Escudo ESCOM" class="logo">
             </a>
             <a href="#" class="d-flex align-items-center link-body-emphasis text-decoration-none">
-                <span id="titulo">Casilleros ESCOM</span>
+                <span id="titulo">Pendientes</span>
             </a>
             <a href="https://www.ipn.mx" target="_blank">
               <img src="/ProyectoWeb/img/logotipo_ipn.png" alt="Escudo ESCOM" class="logo">
@@ -47,7 +60,7 @@
 
         <main>
             <div id="texto">
-                <h3>Sus datos fueron guardados correctamente</h3>
+                <h3>La revisión de su solicitud está en proceso. Por favor, intente nuevamente más tarde.</h3>
                 <img src="/ProyectoWeb/img/Entregado.gif" alt="Pendientes" class="buentrabajo" width="400px">
             </div>            
         </main>

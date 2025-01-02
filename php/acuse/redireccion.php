@@ -11,13 +11,13 @@
         if ($solicitud === 'Primera vez') {
             switch ($estadoSolicitud) {
                 case 'Aprobada':
-                    $htmlFile = 'seguimiento.html';
+                    $htmlFile = '/ProyectoWeb/seguimiento.html';
                     break;
                 case 'Pendiente':
-                    $htmlFile = 'pendientes.html';
+                    $htmlFile = '/ProyectoWeb/pendientes.html';
                     break;
                 case 'Lista de espera':
-                    $htmlFile = 'listaespera.html';
+                    $htmlFile = '/ProyectoWeb/listaespera.html';
                     break;
                 default:
                     echo "<script>alert('Estado de solicitud desconocido para Primera vez');</script>";
@@ -29,16 +29,16 @@
                 case 'Aprobada':
                     include 'revisiontiempo.php';
                     if (verificarPlazo24Horas()) {
-                        $htmlFile = 'seguimiento.html';
+                        $htmlFile = '/ProyectoWeb/seguimiento.html';
                     } else {
-                        $htmlFile = 'pendientes.html';
+                        $htmlFile = '/ProyectoWeb/pendientes.html';
                     }
                     break;
                 case 'Pendiente':
-                    $htmlFile = 'pendientes.html';
+                    $htmlFile = '/ProyectoWeb/pendientes.html';
                     break;
                 case 'Lista de espera':
-                    $htmlFile = 'listaespera.html';
+                    $htmlFile = '/ProyectoWeb/listaespera.html';
                     break;
                 default:
                     echo "<script>alert('Estado de solicitud desconocido para Renovación');</script>";
@@ -51,16 +51,12 @@
             exit();
         }
 
-        // Verificar si el archivo HTML existe y cargar su contenido
-        if (file_exists($htmlFile)) {
-            echo file_get_contents($htmlFile);
-        } else {
-            echo "<script>alert('El archivo HTML no existe');</script>";
-            echo "<script>window.location.href = '/ProyectoWeb/acuse.html';</script>";
-            exit();
-        }
+        // Redirigir directamente al archivo correspondiente
+        header("Location: $htmlFile");
+        exit();
     } else {
-        echo "No se encontró información sobre la solicitud.";
+        echo "<script>alert('No se encontró información sobre la solicitud o no has iniciado sesión correctamente.');</script>";
+        header("Location: /ProyectoWeb/acuse.html");
         exit();
     }
 ?>
