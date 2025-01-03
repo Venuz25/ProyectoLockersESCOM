@@ -12,7 +12,7 @@
                 s.fechaRegistro,
                 s.estadoSolicitud,
                 CASE 
-                    WHEN a.solicitud = 'Renovación' AND a.casilleroAnt = ? THEN 1 -- Renovación con el mismo casillero
+                    WHEN a.solicitud = 'Renovación' AND a.casilleroAnt = ? THEN 1
                     ELSE 2 -- Otros casos
                 END AS prioridad
             FROM 
@@ -25,8 +25,8 @@
                 (s.estadoSolicitud = 'Pendiente' OR s.estadoSolicitud = 'Lista de espera') 
                 AND c.boletaAsignada IS NULL
             ORDER BY 
-                prioridad ASC, -- Priorizar renovación con el mismo casillero
-                s.fechaRegistro ASC; -- Ordenar cronológicamente";
+                prioridad ASC, 
+                s.fechaRegistro ASC;";
 
     $stmt = $conn->prepare($sql);
     $stmt->bind_param("i", $noCasillero);

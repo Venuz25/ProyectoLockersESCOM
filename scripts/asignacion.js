@@ -1,3 +1,33 @@
+//Funcion para alerta de resetear casilleros
+document.addEventListener("DOMContentLoaded", function () {
+    const resetButton = document.getElementById("resetButton");
+    const resetForm = document.getElementById("resetForm");
+
+    if (resetButton && resetForm) {
+        resetButton.addEventListener("click", function () {
+            const confirmReset = confirm("¿Estás seguro de que deseas restablecer los casilleros? Esta acción no se puede deshacer.");
+            if (confirmReset) {
+                resetForm.submit();
+            }
+        });
+    } else {
+        console.error("No se encontró el botón o formulario para restablecer casilleros.");
+    }
+});
+
+//Funcion para actualizar solicitudes en caso de ya no haber casilleros disponibles
+function verificarSolicitudes() {
+    fetch('/ProyectoWeb/php/admin/actualizarSolicitudes.php')
+        .then((response) => response.json())
+        .then((data) => {
+            if (data.success) {
+                alert(data.message);
+            } else {
+                console.log(data.message);
+            }
+        })
+        .catch((error) => console.error('Error:', error));
+}
 
 //funcion para mostrar casilleros
 document.addEventListener('DOMContentLoaded', () => {
@@ -296,8 +326,7 @@ function mostrarDetallesAlumno(boleta, noCasillero) {
                 `<button id="confirmar-asignar-btn" class="btn btn-primary">Asignar</button>
                 <button id="regresar-btn" class="btn btn-secondary">Regresar</button>`;
                 
-                
-
+                // Lógica para Asignar
                 document.getElementById('confirmar-asignar-btn').addEventListener('click', () => {
                         if (confirm('¿Estás seguro de asignar este casillero al alumno?')) {
                             fetch(`/ProyectoWeb/php/admin/asignarCasillero.php`, {
@@ -315,6 +344,8 @@ function mostrarDetallesAlumno(boleta, noCasillero) {
                                     if (resultado.success) {
                                         alert('Casillero asignado exitosamente.');
                                         location.reload();
+
+                                        verificarSolicitudes();
                                     } else {
                                         alert('Error al asignar el casillero.');
                                     }
