@@ -82,7 +82,22 @@
             </div>
 
             <div id="crud">
-
+                <div class="row">
+                    <div class="col-md-4">
+                        <!-- Desplegable para seleccionar la tabla -->
+                        <select id="tableSelect" class="form-select">
+                            <option value="">Selecciona una tabla</option>
+                            <option value="administradores">Administradores</option>
+                            <option value="alumnos">Alumnos</option>
+                            <option value="casilleros">Casilleros</option>
+                            <option value="solicitudes">Solicitudes</option>
+                        </select>
+                    </div>
+                </div>
+        
+                <div id="tableContainer" class="table-responsive">
+                    <!-- Aquí se generarán los registros de la tabla seleccionada -->
+                </div>
             </div>
 
             
@@ -102,7 +117,7 @@
             </div>
         </footer>
 
-        <!--Modal -->
+        <!--Modal Casilleros-->
         <div class="modal fade" id="lockerModal" tabindex="-1" aria-labelledby="lockerModalLabel" aria-hidden="true">
             <div class="modal-dialog modal-lg">
                 <div class="modal-content">
@@ -120,6 +135,27 @@
             </div>
         </div>
         <!--Modal -->
+
+         <!-- Modal para crear/editar registros -->
+        <div class="modal fade" id="crudModal" tabindex="-1" aria-labelledby="crudModalLabel" aria-hidden="true">
+            <div class="modal-dialog modal-lg">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="crudModalLabel">Crear/Editar Registro</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        <form id="crudForm">
+                            <!-- Aquí se generarán los campos según la tabla seleccionada -->
+                        </form>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
+                        <button type="submit" class="btn btn-primary" id="submitBtn">Guardar</button>
+                    </div>
+                </div>
+            </div>
+        </div>
 
         <script src="scripts/crud.js"></script>
         <script src="scripts/asignacion.js"></script>

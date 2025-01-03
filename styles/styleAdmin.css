@@ -1,6 +1,6 @@
 main {
     margin: 0 auto;
-    max-width: 1000px;
+    width: 95%;
     padding: 500px;
     background: white;
     border-radius: 12px;
@@ -73,4 +73,23 @@ main {
 
 #crud {
     display: none;
+    margin-top: 25px;
 }
+
+tr a {
+    text-decoration: none;
+    color: #310D20;
+}
+
+.table-responsive {
+    max-height: 400px; 
+    overflow-y: auto;  
+    overflow-x: auto; 
+    white-space: nowrap;
+}
+
+.table-responsive table {
+    margin-top: 25px;
+    width: 100%;
+}
+

@@ -13,7 +13,7 @@
                 s.estadoSolicitud,
                 CASE 
                     WHEN a.solicitud = 'Renovación' AND a.casilleroAnt = ? THEN 1
-                    ELSE 2 -- Otros casos
+                    ELSE 2
                 END AS prioridad
             FROM 
                 alumnos a
