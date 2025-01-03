@@ -18,7 +18,7 @@ document.addEventListener("DOMContentLoaded", () => {
         }
     };
 
-    const validarFormulario = () => {
+    function validarFormulario () {
         const archivoCredencial = document.getElementById("credencial").files[0];
         const archivoHorario = document.getElementById("horario").files[0];
     

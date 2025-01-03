@@ -93,8 +93,11 @@
                             <option value="solicitudes">Solicitudes</option>
                         </select>
                     </div>
+                    <div class="col-md-8"> 
+                        <button id="createRecordBtn" class="btn btn-success">Crear Nuevo Registro</button>
+                    </div>
                 </div>
-        
+                
                 <div id="tableContainer" class="table-responsive">
                     <!-- Aquí se generarán los registros de la tabla seleccionada -->
                 </div>
@@ -136,17 +139,17 @@
         </div>
         <!--Modal -->
 
-         <!-- Modal para crear/editar registros -->
+        <!-- Modal para crear/editar registros -->
         <div class="modal fade" id="crudModal" tabindex="-1" aria-labelledby="crudModalLabel" aria-hidden="true">
             <div class="modal-dialog modal-lg">
                 <div class="modal-content">
                     <div class="modal-header">
-                        <h5 class="modal-title" id="crudModalLabel">Crear/Editar Registro</h5>
+                        <h5 class="modal-title" id="crudModalLabel"></h5>
                         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                     </div>
                     <div class="modal-body">
                         <form id="crudForm">
-                            <!-- Aquí se generarán los campos según la tabla seleccionada -->
+                            <!-- Campos dinámicos -->
                         </form>
                     </div>
                     <div class="modal-footer">

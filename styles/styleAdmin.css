@@ -8,6 +8,13 @@ main {
     text-align: center;
 }
 
+#crudModalLabel {
+    color: #470d2c;
+    font-weight: 600;
+    font-family: "Josefin Sans", sans-serif;
+    font-size: 20px;
+}
+
 #locker-container {
     display: flex;
     flex-wrap: wrap;
@@ -71,9 +78,13 @@ main {
     display: block;
 }
 
-#crud {
+#crud{
     display: none;
     margin-top: 25px;
+}
+
+#createRecordBtn {
+    display: none;
 }
 
 tr a {
