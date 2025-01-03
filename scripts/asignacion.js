@@ -146,12 +146,14 @@ function showLockerModal(data) {
     modal.show();
 }
 
+//Funcion para mostrar lista de alumnos
 function listaAlumnos(data) {
     fetch(`/ProyectoWeb/php/admin/listaAlumnos.php?noCasillero=${data.noCasillero}`)
         .then((response) => response.json())
         .then((alumnos) => {    
             const modalElement = document.getElementById('lockerModal');
             const modalBody = document.querySelector('.modal-body');
+            const modalFooter = document.querySelector('.modal-footer');
 
             const alumnosFiltrados = alumnos.filter(
                 (alumno) =>
@@ -200,6 +202,19 @@ function listaAlumnos(data) {
                     </table>
                 `;
             }
+
+            const tableBody = document.querySelector('table tbody');
+            if (!tableBody || tableBody.children.length === 0) {
+                modalBody.innerHTML = `
+                    <h5>Lista de Alumnos</h5>
+                    <div class="alert alert-warning text-center" role="alert">
+                        Sin solicitudes pendientes.
+                    </div>`
+                ;
+            }
+
+            modalFooter.innerHTML = '';
+
         });
 }
 

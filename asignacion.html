@@ -50,34 +50,42 @@
         <main class="container py-4">
             <ul class="nav nav-tabs">
                 <li class="nav-item">
-                    <a class="nav-link active" aria-current="page" href="#">Casilleros</a>
+                    <button id="btnCasilleros">Casilleros</button>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link" href="#">Solicitudes</a>
+                    <button id="btnCrud">Operaciones CRUD</button>
                 </li>
             </ul>
 
-            <div id="contenido" class="container mt-4">
-                <div class="row">
-                    <div class="col-md-4">
-                        <select id="filterSelect" class="form-select">
-                            <option value="todos">Todos los Casilleros</option>
-                            <option value="disponibles">Casilleros Disponibles</option>
-                            <option value="asignados">Casilleros Asignados</option>
-                        </select>
+            <div id="casilleros">
+                <div id="contenido" class="container mt-4">
+                    <div class="row">
+                        <div class="col-md-4">
+                            <select id="filterSelect" class="form-select">
+                                <option value="todos">Todos los Casilleros</option>
+                                <option value="disponibles">Casilleros Disponibles</option>
+                                <option value="asignados">Casilleros Asignados</option>
+                            </select>
+                        </div>
+                        <div class="col-md-8">
+                            <form action="/ProyectoWeb/php/admin/resetCasilleros.php" method="POST" class="text-end">
+                                <button type="submit" class="btn btn-outline-danger">Restablecer Casilleros</button>
+                            </form>
+                        </div>
                     </div>
-                    <div class="col-md-8">
-                        <form action="/ProyectoWeb/php/admin/resetCasilleros.php" method="POST" class="text-end">
-                            <button type="submit" class="btn btn-outline-danger">Restablecer Casilleros</button>
-                        </form>
+         
+    
+                    <div id="locker-container" class="mt-4">
+                        <!-- Casilleros se generarán aquí -->
                     </div>
-                </div>
-     
-
-                <div id="locker-container" class="mt-4">
-                    <!-- Casilleros se generarán aquí -->
                 </div>
             </div>
+
+            <div id="crud">
+
+            </div>
+
+            
         </main>
 
         <footer>
@@ -113,6 +121,7 @@
         </div>
         <!--Modal -->
 
+        <script src="scripts/crud.js"></script>
         <script src="scripts/asignacion.js"></script>
     </body>
 </html>

@@ -49,3 +49,28 @@ main {
     color: white;    
     margin: 56px auto;
 }
+
+#btnCasilleros{
+    background-color: #225560;
+    color: white;
+    padding: 10px 20px;
+    border: 0.1px solid rgb(212, 212, 212);
+    cursor: pointer;
+    margin-right: 10px;
+}
+
+#btnCrud {
+    background-color: rgb(255, 255, 255);
+    padding: 10px 20px;
+    border: 0.1px solid rgb(212, 212, 212);
+    cursor: pointer;
+    margin-right: 10px;
+}
+
+#casilleros {
+    display: block;
+}
+
+#crud {
+    display: none;
+}
