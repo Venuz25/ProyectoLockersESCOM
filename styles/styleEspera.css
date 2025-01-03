@@ -1,0 +1,17 @@
+tr a {
+    text-decoration: none;
+    color: #310D20;
+}
+
+.table-responsive {
+    max-height: 400px; 
+    overflow-y: auto;  
+    overflow-x: auto; 
+    white-space: nowrap;
+}
+
+.table-responsive table {
+    margin-top: 25px;
+    width: 100%;
+}
+

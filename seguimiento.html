@@ -15,19 +15,7 @@
         <link rel="preconnect" href="https://fonts.googleapis.com">
         <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
         <link href="https://fonts.googleapis.com/css2?family=Josefin+Sans:ital,wght@0,100..700;1,100..700&display=swap" rel="stylesheet">
-        <script>
-            // Verificar la sesión antes de cargar la página
-            fetch('/ProyectoWeb/php/acuse/validaSesA.php')
-                .then(response => {
-                    if (!response.ok) {
-                        // Si no está autorizado
-                        window.location.href = '/ProyectoWeb/acuse.html';
-                    }
-                })
-                .catch(() => {
-                    window.location.href = '/ProyectoWeb/acuse.html';
-                });
-        </script>
+        <script src="/ProyectoWeb/scripts/validaSesA.js"></script>
     </head>
     
     <body>
