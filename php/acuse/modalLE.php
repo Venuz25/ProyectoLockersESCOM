@@ -3,7 +3,9 @@
 
     $sql = "SELECT 
                 a.boleta,
-                CONCAT(a.nombre, ' ', a.primerAp, ' ', a.segundoAp) AS nombre,
+                a.nombre,
+                a.primerAp,
+                a.segundoAp,
                 s.estadoSolicitud,
                 s.fechaRegistro
             FROM 

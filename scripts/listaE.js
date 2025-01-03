@@ -39,8 +39,8 @@ document.addEventListener('DOMContentLoaded', function () {
                         row.innerHTML = `
                             <td>${index + 1}</td>
                             <td>${item.nombre}</td>
-                            <td>${item.apellidoP}</td>
-                            <td>${item.apellidoM}</td>
+                            <td>${item.primerAp}</td>
+                            <td>${item.segundoAp}</td>
                             <td>${item.boleta}</td>
                         `;
                         tbody.appendChild(row);
