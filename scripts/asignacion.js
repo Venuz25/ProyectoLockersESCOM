@@ -85,7 +85,10 @@ function showLockerModal(data) {
 
     const altura = data.altura > 0.55 ? 'Alto' : 'Bajo';
     const asignadoA = data.boleta
-        ? `${data.nombre} ${data.primerAp} ${data.segundoAp} <br><strong>Boleta:</strong> ${data.boleta}`
+        ? `${data.nombre} ${data.primerAp} ${data.segundoAp} <br>
+            <strong>Boleta:</strong> ${data.boleta} <br> <br>
+            <button class="btn btn-outline-primary" onclick="mostrarDetallesAlumno(${data.boleta}, ${data.noCasillero})">Más</button>
+            `
         : 'Sin Asignar';
 
     modalTitle.textContent = `Casillero #${data.noCasillero}`;
@@ -143,34 +146,23 @@ function showLockerModal(data) {
     modal.show();
 }
 
-//Funcion para mostrar lista de alumnos
 function listaAlumnos(data) {
-    fetch(`/ProyectoWeb/php/admin/listaAlumnos.php`)
+    fetch(`/ProyectoWeb/php/admin/listaAlumnos.php?noCasillero=${data.noCasillero}`)
         .then((response) => response.json())
         .then((alumnos) => {    
             const modalElement = document.getElementById('lockerModal');
-            const modalTitle = document.getElementById('lockerModalLabel');
             const modalBody = document.querySelector('.modal-body');
-            const modalFooter = document.querySelector('.modal-footer');
 
-            // Filtrar condiciones de altura
             const alumnosFiltrados = alumnos.filter(
                 (alumno) =>
                     data.altura <= 0.55 || (data.altura > 0.55 && alumno.estatura > 1.60)
             );
 
-            if (alumnos.length === 0) {
+            if (alumnosFiltrados.length === 0) {
                 modalBody.innerHTML = `
                     <h5>Lista de Alumnos</h5>
                     <div class="alert alert-warning text-center" role="alert">
-                        Sin solicitudes pendientes.
-                    </div>
-                `;
-            } else if (alumnosFiltrados.length === 0) {
-                modalBody.innerHTML = `
-                    <h5>Lista de Alumnos</h5>
-                    <div class="alert alert-warning text-center" role="alert">
-                        No hay alumnos que cumplan con las condiciones de altura.
+                        No hay alumnos que cumplan las condiciones de altura.
                     </div>
                 `;
             } else {
@@ -190,7 +182,7 @@ function listaAlumnos(data) {
                         <tbody>
                             ${alumnosFiltrados
                                 .map(
-                                    (alumno) => alumno.solicitud === 'Renovacion' || alumno.casilleroAnt == data.noCasillero ?` 
+                                    (alumno) => `
                                     <tr>
                                         <td>${alumno.fechaRegistro}</td>
                                         <td>${alumno.boleta}</td>
@@ -201,42 +193,13 @@ function listaAlumnos(data) {
                                             <button class="btn btn-outline-primary" onclick="mostrarDetallesAlumno(${alumno.boleta}, ${data.noCasillero})">Más</button>
                                         </td>
                                     </tr>
-                                ` : ''
-                                ) 
-                                .join('')}
-
-                            ${alumnosFiltrados
-                                .map(
-                                    (alumno) => alumno.solicitud === 'Primera vez' ?` 
-                                    <tr>
-                                        <td>${alumno.fechaRegistro}</td>
-                                        <td>${alumno.boleta}</td>
-                                        <td>${alumno.nombre}</td>
-                                        <td>${alumno.solicitud}</td>
-                                        <td>${alumno.estadoSolicitud}</td>
-                                        <td>
-                                            <button class="btn btn-outline-primary" onclick="mostrarDetallesAlumno(${alumno.boleta}, ${data.noCasillero})">Más</button>
-                                        </td>
-                                    </tr>
-                                ` : ''
-                                ) 
+                                `
+                                )
                                 .join('')}
                         </tbody>
                     </table>
                 `;
             }
-
-            const tableBody = document.querySelector('table tbody');
-            if (!tableBody || tableBody.children.length === 0) {
-                modalBody.innerHTML = `
-                    <h5>Lista de Alumnos</h5>
-                    <div class="alert alert-warning text-center" role="alert">
-                        Sin solicitudes pendientes.
-                    </div>
-                `;
-            }
-
-            modalFooter.innerHTML = '';
         });
 }
 
@@ -270,52 +233,89 @@ function mostrarDetallesAlumno(boleta, noCasillero) {
                             <td>
                                 <a href="${alumno.credencial}" target="_blank" class="btn btn-link">Credencial</a>
                                 <a href="${alumno.horario}" target="_blank" class="btn btn-link">Horario</a>
+
+                                ${alumno.comprobantePago === null ? '' : `<a href="${alumno.comprobantePago}" target="_blank" class="btn btn-link">Comprobante</a>`}
                             </td>
                         </tr>
                     </tbody>
                 </table>
             `;
 
-            modalFooter.innerHTML = `
-                <button id="confirmar-asignar-btn" class="btn btn-primary">Asignar</button>
-                <button id="regresar-btn" class="btn btn-secondary">Regresar</button>
-            `;
+            if (alumno.estadoSolicitud === 'Aprobada') {
+                modalFooter.innerHTML = 
+                `<button type="button" id="reasignar-btn" class="btn btn-primary">Revocar</button>
+                <button id="regresar-btn" class="btn btn-secondary">Regresar</button>`;
 
-            document
-                .getElementById('confirmar-asignar-btn')
-                .addEventListener('click', () => {
-                    if (confirm('¿Estás seguro de asignar este casillero al alumno?')) {
-                        fetch(`/ProyectoWeb/php/admin/asignarCasillero.php`, {
+                // Lógica para Reasignar
+                document.getElementById('reasignar-btn').addEventListener('click', () => {
+                    const confirmar = confirm(
+                        `¿Estás seguro de que deseas revocar el casillero #${noCasillero} asignado a ${alumno.nombre}?`
+                    );
+                    if (confirmar) {
+                        fetch('/ProyectoWeb/php/admin/reasignar.php', {
                             method: 'POST',
-                            headers: {
-                                'Content-Type': 'application/json',
-                            },
-                            body: JSON.stringify({
-                                boleta: alumno.boleta,
-                                noCasillero: noCasillero,
-                            }),
+                            headers: { 'Content-Type': 'application/json' },
+                            body: JSON.stringify({ noCasillero: noCasillero })
                         })
-                            .then((response) => response.json())
-                            .then((resultado) => {
-                                if (resultado.success) {
-                                    alert('Casillero asignado exitosamente.');
-                                    location.reload();
-                                } else {
-                                    alert('Error al asignar el casillero.');
-                                }
-                            });
+                        .then(response => response.json())
+                        .then(result => {
+                            if (result.success) {
+                                alert('El casillero ha sido revocado exitosamente.');
+                                location.reload();
+                            } else {
+                                alert('Ocurrió un error al intentar revocar el casillero.');
+                            }
+                        })
+                        .catch(error => console.error('Error al revocar el casillero:', error));
                     }
                 });
 
-            document.getElementById('regresar-btn').addEventListener('click', () => {
-                fetch(`/ProyectoWeb/php/admin/modal.php?noCasillero=${noCasillero}`)
-                    .then(response => response.json())
-                    .then(modalData => {listaAlumnos(modalData);});
-            });
+                document.getElementById('regresar-btn').addEventListener('click', () => {
+                    fetch(`/ProyectoWeb/php/admin/modal.php?noCasillero=${noCasillero}`)
+                        .then(response => response.json())
+                        .then(modalData => {showLockerModal(modalData);});
+                });
+
+            } else {
+                modalFooter.innerHTML =
+                `<button id="confirmar-asignar-btn" class="btn btn-primary">Asignar</button>
+                <button id="regresar-btn" class="btn btn-secondary">Regresar</button>`;
+                
+                
+
+                document.getElementById('confirmar-asignar-btn').addEventListener('click', () => {
+                        if (confirm('¿Estás seguro de asignar este casillero al alumno?')) {
+                            fetch(`/ProyectoWeb/php/admin/asignarCasillero.php`, {
+                                method: 'POST',
+                                headers: {
+                                    'Content-Type': 'application/json',
+                                },
+                                body: JSON.stringify({
+                                    boleta: alumno.boleta,
+                                    noCasillero: noCasillero,
+                                }),
+                            })
+                                .then((response) => response.json())
+                                .then((resultado) => {
+                                    if (resultado.success) {
+                                        alert('Casillero asignado exitosamente.');
+                                        location.reload();
+                                    } else {
+                                        alert('Error al asignar el casillero.');
+                                    }
+                                });
+                        }
+                    });
+
+                document.getElementById('regresar-btn').addEventListener('click', () => {
+                    fetch(`/ProyectoWeb/php/admin/modal.php?noCasillero=${noCasillero}`)
+                        .then(response => response.json())
+                        .then(modalData => {listaAlumnos(modalData);});
+                });
+            }
         })
         .catch((error) => {
             console.error('Error al obtener los detalles del alumno:', error);
-            alert('No se pudieron cargar los detalles del alumno.');
         });
 }
 

@@ -14,7 +14,8 @@
                 a.credencial,
                 a.horario,
                 s.fechaRegistro,
-                s.estadoSolicitud
+                s.estadoSolicitud,
+                s.comprobantePago
             FROM alumnos a
             INNER JOIN solicitudes s ON a.boleta = s.noBoleta
             WHERE a.boleta = ?";
