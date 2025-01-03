@@ -18,6 +18,7 @@ document.addEventListener("DOMContentLoaded", function () {
         casillerosDiv.style.display = "block"; 
         crudDiv.style.display = "none"; 
         actualizarEstilos(casillerosButton, crudButton);
+        location.reload();
     });
 
     // Mostrar el div de CRUD 
@@ -25,6 +26,7 @@ document.addEventListener("DOMContentLoaded", function () {
         crudDiv.style.display = "block"; 
         casillerosDiv.style.display = "none"; 
         actualizarEstilos(crudButton, casillerosButton);
+        loadTableData(table);
     });
 });
 
@@ -76,8 +78,8 @@ document.addEventListener("DOMContentLoaded", function () {
                     ${data.map(record => `
                         <tr>
                             <td>
-                                <button class="btn btn-warning btn-sm editBtn" data-id="${record.id || record.boleta || record.noCasillero}">Editar</button>
-                                <button class="btn btn-danger btn-sm deleteBtn" data-id="${record.id || record.boleta || record.noCasillero}">Eliminar</button>
+                                <button class="btn btn-warning btn-sm editBtn" data-id="${(table === 'administradores'? record.id : record.noBoleta) || record.boleta || (record.boletaAsignada === null ? record.noCasillero : record.boletaAsignada)}">Editar</button>
+                                <button class="btn btn-danger btn-sm deleteBtn" data-id="${(table === 'administradores'? record.id : record.noBoleta) || record.boleta || (record.boletaAsignada === null ? record.noCasillero : record.boletaAsignada)}">Eliminar</button>
                             </td>
                             ${Object.keys(record).map(key => {
                                 let value = record[key];
@@ -107,7 +109,7 @@ document.addEventListener("DOMContentLoaded", function () {
         document.querySelectorAll('.deleteBtn').forEach(button => {
             button.addEventListener('click', function () {
                 const recordId = button.dataset.id;
-                if (confirm(`¿Estás seguro de que deseas eliminar el registro con ID: ${recordId}?`)) {
+                if (confirm(`¿Estás seguro de que deseas eliminar el registro? Esta acción no se puede deshacer.`)) {
                     deleteRecord(recordId, table);
                 }
             });
@@ -115,110 +117,82 @@ document.addEventListener("DOMContentLoaded", function () {
     }
 
     // Función para eliminar el registro
-    function deleteRecord(recordId, table) {
+    async function deleteRecord(recordId, table) {
         let deleteSQL = '';
-        let dependentActions = [];
         let successMessage = '';
         let errorMessage = 'Error al eliminar el registro.';
     
-        // Cambiar la lógica de acuerdo con la tabla seleccionada
-        switch (table) {
-            case 'administradores':
-                deleteSQL = `DELETE FROM administradores WHERE id = '${recordId}'`;
-                successMessage = 'Administrador eliminado exitosamente';
-                break;
+        try {
+            switch (table) {
+                case 'administradores':
+                    deleteSQL = `DELETE FROM administradores WHERE id = '${recordId}'`;
+                    successMessage = 'Administrador eliminado exitosamente';
+                    break;
     
-            case 'alumnos':
-                deleteSQL = `DELETE FROM alumnos WHERE boleta = '${recordId}'`;
-                dependentActions.push(() => {
-                    let deleteSolicitudSQL = `DELETE FROM solicitudes WHERE noBoleta = '${recordId}'`;
-                    executeQuery(deleteSolicitudSQL);
+                case 'alumnos':
+                    // Eliminar solicitudes asociadas
+                    await executeQuery(`DELETE FROM solicitudes WHERE noBoleta = '${recordId}'`);
     
-                    let checkCasilleroSQL = `SELECT boletaAsignada FROM casilleros WHERE boletaAsignada = '${recordId}'`;
-                    executeQuery(checkCasilleroSQL, result => {
-                        if (result && result.length > 0) {
-                            let updateCasilleroSQL = `UPDATE casilleros SET estado = 'Disponible', boletaAsignada = NULL WHERE boletaAsignada = '${recordId}'`;
-                            executeQuery(updateCasilleroSQL);
-                        }
-                    });
-                });
-                successMessage = 'Alumno eliminado exitosamente';
-                break;
+                    // Actualizar casilleros
+                    await executeQuery(`UPDATE casilleros SET estado = 'Disponible', boletaAsignada = NULL WHERE boletaAsignada = '${recordId}'`);
     
-            case 'casilleros':
-                deleteSQL = `DELETE FROM casilleros WHERE noCasillero = '${recordId}'`;
-                dependentActions.push(() => {
-                    // Verificar si el casillero tiene una boleta asignada
-                    let checkCasilleroSQL = `SELECT boletaAsignada FROM casilleros WHERE noCasillero = '${recordId}'`;
-                    executeQuery(checkCasilleroSQL, casilleroResult => {
-                        if (casilleroResult && casilleroResult.length > 0 && casilleroResult[0].boletaAsignada) {
-                            // Si el casillero tiene boleta asignada, cambiar estado de la solicitud asociada
-                            let updateSolicitudSQL = `UPDATE solicitudes SET estadoSolicitud = 'Pendiente' WHERE noBoleta = '${casilleroResult[0].boletaAsignada}'`;
-                            executeQuery(updateSolicitudSQL);
-                        }
-                    });
-                });
-                successMessage = 'Casillero eliminado exitosamente';
-                break;
+                    // Eliminar al alumno
+                    deleteSQL = `DELETE FROM alumnos WHERE boleta = '${recordId}'`;
+                    successMessage = 'Alumno eliminado exitosamente';
+                    break;
     
-            case 'solicitudes':
-                deleteSQL = `DELETE FROM solicitudes WHERE id = '${recordId}'`;
-                dependentActions.push(() => {
-                    let getBoletaSQL = `SELECT noBoleta FROM solicitudes WHERE id = '${recordId}'`;
-                    executeQuery(getBoletaSQL, result => {
-                        if (result && result[0]) {
-                            let boleta = result[0].noBoleta;
+                case 'casilleros':
+                    // Si hay boleta asignada al casillero cambia la solicitud
+                    await executeQuery(`UPDATE solicitudes SET estadoSolicitud = 'Pendiente' WHERE noBoleta = '${recordId}'`);
     
-                            // Eliminar alumno asociado
-                            let deleteAlumnoSQL = `DELETE FROM alumnos WHERE boleta = '${boleta}'`;
-                            executeQuery(deleteAlumnoSQL);
+                    // Eliminar el casillero
+                    deleteSQL = `DELETE FROM casilleros WHERE (noCasillero = '${recordId}' OR boletaAsignada = '${recordId}') LIMIT 1;`;
+                    successMessage = 'Casillero eliminado exitosamente';
+                    break;
     
-                            // Verificar si el alumno tiene un casillero asignado antes de intentar actualizarlo
-                            let checkCasilleroSQL = `SELECT boletaAsignada FROM casilleros WHERE boletaAsignada = '${boleta}'`;
-                            executeQuery(checkCasilleroSQL, casilleroResult => {
-                                if (casilleroResult && casilleroResult.length > 0 && casilleroResult[0].boletaAsignada) {
-                                    let updateCasilleroSQL = `UPDATE casilleros SET estado = 'Disponible', boletaAsignada = NULL WHERE boletaAsignada = '${boleta}'`;
-                                    executeQuery(updateCasilleroSQL);
-                                }
-                            });
-                        }
-                    });
-                });
-                successMessage = 'Solicitud eliminada exitosamente';
-                break;
-        }
+                case 'solicitudes':
+                    // Actualizar el casillero asociado
+                    await executeQuery(`UPDATE casilleros SET estado = 'Disponible', boletaAsignada = NULL WHERE boletaAsignada = '${recordId}'`);
+            
+                    // Eliminar el alumno asociado
+                    await executeQuery(`DELETE FROM solicitudes WHERE noBoleta = '${recordId}'`);
+                    
+                    // Eliminar la solicitud
+                    deleteSQL = `DELETE FROM alumnos WHERE boleta = '${recordId}'`;
+                    successMessage = 'Solicitud eliminada exitosamente';
+                    break;
     
-        // Ejecutar la consulta para eliminar el registro principal
-        executeQuery(deleteSQL, (result) => {
-            if (result && result.success) {
-                // Ejecutar acciones dependientes si hay
-                dependentActions.forEach(action => action());
-                alert(successMessage);
-                loadTableData(table); // Actualizar la tabla después de la eliminación
-            } else {
-                alert(errorMessage);
-                console.error('Error en la consulta de eliminación: ', result);
+                default:
+                    throw new Error('Tabla no reconocida');
             }
-        });
+    
+            // Ejecutar la eliminación principal
+            await executeQuery(deleteSQL);
+            alert(successMessage);
+            loadTableData(table); // Actualizar la tabla después de la eliminación
+        } catch (error) {
+            alert(errorMessage);
+            console.error('Error al eliminar el registro:', error.message || error);
+        }
     }
     
     // Función para ejecutar consultas SQL
-    function executeQuery(query, callback) {
-        fetch(`/ProyectoWeb/php/admin/CRUD/executeQuery.php`, {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify({ query })
-        })
-        .then(response => response.json())
-        .then(result => {
-            if (callback) callback(result);
-        })
-        .catch(error => {
-            console.error('Error al ejecutar la consulta:', error);
-            if (callback) callback(null);
-        });
+    async function executeQuery(query) {
+        try {
+            const response = await fetch(`/ProyectoWeb/php/admin/CRUD/executeQuery.php`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ query })
+            });
+            const result = await response.json();
+            if (!result.success) throw new Error(result.message || 'Error en la consulta SQL');
+            return result.data;
+        } catch (error) {
+            console.error('Error al ejecutar la consulta:', error.message || error);
+            throw error;
+        }
     }
-     
+         
 });
