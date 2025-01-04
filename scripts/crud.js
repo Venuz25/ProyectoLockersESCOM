@@ -148,16 +148,14 @@ document.addEventListener("DOMContentLoaded", function () {
                         casilleroAnterior.style.display = 'none';
                     }
                 });
-
-            }
+            } 
 
             document.getElementById('submitBtn').onclick = function () {
-                 if (table === 'alunos' && validarFormulario()) {
+                if (validateForm()) {
                     handleSubmit('create', table);
-                 } else{
-                    handleSubmit('create', table);
-
-                 }
+                } else {
+                    alert('Formulario no válido. Verifica los campos.');
+                }
             };
         } else if (action === 'edit') {
             modalTitle.innerText = `Modificando registro #${recordId}`;
@@ -172,6 +170,22 @@ document.addEventListener("DOMContentLoaded", function () {
         }
 
         crudModal.show();
+    }
+
+    // Función para validar campos antes de enviar
+    function validateForm() {
+        const form = document.getElementById('crudForm');
+        const inputs = form.querySelectorAll('input, select');
+        let isValid = true;
+
+        inputs.forEach(input => {
+            if (input.validity.valid === false) {
+                isValid = false;
+                alert(`Por favor, revisa el campo: ${input.name} ${input.value} (${input.validationMessage})`);
+            }
+        });
+
+        return isValid;
     }
 
     // Generar contenido dinámico del formulario
@@ -193,95 +207,85 @@ document.addEventListener("DOMContentLoaded", function () {
                     </div>`;
             case 'alumnos':
                 return `
-                    <fieldset class="border p-3 mb-4">
-                            <div class="mb-3">
-                                <label for="tipo_solicitud" class="form-label">Selecciona el tipo de solicitud</label>
-                                <select id="tipo_solicitud" name="tipo_solicitud" class="form-select" required>
-                                    <option value="Renovación">Renovación</option>
-                                    <option value="Primera vez">Primera vez</option>
-                                </select>
-                            </div>
+                     <fieldset class="border p-3 mb-4">
+                        <div class="mb-3">
+                            <label for="tipo_solicitud" class="form-label">Selecciona el tipo de solicitud</label>
+                            <select id="tipo_solicitud" name="tipo_solicitud" class="form-select" required>
+                                <option value="Renovación" ${data.solicitud === 'Renovación' ? "selected" : ""}>Renovación</option>
+                                <option value="Primera vez" ${data.solicitud === 'Primera vez' ? "selected" : ""}>Primera vez</option>
+                            </select>
+                        </div>
+                        <div id="casillero-anterior" class="mt-3">
+                            <label for="numero-casillero">Número de Casillero Anterior:</label>
+                            <input type="number" name="numero-casillero" id="numero-casillero" class="form-control" min="1" pattern="\d+" title="Solo se permiten números" value="${data.casilleroAnt || ''}">
+                        </div>
                     </fieldset>
 
-                    <div id="casillero-anterior" class="mt-3">
-                        <fieldset class="border p-3 mb-4">
-                            <label for="numero-casillero">Número de Casillero Anterior:</label>
-                            <input type="text" name="numero-casillero" id="numero-casillero" class="form-control" placeholder="Ejemplo: 123">
-                        </fieldset>
-                    </div>
+                    <fieldset class="border p-3 mb-4">
+                        <div class="mb-3">
+                            <label for="nombre" class="form-label">Nombre</label>
+                            <input type="text" name="nombre" id="nombre" class="form-control" pattern="[A-Za-záéíóúÁÉÍÓÚñÑ ]+" title="Solo se permiten letras" value="${data.nombre || ''}" required>
+                        </div>
 
-                    <div id="cuestionario">
-                        <fieldset class="border p-3 mb-4">
-                            <div class="mb-3">
-                                <label for="nombre" class="form-label">Nombre</label>
-                                <input type="text" name="nombre" id="nombre" class="form-control" placeholder="Juan" required>
-                            </div>
+                        <div class="mb-3">
+                            <label for="p_apellido" class="form-label">Primer Apellido</label>
+                            <input type="text" name="p_apellido" id="p_apellido" class="form-control" pattern="[A-Za-záéíóúÁÉÍÓÚñÑ ]+" title="Solo se permiten letras" value="${data.primerAp || ''}" required>
+                        </div>
 
-                            <div class="mb-3">
-                                <label for="p_apellido" class="form-label">Primer Apellido</label>
-                                <input type="text" name="p_apellido" id="p_apellido" class="form-control" placeholder="Perez" required>
-                            </div>
+                        <div class="mb-3">
+                            <label for="s_apellido" class="form-label">Segundo Apellido</label>
+                            <input type="text" name="s_apellido" id="s_apellido" class="form-control" pattern="[A-Za-záéíóúÁÉÍÓÚñÑ ]+" title="Solo se permiten letras" value="${data.segundoAp || ''}" required>
+                        </div>
 
-                            <div class="mb-3">
-                                <label for="s_apellido" class="form-label">Segundo Apellido</label>
-                                <input type="text" name="s_apellido" id="s_apellido" class="form-control" placeholder="Rodriguez" required>
-                            </div>
+                        <div class="mb-3">
+                            <label for="telefono" class="form-label">Teléfono</label>
+                            <input type="text" name="telefono" id="telefono" class="form-control" pattern="^[0-9]{10}"  title="El teléfono debe contener exactamente 10 dígitos" value="${data.telefono || ''}" required>
+                        </div>
 
-                            <div class="mb-3">
-                                <label for="telefono" class="form-label">Teléfono</label>
-                                <input type="text" name="telefono" id="telefono" class="form-control" placeholder="10 dígitos" required>
-                            </div>
+                        <div class="mb-3">
+                            <label for="correo" class="form-label">Correo Institucional</label>
+                            <input type="text" name="correo" id="correo" class="form-control" pattern="[a-zA-Z0-9._%+-áéíóúÁÉÍÓÚñÑ]+@alumno\.ipn\.mx" title="El correo debe ser el institucional" value="${data.correo || ''}" required>
+                        </div>
 
-                            <div class="mb-3">
-                                <label for="correo" class="form-label">Correo Institucional</label>
-                                <input type="email" name="correo" id="correo" class="form-control" placeholder="ejemplo@alumno.ipn.mx" required>
-                            </div>
+                        <div class="mb-3">
+                            <label for="boleta" class="form-label">Número de Boleta</label>
+                            <input type="text" name="boleta" id="boleta" class="form-control" pattern="^[0-9]{10}"  title="Número de boleta de 10 dígitos" value="${data.boleta || ''}" required>
+                        </div>
 
-                            <div class="mb-3">
-                                <label for="boleta" class="form-label">Número de Boleta</label>
-                                <input type="text" name="boleta" id="boleta" class="form-control" placeholder="10 dígitos" required>
-                            </div>
+                        <div class="mb-3">
+                            <label for="curp" class="form-label">CURP</label>
+                            <input type="text" name="curp" id="curp" class="form-control" pattern="[A-Z0-9]{18}" title="El CURP debe tener 18 caracteres validos" value="${data.curp || ''}" required>
+                        </div>
 
-                            <div class="mb-3">
-                                <label for="curp" class="form-label">CURP</label>
-                                <input type="text" name="curp" id="curp" class="form-control" placeholder="18 caracteres" required>
-                            </div>
+                        <div class="mb-3">
+                            <label for="estatura" class="form-label">Estatura</label>
+                            <input type="text" name="estatura" id="estatura" class="form-control" min="1" max="3" step="0.01" title="La estatura debe estar en metros" value="${data.estatura || ''}" required>
+                        </div>
+                    </fieldset>
 
-                            <div class="mb-3">
-                                <label for="estatura" class="form-label">Estatura</label>
-                                <input type="text" name="estatura" id="estatura" class="form-control" placeholder="Ejemplo: 1.70" required>
-                            </div>
-                        </fieldset>
+                    <fieldset class="border p-3 mb-4">
+                        <div class="mb-3">
+                            <label for="credencial" class="form-label">Credencial <i>(nombre: boleta_credencial)</i></label>
+                            <input type="file" name="credencial" id="credencial" class="form-control" accept=".pdf" value="${data.credencial || ''}" required>
+                        </div>
 
-                        <fieldset class="border p-3 mb-4">
-                            <legend class="w-auto">Subir Archivos</legend>
-                            <div class="mb-3">
-                                <label for="credencial" class="form-label">Sube tu Credencial <i>(nombre: boleta_credencial)</i></label>
-                                <input type="file" name="credencial" id="credencial" class="form-control" required>
-                            </div>
+                        <div class="mb-3">
+                            <label for="horario" class="form-label">Horario <i>(nombre: boleta_horario)</i></label>
+                            <input type="file" name="horario" id="horario" class="form-control" accept=".pdf" value="${data.horario || ''}" required>
+                        </div>
+                    </fieldset>
 
-                            <div class="mb-3">
-                                <label for="horario" class="form-label">Sube tu Horario <i>(nombre: boleta_horario)</i></label>
-                                <input type="file" name="horario" id="horario" class="form-control" required>
-                            </div>
+                    <fieldset class="border p-3 mb-4">
+                        <div class="mb-3">
+                            <label for="user" class="form-label">Usuario</label>
+                            <input type="text" id="user" name="usuario" class="form-control" placeholder="Escribe tu Usuario" value="${data.usuario || ''}" required autocomplete="off">
+                        </div>
 
-                            <p>*Subir archivos en formato PDF con el nombre correspondiente.</p>
-                        </fieldset>
-
-                        <fieldset class="border p-3 mb-4">
-                            <legend class="w-auto">Acceso</legend>
-                            <div class="mb-3">
-                                <label for="user" class="form-label">Usuario</label>
-                                <input type="text" id="user" name="usuario" class="form-control" placeholder="Escribe tu Usuario" required autocomplete="off">
-                            </div>
-
-                            <div class="mb-3">
-                                <label for="contraseña" class="form-label">Contraseña</label>
-                                <input type="password" id="contraseña" name="contraseña" class="form-control" placeholder="Escribe tu Contraseña" required autocomplete="off">
-                            </div>
-                        </fieldset>
-
-                    </div>
+                        <div class="mb-3">
+                            <label for="contraseña" class="form-label">Contraseña</label>
+                            <input type="password" id="contraseña" name="contraseña" class="form-control" placeholder="Escribe tu Contraseña" pattern=".{6,}" title="La contraseña debe tener al menos 6 caracteres" value="${data.contrasena || ''}" required autocomplete="off">
+                        </div>
+                    </fieldset>
                     `;
             case 'casilleros':
                 return `

@@ -21,7 +21,7 @@
             $sql = "SELECT id, usuario, contrasena FROM administradores";
             break;
         case 'alumnos':
-            $sql = "SELECT boleta, nombre, primerAp, segundoAp, telefono, correo, curp, estatura, credencial, horario, usuario, contrasena FROM alumnos";
+            $sql = "SELECT boleta, solicitud, nombre, primerAp, segundoAp, telefono, correo, curp, estatura, credencial, horario, usuario, contrasena FROM alumnos";
             break;
         case 'casilleros':
             $sql = "SELECT noCasillero, altura, estado, boletaAsignada FROM casilleros";
