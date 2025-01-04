@@ -148,7 +148,18 @@ document.addEventListener("DOMContentLoaded", function () {
                         casilleroAnterior.style.display = 'none';
                     }
                 });
-            } 
+            } else if (table === 'casilleros') {
+                document.getElementById('estado').addEventListener('change', function () {
+                    const estado = this.value;
+                    const divBoleta = document.getElementById('divBoleta');
+                
+                    if (estado !== 'Asignado') {
+                        divBoleta.style.display = 'none';
+                    } else {
+                        divBoleta.style.display = 'block';
+                    }
+                });
+            }
 
             document.getElementById('submitBtn').onclick = function () {
                 if (validateForm()) {
@@ -217,7 +228,7 @@ document.addEventListener("DOMContentLoaded", function () {
                         </div>
                         <div id="casillero-anterior" class="mt-3">
                             <label for="numero-casillero">Número de Casillero Anterior:</label>
-                            <input type="number" name="numero-casillero" id="numero-casillero" class="form-control" min="1" pattern="\d+" title="Solo se permiten números" value="${data.casilleroAnt || ''}">
+                            <input type="number" name="numero-casillero" id="numero-casillero" class="form-control" min="1" title="Solo se permiten números" value="${data.casilleroAnt || ''}">
                         </div>
                     </fieldset>
 
@@ -289,7 +300,30 @@ document.addEventListener("DOMContentLoaded", function () {
                     `;
             case 'casilleros':
                 return `
-                    Casilleros
+                    <fieldset class="border p-3 mb-4">
+                        <div class="mb-3">
+                            <label for="noCasillero" class="form-label">Número de Casillero</label>
+                            <input type="number" id="noCasillero" name="noCasillero" class="form-control" min="1" value="${data.noCasillero || ''}" required>
+                        </div>
+                        <div class="mt-3">
+                            <label for="altura" class="form-label">Altura (en metros)</label>
+                            <input type="text" id="altura" name="altura" class="form-control" pattern="^([1-2]\.[0-9]{2})?$" value="${data.altura || ''}" required>
+                        </div>
+                    </fieldset>
+                    
+                    <fieldset class="border p-3 mb-4">
+                        <div class="mb-3">
+                            <label for="estado" class="form-label">Estado</label>
+                            <select id="estado" name="estado" class="form-select" required>
+                                <option value="Asignado" ${data.estado === 'Asignado' ? "selected" : ""}>Asignado</option>
+                                <option value="Disponible" ${data.estado === 'Disponible' ? "selected" : ""}>Disponible</option>
+                            </select>
+                        </div>
+                        <div id="divBoleta" class="mt-3">
+                            <label for="boletaAsignada" class="form-label">Boleta Asignada</label>
+                            <input type="text" id="boletaAsignada" name="boletaAsignada" class="form-control" pattern="^[0-9]{10}$" value="${data.boletaAsignada || ''}">
+                        </div>
+                    </fieldset>
                     `;
             case 'solicitudes':
                 return `
