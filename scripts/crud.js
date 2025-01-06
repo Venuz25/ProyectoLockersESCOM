@@ -159,6 +159,17 @@ document.addEventListener("DOMContentLoaded", function () {
                         divBoleta.style.display = 'block';
                     }
                 });
+            }else if (table === 'solicitudes'){
+                document.getElementById('estadoSolicitud').addEventListener('change', function () {
+                    const estadoSolicitud = this.value;
+                    const casilleroAsignado = document.getElementById('casilleroAsignado');
+                
+                    if (estadoSolicitud === 'Aprobada') {
+                        casilleroAsignado.style.display = 'block';
+                    } else {
+                        casilleroAsignado.style.display = 'none';
+                    }
+                });
             }
 
             document.getElementById('submitBtn').onclick = function () {
@@ -205,15 +216,15 @@ document.addEventListener("DOMContentLoaded", function () {
             case 'administradores':
                 return `
                     <div class="mb-3">
-                        <label for="id" class="form-label">Id:</label>
-                        <input type="number" class="form-control" id="id" name="id" value="${data.id || ''}" required>
+                        <label for="id" class="form-label">Id</label>
+                        <input type="number" min="1" class="form-control" id="id" name="id" value="${data.id || ''}" required>
                     </div>
                     <div class="mb-3">
-                        <label for="usuario" class="form-label">Usuario:</label>
+                        <label for="usuario" class="form-label">Usuario</label>
                         <input type="text" class="form-control" id="usuario" name="usuario" value="${data.usuario || ''}" required>
                     </div>
                     <div class="mb-3">
-                        <label for="contrasena" class="form-label">Contraseña:</label>
+                        <label for="contrasena" class="form-label">Contraseña</label>
                         <input type="password" class="form-control" id="contrasena" name="contrasena" value="${data.contrasena || ''}" required>
                     </div>`;
             case 'alumnos':
@@ -289,12 +300,12 @@ document.addEventListener("DOMContentLoaded", function () {
                     <fieldset class="border p-3 mb-4">
                         <div class="mb-3">
                             <label for="user" class="form-label">Usuario</label>
-                            <input type="text" id="user" name="usuario" class="form-control" placeholder="Escribe tu Usuario" value="${data.usuario || ''}" required autocomplete="off">
+                            <input type="text" id="user" name="usuario" class="form-control" value="${data.usuario || ''}" required autocomplete="off">
                         </div>
 
                         <div class="mb-3">
                             <label for="contraseña" class="form-label">Contraseña</label>
-                            <input type="password" id="contraseña" name="contraseña" class="form-control" placeholder="Escribe tu Contraseña" pattern=".{6,}" title="La contraseña debe tener al menos 6 caracteres" value="${data.contrasena || ''}" required autocomplete="off">
+                            <input type="password" id="contraseña" name="contraseña" class="form-control" pattern=".{6,}" title="La contraseña debe tener al menos 6 caracteres" value="${data.contrasena || ''}" required autocomplete="off">
                         </div>
                     </fieldset>
                     `;
@@ -306,7 +317,7 @@ document.addEventListener("DOMContentLoaded", function () {
                             <input type="number" id="noCasillero" name="noCasillero" class="form-control" min="1" value="${data.noCasillero || ''}" required>
                         </div>
                         <div class="mt-3">
-                            <label for="altura" class="form-label">Altura (en metros)</label>
+                            <label for="altura" class="form-label">Altura</label>
                             <input type="text" id="altura" name="altura" class="form-control" pattern="^([1-2]\.[0-9]{2})?$" value="${data.altura || ''}" required>
                         </div>
                     </fieldset>
@@ -327,7 +338,45 @@ document.addEventListener("DOMContentLoaded", function () {
                     `;
             case 'solicitudes':
                 return `
-                    solicitudes
+                    <fieldset class="border p-3 mb-4">
+                        <div class="mb-3">
+                            <label for="id" class="form-label">Id</label>
+                            <input type="number" min="1" id="user" name="id" class="form-control" value="${data.id || ''}" required autocomplete="off">
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="noBoleta" class="form-label">Boleta Asociada</label>
+                            <input type="text" id="noBoleta" name="noBoleta" class="form-control" pattern="^[0-9]{10}$" value="${data.noBoleta || ''}">
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="fechaRegistro" class="form-label">Fecha de Registro</label>
+                            <input type="datetime" id="fechaRegistro" name="fechaRegistro" class="form-control" value="${data.fechaRegistro || ''}">
+                        </div>
+                    </fieldset>
+
+                    <fieldset class="border p-3 mb-4">
+                        <div class="mb-3">
+                            <label for="estadoSolicitud" class="form-label">Estado de la Solicitud</label>
+                            <select id="estadoSolicitud" name="estadoSolicitud" class="form-select" required>
+                                <option value="Aprobada" ${data.estadoSolicitud === 'Aprobada' ? "selected" : ""}>Aprobada</option>
+                                <option value="Pendiente" ${data.estadoSolicitud === 'Pendiente' ? "selected" : ""}>Pendiente</option>
+                                <option value="Lista de espera" ${data.estadoSolicitud === 'Lista de espera' ? "selected" : ""}>Lista de espera</option>
+                            </select>
+                        </div>
+
+                        <div id="casilleroAsignado" class="mb-3">
+                            <label for="noCasillero" class="form-label">Número de Casillero Asignado</label>
+                            <input type="number" id="noCasillero" name="noCasillero" class="form-control" min="1" required>
+                        </div>
+                    </fieldset>
+                    
+                    <fieldset class="border p-3 mb-4">
+                        <div class="mb-3">
+                            <label for="comprobantePago" class="form-label">Comprobante de Pago</label>
+                            <input type="file" name="comprobantePago" id="comprobantePago" class="form-control" accept=".pdf" value="${data.comprobantePago || ''}" required>
+                        </div>
+                    </fieldset>
                     `;
         }
     }

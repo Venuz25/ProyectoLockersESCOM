@@ -52,12 +52,6 @@
             $credencialPath = '/ProyectoWeb/Docs/Credenciales/' . $credencial;
             $horarioPath = '/ProyectoWeb/Docs/Horarios/' . $horario;
 
-            if (!move_uploaded_file($_FILES['credencial']['tmp_name'], $_SERVER['DOCUMENT_ROOT'] . $credencialPath) ||
-                !move_uploaded_file($_FILES['horario']['tmp_name'], $_SERVER['DOCUMENT_ROOT'] . $horarioPath)) {
-                    echo json_encode(['success' => false, 'message' => 'Error al subir los archivos.']);
-                    exit;
-            }
-
             // Verificar si la boleta o el usuario ya están registrados
             $stmtVerificar = $conn->prepare("SELECT COUNT(*) AS total FROM alumnos WHERE boleta = ? OR usuario = ?");
             $stmtVerificar->bind_param("ss", $boleta, $usuario);
@@ -76,6 +70,12 @@
             $ocupados = $resultCasillerosOcupados['ocupados'];
             $estadoSolicitud = ($totalCasilleros == $ocupados) ? 'Lista de espera' : (($tipoSolicitud == 'Renovación') ? 'Aprobada' : 'Pendiente');
 
+            if (!move_uploaded_file($_FILES['credencial']['tmp_name'], $_SERVER['DOCUMENT_ROOT'] . $credencialPath) ||
+                !move_uploaded_file($_FILES['horario']['tmp_name'], $_SERVER['DOCUMENT_ROOT'] . $horarioPath)) {
+                    echo json_encode(['success' => false, 'message' => 'Error al subir los archivos.']);
+                    exit;
+            }
+            
             // Insertar datos en la tabla Alumnos
             $stmtAlumno = $conn->prepare("INSERT INTO alumnos (boleta, solicitud, casilleroAnt, nombre, primerAp, segundoAp, telefono, correo, curp, estatura, credencial, horario, usuario, contrasena) 
                                         VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
@@ -107,10 +107,123 @@
             echo json_encode(['success' => true, 'message' => 'Alumno registrado exitosamente']);
             break;
         case 'casilleros':
-            // Similar lógica para casilleros
+            $noCasillero = $_POST['noCasillero'];
+            $altura = $_POST['altura'];
+            $estado = $_POST['estado'];
+            $boletaAsignada = ($estado == 'Asignado')? $_POST['boletaAsignada'] : NULL;
+
+            // Verificación de si el casillero ya están registrado
+            $stmtVerificar = $conn->prepare("SELECT COUNT(*) AS total FROM casilleros WHERE noCasillero = ?");
+            $stmtVerificar->bind_param("i", $noCasillero);
+            $stmtVerificar->execute();
+            $resultVerificar = $stmtVerificar->get_result()->fetch_assoc();
+
+            if ($resultVerificar['total'] > 0) {
+                echo json_encode(['success' => false, 'message' => 'El casillero ya existe. Verifique los datos.']);
+                exit;
+            }
+
+            if($estado == 'Asignado'){
+                $stmtBoleta = $conn->prepare("SELECT COUNT(*) AS total FROM casilleros WHERE boletaAsignada = ?");
+                $stmtBoleta->bind_param("s", $boletaAsignada);
+                $stmtBoleta->execute();
+                $resultBoleta = $stmtBoleta->get_result()->fetch_assoc();
+
+                if ($resultBoleta['total'] > 0) {
+                    echo json_encode(['success' => false, 'message' => 'La boleta ya tiene un casillero asignado. Verifique los datos.']);
+                    exit;
+                }
+
+                $stmtSolicitud = $conn->prepare("SELECT COUNT(*) AS total FROM solicitudes WHERE noBoleta = ?");
+                $stmtSolicitud->bind_param("s", $boletaAsignada);
+                $stmtSolicitud->execute();
+                $resultSolicitud = $stmtSolicitud->get_result()->fetch_assoc();
+
+                if ($resultSolicitud['total'] == 0) {
+                    echo json_encode(['success' => false, 'message' => 'La boleta que ingreso no existe. Verifique los datos.']);
+                    exit;
+                }
+            }
+
+            $stmtCasillero = $conn->prepare("INSERT INTO casilleros (noCasillero, altura, estado, boletaAsignada) VALUES (?, ?, ?, ?)");
+            $stmtCasillero->bind_param("isss", $noCasillero, $altura, $estado, $boletaAsignada);
+            if (!$stmtCasillero->execute()) {
+                echo json_encode(['success' => false, 'message' => 'Error al insertar los datos en la tabla Casilleros.']);
+                exit;
+            }
+            
+            if($estado == 'Asignado'){
+                $stmtESolicitud = $conn->prepare("UPDATE solicitudes SET estadoSolicitud = 'Aprobada' WHERE noBoleta = ?");
+                $stmtESolicitud->bind_param("s", $boletaAsignada);
+                if (!$stmtESolicitud->execute()) {
+                    echo json_encode(['success' => false, 'message' => 'Error al actualizar los datos en la Solicitud.']);
+                    exit;
+                }
+            }
+
+            echo json_encode(['success' => true, 'message' => 'Casillero registrado exitosamente']);
             break;
         case 'solicitudes':
-            // Similar lógica para solicitudes
+            $id = $_POST['id'];
+            $noBoleta = $_POST['noBoleta'];
+            $fechaRegistro = $_POST['fechaRegistro'];
+            $estadoSolicitud = $_POST['estadoSolicitud'];
+            $noCasillero = ($estadoSolicitud == 'Aprobada')? $_POST['noCasillero'] : NULL;
+
+            // Subir archivos
+            $comprobantePago = $_FILES['comprobantePago']['name'];
+            $comprobantePath = '/ProyectoWeb/Docs/Comprobantes/' . $comprobantePago;
+
+            //Verifica que la id o la boleta esten registrados
+            $stmtVerificar = $conn->prepare("SELECT COUNT(*) AS total FROM solicitudes WHERE id = ? OR noBoleta = ?");
+            $stmtVerificar->bind_param("is", $id, $noBoleta);
+            $stmtVerificar->execute();
+            $resultVerificar = $stmtVerificar->get_result()->fetch_assoc();
+
+            if ($resultVerificar['total'] > 0) {
+                echo json_encode(['success' => false, 'message' => 'La id o la boleta ya estan registrados. Verifique los datos.']);
+                exit;
+            }
+
+            if($estadoSolicitud == 'Aprobada'){
+                // Verificación de si el casillero existe
+                $stmtExistencia = $conn->prepare("SELECT COUNT(*) AS total FROM casilleros WHERE noCasillero = ?");
+                $stmtExistencia->bind_param("i", $noCasillero);
+                $stmtExistencia->execute();
+                $resultExistencia = $stmtExistencia->get_result()->fetch_assoc();
+
+                if ($resultExistencia['total'] > 0) {
+                    echo json_encode(['success' => false, 'message' => 'El casillero ingresado no existe. Verifique los datos.']);
+                    exit;
+                }
+
+                //Verifica si el casillero ya esta asignado
+                $stmtCasillero = $conn->prepare("SELECT COUNT(*) AS total FROM casilleros WHERE noCasillero = ? AND estadoSolicitud = 'Asignado'");
+                $stmtCasillero->bind_param("i", $noCasillero);
+                $stmtCasillero->execute();
+                $resultCasillero = $stmtCasillero->get_result()->fetch_assoc();
+
+                if ($resultCasillero['total'] > 0) {
+                    echo json_encode(['success' => false, 'message' => 'El casillero ingresado ya esta asignado. Verifique los datos.']);
+                    exit;
+                }  
+            }
+
+            if (!move_uploaded_file($_FILES['comprobantePago']['tmp_name'], $_SERVER['DOCUMENT_ROOT'] . $comprobantePath)) {
+                    echo json_encode(['success' => false, 'message' => 'Error al subir los archivos.']);
+                    exit;
+            }
+
+            $stmtSolicitud = $conn->prepare("INSERT INTO solicitudes (id, noBoleta, fechaRegistro, estadoSolicitud, comprobantePago) VALUES (?, ?, ?, ?, ?)");
+            $stmtSolicitud->bind_param("issss", $id, $noBoleta, $fechaRegistro  , $estadoSolicitud, $comprobantePago);
+            if (!$stmtSolicitud->execute()) {
+                echo json_encode(['success' => false, 'message' => 'Error al insertar los datos en la tabla Casilleros.']);
+                exit;
+            }
+
+
+
+
             break;
         default:
             echo json_encode(['success' => false, 'message' => 'Tabla no válida']);
