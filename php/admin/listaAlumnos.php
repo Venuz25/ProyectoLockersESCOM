@@ -1,4 +1,5 @@
 <?php
+    //Archivo para recuperar los datos mostrados en la lista de alumnos al asignar un casillero
     include('../conexion.php');
 
     $noCasillero = isset($_GET['noCasillero']) ? (int)$_GET['noCasillero'] : 0;

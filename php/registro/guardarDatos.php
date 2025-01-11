@@ -1,4 +1,5 @@
 <?php
+    //Archivo para guardar los datos de la solicitud
     include_once '../conexion.php';
 
     try {
@@ -56,8 +57,10 @@
 
         // Insertar datos en la tabla Solicitudes
         $fechaRegistro = date("Y-m-d H:i:s");
-        $stmtSolicitud = $conn->prepare("INSERT INTO solicitudes (noBoleta, fechaRegistro, estadoSolicitud, comprobantePago) VALUES (?, ?, ?, NULL)");
-        $stmtSolicitud->bind_param("sss", $boleta, $fechaRegistro, $estadoSolicitud);
+        $fechaAprobacion = $estadoSolicitud == 'Aprobada' ? date("Y-m-d H:i:s") : NULL;
+
+        $stmtSolicitud = $conn->prepare("INSERT INTO solicitudes (noBoleta, fechaRegistro, estadoSolicitud, fechaAprobacion, comprobantePago) VALUES (?, ?, ?, ?, NULL)");
+        $stmtSolicitud->bind_param("ssss", $boleta, $fechaRegistro, $estadoSolicitud, $fechaAprobacion);
         if (!$stmtSolicitud->execute()) {
             throw new Exception("Error al insertar los datos en la tabla Solicitudes.");
         }

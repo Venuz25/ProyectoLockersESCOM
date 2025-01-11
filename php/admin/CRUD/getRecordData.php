@@ -1,4 +1,5 @@
 <?php
+    //Archivo para recuperar los datos de un registro para el pre-llenado de los formularios
     include_once '../../conexion.php';
 
     if ($_SERVER['REQUEST_METHOD'] === 'GET') {

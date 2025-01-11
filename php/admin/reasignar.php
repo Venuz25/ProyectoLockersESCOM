@@ -1,4 +1,5 @@
 <?php
+    //Archivo para revocar un casillero
     include('../conexion.php');
 
     $data = json_decode(file_get_contents('php://input'), true);
@@ -18,7 +19,7 @@
         // Si hay un boleta asignada, actualizar la solicitud
         if ($boletaAsignada) {
             // Actualizar estado de la solicitud a 'Pendiente'
-            $sqlSolicitud = "UPDATE solicitudes SET estadoSolicitud = 'Pendiente' WHERE noBoleta = ?";
+            $sqlSolicitud = "UPDATE solicitudes SET estadoSolicitud = 'Pendiente', fechaAprobacion = NULL WHERE noBoleta = ?";
             $stmtSolicitud = $conn->prepare($sqlSolicitud);
             $stmtSolicitud->bind_param("i", $boletaAsignada);
 

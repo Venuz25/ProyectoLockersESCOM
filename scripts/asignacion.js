@@ -215,7 +215,7 @@ function listaAlumnos(data) {
                             ${alumnosFiltrados
                                 .map(
                                     (alumno) => `
-                                    <tr>
+                                    <tr ${alumno.casilleroAnt == data.noCasillero ? 'style="background-color:#F7C3A1;"':''}>
                                         <td>${alumno.fechaRegistro}</td>
                                         <td>${alumno.boleta}</td>
                                         <td>${alumno.nombre}</td>

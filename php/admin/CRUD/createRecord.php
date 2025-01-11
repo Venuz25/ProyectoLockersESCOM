@@ -1,4 +1,5 @@
 <?php
+    //Archivo para crear un registro
     include_once '../../conexion.php';
 
     $table = $_POST['table'];

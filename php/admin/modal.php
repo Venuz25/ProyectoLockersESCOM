@@ -1,4 +1,5 @@
 <?php
+    //Archivo para recuperar los datos mostrados en el modal
     include('../conexion.php');
     
     $noCasillero = intval($_GET['noCasillero']);

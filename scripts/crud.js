@@ -188,20 +188,28 @@ document.addEventListener("DOMContentLoaded", function () {
                             const boleta = document.getElementById('boleta');
                             boleta.disable = true;
 
+                            //Muestra el campo casillero-anterior segun se obtenga en la db
                             if (data.obtData.solicitud === 'Renovación') {
                                 document.getElementById('casillero-anterior').style.display = 'block';
                             }else{
                                 document.getElementById('casillero-anterior').style.display = 'none';
                             }
 
+                            //Muestra el campo casillero-anterior segun se cambie el select
                             document.getElementById('tipo_solicitud').addEventListener('change', function () {
                                 const tipoSolicitud = this.value;
                                 const casilleroAnterior = document.getElementById('casillero-anterior');
             
                                 if (tipoSolicitud === 'Renovación') {
                                     casilleroAnterior.style.display = 'block';
+
+                                    const campoCasillero = document.getElementById('numero-casillero');
+                                    campoCasillero.required = true;
                                 } else {
                                     casilleroAnterior.style.display = 'none';
+
+                                    const campoCasillero = document.getElementById('numero-casillero');
+                                     campoCasillero.required = false;
                                 }
                             });
                         } else if (table === 'casilleros') {

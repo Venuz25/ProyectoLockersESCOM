@@ -1,4 +1,5 @@
 <?php
+    //Archivo para recuperar datos del casillero para su visualizacion dinamica
     include('../conexion.php');
     
     // Disponibilidad Casilleros

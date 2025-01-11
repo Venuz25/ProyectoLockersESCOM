@@ -1,5 +1,7 @@
 <?php
-include('../conexion.php');
+    //Archivo para asignar el casillero
+    include('../conexion.php');
+    
     $data = json_decode(file_get_contents('php://input'), true);
     $boleta = $data['boleta'];
     $noCasillero = $data['noCasillero'];
@@ -26,9 +28,10 @@ include('../conexion.php');
     $stmt->bind_param("si", $boleta, $noCasillero);
 
     if ($stmt->execute()) {
-        $sql = "UPDATE solicitudes SET estadoSolicitud = 'Aprobada' WHERE noBoleta = ?";
+        $fechaAprobacion = date("Y-m-d H:i:s");
+        $sql = "UPDATE solicitudes SET estadoSolicitud = 'Aprobada',fechaAprobacion = ? WHERE noBoleta = ?";
         $stmt = $conn->prepare($sql);
-        $stmt->bind_param("s", $boleta);
+        $stmt->bind_param("ss", $fechaAprobacion, $boleta);
         $stmt->execute();
 
         echo json_encode(['success' => true]);

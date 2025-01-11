@@ -1,4 +1,5 @@
 <?php
+    //Archivo para recuperar datos del alumno para el modal de detalles
     include('../conexion.php');
     $boleta = $_GET['boleta'];
 

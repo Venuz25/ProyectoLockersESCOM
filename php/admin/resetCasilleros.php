@@ -1,11 +1,12 @@
 <?php
+    //Archivo para revocar todos los casilleros
     include_once '../conexion.php';
 
     $conn->begin_transaction();
     try {
         // Actualizar las solicitudes asociadas a esos casilleros a 'Pendiente'
         $sqlSolicitudes = "UPDATE solicitudes 
-                        SET estadoSolicitud = 'Pendiente'
+                        SET estadoSolicitud = 'Pendiente', fechaAprobacion = NULL
                         WHERE noBoleta IN (
                             SELECT boletaAsignada 
                             FROM casilleros

@@ -1,4 +1,5 @@
 <?php
+    //Archivo para recuperar los datos de las tablas para su generacion dinamica
     include_once '../../conexion.php';
 
     $table = isset($_GET['table']) ? $_GET['table'] : '';
@@ -21,13 +22,13 @@
             $sql = "SELECT id, usuario, contrasena FROM administradores";
             break;
         case 'alumnos':
-            $sql = "SELECT boleta, solicitud, nombre, primerAp, segundoAp, telefono, correo, curp, estatura, credencial, horario, usuario, contrasena FROM alumnos";
+            $sql = "SELECT boleta, solicitud, casilleroAnt, nombre, primerAp, segundoAp, telefono, correo, curp, estatura, credencial, horario, usuario, contrasena FROM alumnos";
             break;
         case 'casilleros':
             $sql = "SELECT noCasillero, altura, estado, boletaAsignada FROM casilleros";
             break;
         case 'solicitudes':
-            $sql = "SELECT id, noBoleta, fechaRegistro, estadoSolicitud, comprobantePago FROM solicitudes";
+            $sql = "SELECT id, noBoleta, fechaRegistro, estadoSolicitud, fechaAprobacion, comprobantePago FROM solicitudes";
             break;
     }
 

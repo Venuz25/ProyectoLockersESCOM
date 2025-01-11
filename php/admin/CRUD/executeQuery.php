@@ -1,4 +1,5 @@
 <?php
+    //Archivo para ejecutar una consulta
     include_once '../../conexion.php';
 
     $data = json_decode(file_get_contents('php://input'), true);
