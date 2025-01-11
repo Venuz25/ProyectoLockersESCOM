@@ -30,6 +30,15 @@ main {
     width: 150px;
 }
 
+.iframe-wide {
+    width: 100%; 
+    max-width: 1200px; 
+    height: 600px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+}
+
+
 @media (max-width: 768px) {
     .btn {
         bottom: 10px;

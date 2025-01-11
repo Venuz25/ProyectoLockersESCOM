@@ -12,8 +12,6 @@
         <!--General-->
         <link rel="stylesheet" href="styles/styleGeneral.css">
 
-        <link rel="preconnect" href="https://fonts.googleapis.com">
-        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
         <link href="https://fonts.googleapis.com/css2?family=Josefin+Sans:ital,wght@0,100..700;1,100..700&display=swap" rel="stylesheet">
         <script src="/ProyectoWeb/scripts/validaSesA.js"></script>
     </head>
@@ -40,17 +38,69 @@
                 <span id="titulo">Casilleros ESCOM</span>
             </a>
             <a href="https://www.ipn.mx" target="_blank">
-              <img src="/ProyectoWeb/img/logotipo_ipn.png" alt="Escudo ESCOM" class="logo">
+              <img src="img/logotipo_ipn.png" alt="Escudo IPN" class="logo">
             </a>            
         </div>
     </header>
     <!--Encabezado-->
 
-        <main>
-            <div id="texto">
-                <h3>Sus datos fueron guardados correctamente</h3>
-                <img src="/ProyectoWeb/img/Confirmar.gif" alt="Seguimiento" class="buentrabajo">
-            </div>         
-        </main>
+    <main>
+        <h3 class="mb-4">Bienvenido <i id="nombre">Nombre</i></h3>
+    
+        <!-- Div para renovación -->
+        <div id="renv" class="mb-4">
+            <h4>Renovación</h4>
+            <!-- Apartado para subir comprobante de pago -->
+            <div id="renovacion-subir-comprobante" class="mb-4">
+                <label for="comprobanteRenovacion" class="form-label">Subir comprobante de pago (PDF):</label>
+                <input type="file" class="form-control" id="comprobanteRenovacion" accept=".pdf">
+            </div>
+    
+            <!-- Iframe para mostrar PDF y checkbox -->
+            <div id="renovacion-pdf" class="mb-4">
+                <div class="container-fluid d-flex justify-content-center mb-4">
+                    <iframe src="Docs/conformidadUsoLocker_25_1.pdf" class="iframe-wide"></iframe>
+                </div>
+                
+                <div class="form-check mt-2 mb-4">
+                    <input type="checkbox" id="checkRenovacion">
+                    <label class="form-check-label" for="checkRenovacion">Estoy conforme</label>
+                </div>
+            </div>
+    
+            <!-- Botón Generar Acuse -->
+            <div id="renovacion-boton" class="mb-4">
+                <button class="btn btn-primary">Generar Acuse</button>
+            </div>
+        </div>
+    
+        <!-- Div para primera vez -->
+        <div id="primera-vez" class="mb-4">
+            <h4>Primera Vez</h4>    
+            <!-- Iframe para mostrar PDF y checkbox -->
+            <div id="primera-vez-pdf" class="mb-4">
+                <div class="container-fluid d-flex justify-content-center mb-4">
+                    <iframe src="Docs/conformidadUsoLocker_25_1.pdf" class="iframe-wide"></iframe>
+                </div>
+                
+                <div class="form-check mt-2 mb-4">
+                    <input type="checkbox" id="checkPrimeraVez">
+                    <label class="form-check-label" for="checkPrimeraVez">Estoy conforme</label>
+                </div>
+            </div>
+    
+            <!-- Apartado para subir comprobante de pago -->
+            <div id="primera-vez-subir-comprobante" class="mb-4">
+                <label for="comprobantePrimeraVez" class="form-label">Subir comprobante de pago (PDF):</label>
+                <input type="file" class="form-control" id="comprobantePrimeraVez" accept=".pdf">
+            </div>
+    
+            <!-- Botón Generar Acuse -->
+            <div id="primera-vez-boton" class="mb-4">
+                <button class="btn btn-primary">Generar Acuse</button>
+            </div>
+        </div>
+    </main>
+    
     </body>
 </html>
