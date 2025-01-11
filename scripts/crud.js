@@ -183,6 +183,62 @@ document.addEventListener("DOMContentLoaded", function () {
                 .then(data => {
                     if (data.success) {
                         crudForm.innerHTML = contForms(recordId, table, data.obtData);
+
+                        if (table === 'alumnos') {
+                            const boleta = document.getElementById('boleta');
+                            boleta.disable = true;
+
+                            if (data.obtData.solicitud === 'Renovación') {
+                                document.getElementById('casillero-anterior').style.display = 'block';
+                            }else{
+                                document.getElementById('casillero-anterior').style.display = 'none';
+                            }
+
+                            document.getElementById('tipo_solicitud').addEventListener('change', function () {
+                                const tipoSolicitud = this.value;
+                                const casilleroAnterior = document.getElementById('casillero-anterior');
+            
+                                if (tipoSolicitud === 'Renovación') {
+                                    casilleroAnterior.style.display = 'block';
+                                } else {
+                                    casilleroAnterior.style.display = 'none';
+                                }
+                            });
+                        } else if (table === 'casilleros') {
+                            if (data.obtData.estado === 'Asignado') {
+                                document.getElementById('divBoleta').style.display = 'block';
+                            } else {
+                                document.getElementById('divBoleta').style.display = 'none';
+                            }
+            
+                            document.getElementById('estado').addEventListener('change', function () {
+                                const estado = this.value;
+                                const divBoleta = document.getElementById('divBoleta');
+                            
+                                if (estado !== 'Asignado') {
+                                    divBoleta.style.display = 'none';
+                                } else {
+                                    divBoleta.style.display = 'block';
+                                }
+                            });
+                        } else if (table === 'solicitudes') {
+                            if (data.obtData.estadoSolicitud === 'Aprobada') {
+                                document.getElementById('casilleroAsignado').style.display = 'block';
+                            } else {
+                                document.getElementById('casilleroAsignado').style.display = 'none';
+                            }
+
+                            document.getElementById('estadoSolicitud').addEventListener('change', function () {
+                                const estadoSolicitud = this.value;
+                                const casilleroAsignado = document.getElementById('casilleroAsignado');
+                            
+                                if (estadoSolicitud === 'Aprobada') {
+                                    casilleroAsignado.style.display = 'block';
+                                } else {
+                                    casilleroAsignado.style.display = 'none';
+                                }
+                            });
+                        }
                         
                         document.getElementById('submitBtn').onclick = function () {
                             if (validateForm()) {
@@ -226,7 +282,7 @@ document.addEventListener("DOMContentLoaded", function () {
                 return `
                     <div class="mb-3">
                         <label for="id" class="form-label">Id</label>
-                        <input type="number" min="1" class="form-control" id="id" name="id" value="${data.id || ''}" required>
+                        <input type="number" min="1" class="form-control" id="id" name="id" title="${data.id ? 'El id no puede ser editado' : ''}" value="${data.id || ''}" ${data.id ? 'readonly' : ''} required>
                     </div>
                     <div class="mb-3">
                         <label for="usuario" class="form-label">Usuario</label>
@@ -234,7 +290,7 @@ document.addEventListener("DOMContentLoaded", function () {
                     </div>
                     <div class="mb-3">
                         <label for="contrasena" class="form-label">Contraseña</label>
-                        <input type="password" class="form-control" id="contrasena" name="contrasena" value="${data.contrasena || ''}" required>
+                        <input type="text" class="form-control" id="contrasena" name="contrasena" value="${data.contrasena || ''}" required>
                     </div>`;
             case 'alumnos':
                 return `
@@ -280,7 +336,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
                         <div class="mb-3">
                             <label for="boleta" class="form-label">Número de Boleta</label>
-                            <input type="text" name="boleta" id="boleta" class="form-control" pattern="^[0-9]{10}"  title="Número de boleta de 10 dígitos" value="${data.boleta || ''}" required>
+                            <input type="text" name="boleta" id="boleta" class="form-control" pattern="^[0-9]{10}"  title="${data.boleta ? 'El número de boleta no puede ser editado' : 'Número de boleta de 10 dígitos'}"  value="${data.boleta || ''}" ${data.boleta ? 'readonly' : ''} required>
                         </div>
 
                         <div class="mb-3">
@@ -296,13 +352,13 @@ document.addEventListener("DOMContentLoaded", function () {
 
                     <fieldset class="border p-3 mb-4">
                         <div class="mb-3">
-                            <label for="credencial" class="form-label">Credencial <i>(nombre: boleta_credencial)</i></label>
-                            <input type="file" name="credencial" id="credencial" class="form-control" accept=".pdf" value="${data.credencial || ''}" required>
+                            <label for="credencial" class="form-label">Credencial <i>(${data.credencial ? `<a href="${data.credencial}" id="fileLink" target="_blank">Ver archivo actual</a>`: 'nombre: boleta_credencial'})</i></label>
+                            <input type="file" name="credencial" id="credencial" class="form-control" accept=".pdf">
                         </div>
 
                         <div class="mb-3">
-                            <label for="horario" class="form-label">Horario <i>(nombre: boleta_horario)</i></label>
-                            <input type="file" name="horario" id="horario" class="form-control" accept=".pdf" value="${data.horario || ''}" required>
+                            <label for="horario" class="form-label">Horario <i>(${data.horario? `<a href="${data.horario}" id="fileLink" target="_blank">Ver archivo actual</a>`: 'nombre: boleta_horario'})</i></label>
+                            <input type="file" name="horario" id="horario" class="form-control" accept=".pdf">
                         </div>
                     </fieldset>
 
@@ -314,7 +370,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
                         <div class="mb-3">
                             <label for="contraseña" class="form-label">Contraseña</label>
-                            <input type="password" id="contraseña" name="contraseña" class="form-control" pattern=".{6,}" title="La contraseña debe tener al menos 6 caracteres" value="${data.contrasena || ''}" required autocomplete="off">
+                            <input type="text" id="contraseña" name="contraseña" class="form-control" pattern=".{6,}" title="La contraseña debe tener al menos 6 caracteres" value="${data.contrasena || ''}" required autocomplete="off">
                         </div>
                     </fieldset>
                     `;
@@ -382,8 +438,8 @@ document.addEventListener("DOMContentLoaded", function () {
                     
                     <fieldset class="border p-3 mb-4">
                         <div class="mb-3">
-                            <label for="comprobantePago" class="form-label">Comprobante de Pago</label>
-                            <input type="file" name="comprobantePago" id="comprobantePago" class="form-control" accept=".pdf" value="${data.comprobantePago || ''}" required>
+                            <label for="comprobantePago" class="form-label">Comprobante de Pago (${data.comprobantePago? `<a href="${data.comprobantePago}" id="fileLink" target="_blank">Ver archivo actual</a>`: 'Sin Archivo'})</label>
+                            <input type="file" name="comprobantePago" id="comprobantePago" class="form-control" accept=".pdf">
                         </div>
                     </fieldset>
                     `;
@@ -417,7 +473,6 @@ document.addEventListener("DOMContentLoaded", function () {
             })
             .catch(error => console.error('Error:', error));
     }
-
 
     // Función para eliminar el registro
     async function deleteRecord(recordId, table) {
@@ -496,6 +551,5 @@ document.addEventListener("DOMContentLoaded", function () {
             console.error('Error al ejecutar la consulta:', error.message || error);
             throw error;
         }
-    }
-         
+    }    
 });
