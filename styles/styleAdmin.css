@@ -104,3 +104,15 @@ tr a {
     width: 100%;
 }
 
+.btn-circle {
+    width: 50px;
+    height: auto;
+    border: none; 
+}
+
+.btn-circle .icon {
+    width: 100%;
+    height: auto;
+}
+
+

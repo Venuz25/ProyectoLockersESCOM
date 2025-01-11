@@ -42,7 +42,10 @@ document.addEventListener("DOMContentLoaded", function () {
 
     tableSelect.addEventListener('change', function () {
         const table = tableSelect.value;
-        if (table) {
+        if (table === 'solicitudes') {
+            loadTableData(table);
+            createRecordBtn.style.display = "none";
+        } else if (table) {
             loadTableData(table);
             createRecordBtn.style.display = "flex"; 
         } else {
@@ -81,10 +84,15 @@ document.addEventListener("DOMContentLoaded", function () {
                 <tbody>
                     ${data.map(record => `
                         <tr>
-                            <td>
-                                <button class="btn btn-warning btn-sm editBtn" data-id="${(table === 'administradores'? record.id : record.noBoleta) || record.boleta || (record.boletaAsignada === null ? record.noCasillero : record.boletaAsignada)}">Editar</button>
-                                <button class="btn btn-danger btn-sm deleteBtn" data-id="${(table === 'administradores'? record.id : record.noBoleta) || record.boleta || (record.boletaAsignada === null ? record.noCasillero : record.boletaAsignada)}">Eliminar</button>
+                           <td>
+                                <button class="btn editBtn btn-circle" data-id="${record.id || record.boleta || record.noCasillero}">
+                                    <img src="/ProyectoWeb/img/admin/editar.png" alt="Editar" class="icon">
+                                </button>
+                                <button class="btn deleteBtn btn-circle" data-id="${record.id || record.boleta || record.noCasillero}">
+                                    <img src="/ProyectoWeb/img/admin/borrar.png" alt="Eliminar" class="icon">
+                                </button>
                             </td>
+
                             ${Object.keys(record).map(key => {
                                 let value = record[key];
                                 if (value && (value.includes('.pdf') || value.includes('comprobantePago') || value.includes('credencial') || value.includes('horario'))) {
@@ -106,7 +114,6 @@ document.addEventListener("DOMContentLoaded", function () {
         document.querySelectorAll('.editBtn').forEach(button => {
             button.addEventListener('click', function () {
                 const recordId = button.dataset.id;
-                alert('editando...');
                 openModal('edit', recordId, table);
             });
         });
@@ -131,11 +138,11 @@ document.addEventListener("DOMContentLoaded", function () {
     function openModal(action, recordId, table) {
         const modalTitle = document.getElementById('crudModalLabel');
         const crudForm = document.getElementById('crudForm');
-        crudForm.innerHTML = ''; // Limpiar contenido previo
+        crudForm.innerHTML = '';
 
         if (action === 'create') {
             modalTitle.innerText = 'Ingresa los datos del nuevo registro:';
-            crudForm.innerHTML = contForms(recordId, table);
+            crudForm.innerHTML = contForms(recordId, table, data = {});
 
             if (table === 'alumnos') {
                 document.getElementById('tipo_solicitud').addEventListener('change', function () {
@@ -159,17 +166,6 @@ document.addEventListener("DOMContentLoaded", function () {
                         divBoleta.style.display = 'block';
                     }
                 });
-            }else if (table === 'solicitudes'){
-                document.getElementById('estadoSolicitud').addEventListener('change', function () {
-                    const estadoSolicitud = this.value;
-                    const casilleroAsignado = document.getElementById('casilleroAsignado');
-                
-                    if (estadoSolicitud === 'Aprobada') {
-                        casilleroAsignado.style.display = 'block';
-                    } else {
-                        casilleroAsignado.style.display = 'none';
-                    }
-                });
             }
 
             document.getElementById('submitBtn').onclick = function () {
@@ -181,16 +177,29 @@ document.addEventListener("DOMContentLoaded", function () {
             };
         } else if (action === 'edit') {
             modalTitle.innerText = `Modificando registro #${recordId}`;
+            
             fetch(`/ProyectoWeb/php/admin/CRUD/getRecordData.php?recordId=${recordId}&table=${table}`)
                 .then(response => response.json())
                 .then(data => {
-                    crudForm.innerHTML = contForms(recordId, table, data);
-                    document.getElementById('submitBtn').onclick = function () {
-                        handleSubmit('edit', table, recordId);
-                    };
+                    if (data.success) {
+                        crudForm.innerHTML = contForms(recordId, table, data.obtData);
+                        
+                        document.getElementById('submitBtn').onclick = function () {
+                            if (validateForm()) {
+                                handleSubmit('edit', table, recordId);
+                            } else {
+                                alert('Formulario no válido. Verifica los campos.');
+                            }
+                        };
+                    } else {
+                        alert('Error: ' + data.message);
+                    }
+                })
+                .catch(error => {
+                    console.error('Error al obtener los datos:', error);
+                    alert('Ocurrió un error al obtener los datos.');
                 });
         }
-
         crudModal.show();
     }
 
@@ -211,7 +220,7 @@ document.addEventListener("DOMContentLoaded", function () {
     }
 
     // Generar contenido dinámico del formulario
-    function contForms(recordId, table, data = {}) {
+    function contForms(recordId, table, data) {
         switch (table) {
             case 'administradores':
                 return `
@@ -318,7 +327,7 @@ document.addEventListener("DOMContentLoaded", function () {
                         </div>
                         <div class="mt-3">
                             <label for="altura" class="form-label">Altura</label>
-                            <input type="text" id="altura" name="altura" class="form-control" pattern="^([1-2]\.[0-9]{2})?$" value="${data.altura || ''}" required>
+                            <input type="text" id="altura" name="altura" class="form-control" pattern="^([0-2]\.[0-9]{2})?$" value="${data.altura || ''}" required>
                         </div>
                     </fieldset>
                     
@@ -351,7 +360,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
                         <div class="mb-3">
                             <label for="fechaRegistro" class="form-label">Fecha de Registro</label>
-                            <input type="datetime" id="fechaRegistro" name="fechaRegistro" class="form-control" value="${data.fechaRegistro || ''}">
+                            <input type="datetime-local" id="fechaRegistro" name="fechaRegistro" class="form-control" value="${data.fechaRegistro || ''}">
                         </div>
                     </fieldset>
 
@@ -378,6 +387,8 @@ document.addEventListener("DOMContentLoaded", function () {
                         </div>
                     </fieldset>
                     `;
+            default:
+                return 'No se encontraron campos para mostrar.';
         }
     }
 
@@ -399,7 +410,7 @@ document.addEventListener("DOMContentLoaded", function () {
                 if (result.success) {
                     alert(result.message);
                     crudModal.hide();
-                    loadTableData(table); // Actualizar la tabla
+                    loadTableData(table); 
                 } else {
                     alert(result.message);
                 }
