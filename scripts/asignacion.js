@@ -31,6 +31,7 @@ function verificarSolicitudes() {
 
 //funcion para mostrar casilleros
 document.addEventListener('DOMContentLoaded', () => {
+    verificarSolicitudes();
     fetch('/ProyectoWeb/php/admin/casilleros.php')
         .then(response => response.json())
         .then(data => {
@@ -215,7 +216,7 @@ function listaAlumnos(data) {
                             ${alumnosFiltrados
                                 .map(
                                     (alumno) => `
-                                    <tr ${alumno.casilleroAnt == data.noCasillero ? 'style="background-color:#F7C3A1;"':''}>
+                                    <tr>
                                         <td>${alumno.fechaRegistro}</td>
                                         <td>${alumno.boleta}</td>
                                         <td>${alumno.nombre}</td>

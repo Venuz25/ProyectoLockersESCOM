@@ -145,25 +145,45 @@ document.addEventListener("DOMContentLoaded", function () {
             crudForm.innerHTML = contForms(recordId, table, data = {});
 
             if (table === 'alumnos') {
+                const campoCasillero = document.getElementById('numero-casillero');
+                campoCasillero.required = true;
+
+                //Muestra el campo casillero-anterior segun se cambie el select
                 document.getElementById('tipo_solicitud').addEventListener('change', function () {
                     const tipoSolicitud = this.value;
                     const casilleroAnterior = document.getElementById('casillero-anterior');
 
                     if (tipoSolicitud === 'Renovación') {
                         casilleroAnterior.style.display = 'block';
+
+                        const campoCasillero = document.getElementById('numero-casillero');
+                        campoCasillero.required = true;
                     } else {
                         casilleroAnterior.style.display = 'none';
+
+                        const campoCasillero = document.getElementById('numero-casillero');
+                         campoCasillero.required = false;
                     }
                 });
             } else if (table === 'casilleros') {
+                const campoBoletaAsignada = document.getElementById('boletaAsignada');
+                campoBoletaAsignada.required = true;
+
+                //Muestra el campo de boleta asignada segun el select
                 document.getElementById('estado').addEventListener('change', function () {
                     const estado = this.value;
                     const divBoleta = document.getElementById('divBoleta');
                 
                     if (estado !== 'Asignado') {
                         divBoleta.style.display = 'none';
+
+                        const campoBoletaAsignada = document.getElementById('boletaAsignada');
+                        campoBoletaAsignada.required = true;
                     } else {
                         divBoleta.style.display = 'block';
+
+                        const campoBoletaAsignada = document.getElementById('boletaAsignada');
+                        campoBoletaAsignada.required = false;
                     }
                 });
             }
@@ -171,8 +191,6 @@ document.addEventListener("DOMContentLoaded", function () {
             document.getElementById('submitBtn').onclick = function () {
                 if (validateForm()) {
                     handleSubmit('create', table);
-                } else {
-                    alert('Formulario no válido. Verifica los campos.');
                 }
             };
         } else if (action === 'edit') {
@@ -185,14 +203,17 @@ document.addEventListener("DOMContentLoaded", function () {
                         crudForm.innerHTML = contForms(recordId, table, data.obtData);
 
                         if (table === 'alumnos') {
-                            const boleta = document.getElementById('boleta');
-                            boleta.disable = true;
-
                             //Muestra el campo casillero-anterior segun se obtenga en la db
                             if (data.obtData.solicitud === 'Renovación') {
                                 document.getElementById('casillero-anterior').style.display = 'block';
+
+                                const campoCasillero = document.getElementById('numero-casillero');
+                                campoCasillero.required = true;
                             }else{
                                 document.getElementById('casillero-anterior').style.display = 'none';
+
+                                const campoCasillero = document.getElementById('numero-casillero');
+                                campoCasillero.required = false;
                             }
 
                             //Muestra el campo casillero-anterior segun se cambie el select
@@ -213,37 +234,73 @@ document.addEventListener("DOMContentLoaded", function () {
                                 }
                             });
                         } else if (table === 'casilleros') {
+                            //Muestra el campo de boleta asignada segun se obtenga en la db
                             if (data.obtData.estado === 'Asignado') {
                                 document.getElementById('divBoleta').style.display = 'block';
+
+                                const campoBoletaAsignada = document.getElementById('boletaAsignada');
+                                campoBoletaAsignada.required = true;
                             } else {
                                 document.getElementById('divBoleta').style.display = 'none';
+
+                                const campoBoletaAsignada = document.getElementById('boletaAsignada');
+                                campoBoletaAsignada.required = false;
                             }
-            
+
+                            //Muestra el campo de boleta asignada segun el select
                             document.getElementById('estado').addEventListener('change', function () {
                                 const estado = this.value;
                                 const divBoleta = document.getElementById('divBoleta');
                             
-                                if (estado !== 'Asignado') {
-                                    divBoleta.style.display = 'none';
-                                } else {
+                                if (estado === 'Asignado') {
                                     divBoleta.style.display = 'block';
+
+                                    const campoBoletaAsignada = document.getElementById('boletaAsignada');
+                                    campoBoletaAsignada.required = true;
+                                } else {
+                                    divBoleta.style.display = 'none';
+
+                                    const campoBoletaAsignada = document.getElementById('boletaAsignada');
+                                    campoBoletaAsignada.required = false;
                                 }
                             });
                         } else if (table === 'solicitudes') {
+                            //Muestra el campo noCasillero segun se obtenga en la bd
                             if (data.obtData.estadoSolicitud === 'Aprobada') {
                                 document.getElementById('casilleroAsignado').style.display = 'block';
+
+                                const campoCasillero = document.getElementById('noCasillero');
+                                campoCasillero.required = true;
+                                const fechaAprobacion = document.getElementById('fechaAprobacion');
+                                fechaAprobacion.required = true;
                             } else {
                                 document.getElementById('casilleroAsignado').style.display = 'none';
+
+                                const campoCasillero = document.getElementById('noCasillero');
+                                campoCasillero.required = false;
+                                const fechaAprobacion = document.getElementById('fechaAprobacion');
+                                fechaAprobacion.required = false;
                             }
 
+                            //Muestra el campo noCasillero segun se cambie el select
                             document.getElementById('estadoSolicitud').addEventListener('change', function () {
                                 const estadoSolicitud = this.value;
                                 const casilleroAsignado = document.getElementById('casilleroAsignado');
                             
                                 if (estadoSolicitud === 'Aprobada') {
                                     casilleroAsignado.style.display = 'block';
+
+                                    const campoCasillero = document.getElementById('noCasillero');
+                                    campoCasillero.required = true;
+                                    const fechaAprobacion = document.getElementById('fechaAprobacion');
+                                    fechaAprobacion.required = true;
                                 } else {
                                     casilleroAsignado.style.display = 'none';
+
+                                    const campoCasillero = document.getElementById('noCasillero');
+                                    campoCasillero.required = false;
+                                    const fechaAprobacion = document.getElementById('fechaAprobacion');
+                                    fechaAprobacion.required = false;
                                 }
                             });
                         }
@@ -251,8 +308,6 @@ document.addEventListener("DOMContentLoaded", function () {
                         document.getElementById('submitBtn').onclick = function () {
                             if (validateForm()) {
                                 handleSubmit('edit', table, recordId);
-                            } else {
-                                alert('Formulario no válido. Verifica los campos.');
                             }
                         };
                     } else {
@@ -272,17 +327,22 @@ document.addEventListener("DOMContentLoaded", function () {
         const form = document.getElementById('crudForm');
         const inputs = form.querySelectorAll('input, select');
         let isValid = true;
-
+        let errorMessages = [];
+    
         inputs.forEach(input => {
             if (input.validity.valid === false) {
                 isValid = false;
-                alert(`Por favor, revisa el campo: ${input.name} ${input.value} (${input.validationMessage})`);
+                errorMessages.push(`- ${input.name}: ${input.validationMessage}`);
             }
         });
-
+    
+        if (!isValid) {
+            alert(`Por favor, revisa los siguientes campos:\n${errorMessages.join('\n')}`);
+        }
+    
         return isValid;
     }
-
+    
     // Generar contenido dinámico del formulario
     function contForms(recordId, table, data) {
         switch (table) {
@@ -387,7 +447,7 @@ document.addEventListener("DOMContentLoaded", function () {
                     <fieldset class="border p-3 mb-4">
                         <div class="mb-3">
                             <label for="noCasillero" class="form-label">Número de Casillero</label>
-                            <input type="number" id="noCasillero" name="noCasillero" class="form-control" min="1" value="${data.noCasillero || ''}" required>
+                            <input type="number" id="noCasillero" name="noCasillero" class="form-control" min="1" value="${data.noCasillero || ''}" title="${data.noCasillero ? 'El número de casillero no puede ser editado' : ''}" ${data.noCasillero ? 'readonly' : ''} required>
                         </div>
                         <div class="mt-3">
                             <label for="altura" class="form-label">Altura</label>
@@ -414,12 +474,12 @@ document.addEventListener("DOMContentLoaded", function () {
                     <fieldset class="border p-3 mb-4">
                         <div class="mb-3">
                             <label for="id" class="form-label">Id</label>
-                            <input type="number" min="1" id="user" name="id" class="form-control" value="${data.id || ''}" required autocomplete="off">
+                            <input type="number" min="1" id="user" name="id" class="form-control" title="El id no puede ser editado" value="${data.id}" readonly>
                         </div>
 
                         <div class="mb-3">
                             <label for="noBoleta" class="form-label">Boleta Asociada</label>
-                            <input type="text" id="noBoleta" name="noBoleta" class="form-control" pattern="^[0-9]{10}$" value="${data.noBoleta || ''}">
+                            <input type="text" id="noBoleta" name="noBoleta" class="form-control" pattern="^[0-9]{10}$" value="${data.noBoleta || ''}" title="La boleta no puede ser editada" readonly>
                         </div>
 
                         <div class="mb-3">
@@ -440,7 +500,10 @@ document.addEventListener("DOMContentLoaded", function () {
 
                         <div id="casilleroAsignado" class="mb-3">
                             <label for="noCasillero" class="form-label">Número de Casillero Asignado</label>
-                            <input type="number" id="noCasillero" name="noCasillero" class="form-control" min="1" required>
+                            <input type="number" id="noCasillero" name="noCasillero" class="form-control" min="1" value="${data.noCasillero || ''}"><br>
+
+                            <label for="fechaAprobacion" class="form-label">Fecha de Aprobación</label>
+                            <input type="datetime-local" id="fechaAprobacion" name="fechaAprobacion" class="form-control" value="${data.fechaAprobacion || ''}">
                         </div>
                     </fieldset>
                     

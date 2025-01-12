@@ -23,9 +23,21 @@
                 case 'casilleros':
                     $query = "SELECT * FROM casilleros WHERE noCasillero = ?";
                     break;
-                case 'solicitudes':
-                    $query = "SELECT * FROM solicitudes WHERE id = ?";
-                    break;
+                    case 'solicitudes':
+                        $query = "
+                            SELECT 
+                                solicitudes.*, 
+                                casilleros.noCasillero 
+                            FROM 
+                                solicitudes 
+                            LEFT JOIN 
+                                casilleros 
+                            ON 
+                                solicitudes.noBoleta = casilleros.boletaAsignada 
+                            WHERE 
+                                solicitudes.id = ?
+                        ";
+                        break;
                 default:
                     echo json_encode(['success' => false, 'message' => 'Tabla no reconocida.']);
                     exit;
