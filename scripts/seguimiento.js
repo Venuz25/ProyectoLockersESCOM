@@ -1,6 +1,7 @@
 document.addEventListener('DOMContentLoaded', function () {
     const renvDiv = document.getElementById('renv');
     const primeraVezDiv = document.getElementById('primera-vez');
+    const usuarioE=document.getElementById('nombre');
 
     // Ocultar ambas secciones inicialmente
     renvDiv.style.display = 'none';
@@ -16,7 +17,15 @@ document.addEventListener('DOMContentLoaded', function () {
         .then(data => {
             if (data.error) {
                 console.error(data.error);
+                usuarioE.textContent = 'Usuario';
                 return;
+            }
+
+            // Mostrar el nombre del usuario
+            if (data.usuario) {
+                usuarioE.textContent = `${data.usuario}`;
+            } else {
+                usuarioE.textContent = 'Usuario'; // Valor predeterminado si no hay nombre
             }
             
             const estadoSolicitud = data.solicitud;
