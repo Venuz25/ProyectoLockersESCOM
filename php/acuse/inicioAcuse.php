@@ -7,7 +7,7 @@
         $correo = $_POST['Correo'];
         $contrasena = $_POST['Contraseña'];
 
-        $sql = "SELECT a.boleta, a.solicitud, s.estadoSolicitud, s.fechaRegistro, s.comprobantePago FROM alumnos a
+        $sql = "SELECT a.boleta, a.solicitud, s.estadoSolicitud, s.fechaRegistro, s.comprobantePago, s.fechaAprobacion FROM alumnos a
                 INNER JOIN solicitudes s ON a.boleta = s.noBoleta WHERE a.usuario = ? AND a.correo = ? AND a.contrasena = ?";
         $stmt = $conn->prepare($sql);
         $stmt->bind_param("sss", $usuario, $correo, $contrasena);
@@ -23,6 +23,7 @@
             $_SESSION['estadosolicitud'] = $row['estadoSolicitud'];
             $_SESSION['fecharegistro'] = $row['fechaRegistro'];
             $_SESSION['comprobante'] = $row['comprobantePago'];
+            $_SESSION['faprobación'] = $row['fechaAprobacion'];
 
             header("Location: redireccion.php");
             exit();
