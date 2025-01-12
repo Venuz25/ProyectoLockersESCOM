@@ -2,6 +2,7 @@ document.addEventListener('DOMContentLoaded', function () {
     const renvDiv = document.getElementById('renv');
     const primeraVezDiv = document.getElementById('primera-vez');
     const usuarioE=document.getElementById('nombre');
+    const tituloE=document.getElementById('titulo');
 
     // Ocultar ambas secciones inicialmente
     renvDiv.style.display = 'none';
@@ -28,7 +29,14 @@ document.addEventListener('DOMContentLoaded', function () {
                 usuarioE.textContent = 'Usuario'; // Valor predeterminado si no hay nombre
             }
             
+            if (data.solicitud) {
+                tituloE.textContent = `${data.solicitud}`;
+            } else {
+                tituloE.textContent = 'Casilleros ESCOM'; // Valor predeterminado si no hay nombre
+            }
+
             const estadoSolicitud = data.solicitud;
+            
 
             // Mostrar la sección correspondiente según el estado
             if (estadoSolicitud === 'Renovación') {
