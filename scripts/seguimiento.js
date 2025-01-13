@@ -42,11 +42,11 @@ document.addEventListener('DOMContentLoaded', function () {
             if (estadoSolicitud === 'Renovación') {
                 renvDiv.style.display = 'block';
                 primeraVezDiv.style.display = 'none';
-                cargarScript('/ProyectoWeb/scripts/irenovacion.js');
+                cargarreno();
             } else if (estadoSolicitud === 'Primera Vez') {
                 primeraVezDiv.style.display = 'block';
                 renvDiv.style.display = 'none';
-                cargarScript('/ProyectoWeb/scripts/iprimeraV.js');
+                cargaprimv();
             } else {
                 console.error('Estado de solicitud no válido:', estadoSolicitud);
             }
@@ -56,10 +56,60 @@ document.addEventListener('DOMContentLoaded', function () {
         });
 });
 
-// Función para cargar scripts dinámicamente
-function cargarScript(url) {
-    const script = document.createElement('script');
-    script.src = url;
-    script.type = 'text/javascript';
-    document.body.appendChild(script);
+// Función para cargar los modales de renovación
+function cargarreno() {
+    const inputComprobante = document.getElementById('comprobanteRenovacion');
+    const checkConforme = document.getElementById('checkRenovacion');
+    const btnGenerarAcuse = document.querySelector('#renovacion-boton button');
+    const pdfDiv = document.getElementById('renovacion-pdf');
+    const botonDiv = document.getElementById('renovacion-boton');
+
+    pdfDiv.style.display = 'none';
+    botonDiv.style.display = 'none';
+
+    // Mostrar el PDF solo si se sube un archivo válido
+    inputComprobante.addEventListener('change', function () {
+        if (inputComprobante.files.length > 0) {
+            const file = inputComprobante.files[0];
+
+            // Validar que el archivo sea un PDF
+            if (file.type === 'application/pdf') {
+                pdfDiv.style.display = 'block';
+            } else {
+                alert('Por favor, suba un archivo en formato PDF.');
+                inputComprobante.value = '';
+                pdfDiv.style.display = 'none';
+            }
+        }
+    });
+
+    // Mostrar el botón de generar acuse solo si se acepta el checkbox
+    checkConforme.addEventListener('change', function () {
+        if (checkConforme.checked && inputComprobante.files.length > 0) {
+            botonDiv.style.display = 'block';
+        } else {
+            botonDiv.style.display = 'none';
+        }
+    });
+
+    // Lógica del botón Generar Acuse
+    btnGenerarAcuse.addEventListener('click', function () {
+        if (!checkConforme.checked) {
+            alert('Debe aceptar los términos antes de continuar.');
+            return;
+        }
+
+        if (!inputComprobante.files.length) {
+            alert('Debe subir un comprobante de pago.');
+            return;
+        }
+
+        // logica para enviar datos.
+        alert('Renovación completada con éxito.');
+    });
+}
+
+// Función para cargar los modales de PRIMERA VEZ
+function cargaprimv(){
+
 }
