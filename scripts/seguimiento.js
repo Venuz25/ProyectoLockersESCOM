@@ -36,17 +36,18 @@ document.addEventListener('DOMContentLoaded', function () {
             }
 
             const estadoSolicitud = data.solicitud;
+            const boleta = data.boleta;
             
 
             // Mostrar la sección correspondiente según el estado
             if (estadoSolicitud === 'Renovación') {
                 renvDiv.style.display = 'block';
                 primeraVezDiv.style.display = 'none';
-                cargarreno();
+                cargarreno(boleta);
             } else if (estadoSolicitud === 'Primera vez') {
                 primeraVezDiv.style.display = 'block';
                 renvDiv.style.display = 'none';
-                cargaprimv();
+                cargaprimv(boleta);
             } else {
                 console.error('Estado de solicitud no válido:', estadoSolicitud);
             }
@@ -57,7 +58,7 @@ document.addEventListener('DOMContentLoaded', function () {
 });
 
 // Función para cargar los modales de renovación
-function cargarreno() {
+function cargarreno(boleta) {
     const inputComprobante = document.getElementById('comprobanteRenovacion');
     const checkConforme = document.getElementById('checkRenovacion');
     const btnGenerarAcuse = document.querySelector('#renovacion-boton button');
@@ -71,6 +72,26 @@ function cargarreno() {
     inputComprobante.addEventListener('change', function () {
         if (inputComprobante.files.length > 0) {
             const file = inputComprobante.files[0];
+            const nombreArchivo = file.name.trim().toLowerCase();
+            const regex = /^\d{10}_comprobante\.pdf$/i;
+            
+            if (!regex.test(nombreArchivo)) {
+                alert(`El archivo debe tener el formato: "${boleta}_comprobante.pdf".`);
+                inputComprobante.value = '';
+                divboton.style.display = 'none';
+                return;
+            }
+
+            const boletaArchivo = nombreArchivo.trim().substring(0, 10);
+
+            /* Comparar con la boleta del usuario
+            if (boletaArchivo !== boleta.trim()) {
+                alert(`El número de boleta en el archivo (${boletaArchivo}) no coincide con la boleta del usuario (${boleta}).`);
+                inputComprobante.value = '';
+                divboton.style.display = 'none';
+                return;
+            }
+            */
 
             // Validar que el archivo sea un PDF
             if (file.type === 'application/pdf') {
@@ -110,7 +131,7 @@ function cargarreno() {
 }
 
 // Función para cargar los modales de PRIMERA VEZ
-function cargaprimv(){
+function cargaprimv(boleta){
     const divboton = document.getElementById('primera-vez-boton');
     const divcompro = document.getElementById('primera-vez-subir-comprobante');
     const checkConforme = document.getElementById('checkPrimeraVez');
@@ -131,6 +152,26 @@ function cargaprimv(){
     inputComprobante.addEventListener('change', function () {
         if (inputComprobante.files.length > 0 && checkConforme.checked) {
             const file = inputComprobante.files[0];
+            const nombreArchivo = file.name.trim().toLowerCase();
+            const regex = /^\d{10}_comprobante\.pdf$/i;
+            
+            if (!regex.test(nombreArchivo)) {
+                alert(`El archivo debe tener el formato: "${boleta}_comprobante.pdf".`);
+                inputComprobante.value = '';
+                divboton.style.display = 'none';
+                return;
+            }
+
+            const boletaArchivo = nombreArchivo.trim().substring(0, 10);
+
+            /* Comparar con la boleta del usuario
+            if (boletaArchivo !== boleta.trim()) {
+                alert(`El número de boleta en el archivo (${boletaArchivo}) no coincide con la boleta del usuario (${boleta}).`);
+                inputComprobante.value = '';
+                divboton.style.display = 'none';
+                return;
+            }
+            */
 
             // Validar que el archivo sea un PDF
             if (file.type === 'application/pdf') {
