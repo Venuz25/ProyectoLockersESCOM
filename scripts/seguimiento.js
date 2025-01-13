@@ -43,7 +43,7 @@ document.addEventListener('DOMContentLoaded', function () {
                 renvDiv.style.display = 'block';
                 primeraVezDiv.style.display = 'none';
                 cargarreno();
-            } else if (estadoSolicitud === 'Primera Vez') {
+            } else if (estadoSolicitud === 'Primera vez') {
                 primeraVezDiv.style.display = 'block';
                 renvDiv.style.display = 'none';
                 cargaprimv();
@@ -111,5 +111,50 @@ function cargarreno() {
 
 // Función para cargar los modales de PRIMERA VEZ
 function cargaprimv(){
+    const divboton = document.getElementById('primera-vez-boton');
+    const divcompro = document.getElementById('primera-vez-subir-comprobante');
+    const checkConforme = document.getElementById('checkPrimeraVez');
+    const inputComprobante = document.getElementById('comprobantePrimeraVez');
+    const btnGenerarAcuse = document.querySelector('#primera-vez-boton button');
 
+    divcompro.style.display = 'none';
+    divboton.style.display = 'none';
+    
+    checkConforme.addEventListener('change', function () {
+        if (checkConforme.checked) {
+            divcompro.style.display = 'block';
+        } else {
+            divcompro.style.display = 'none';
+        }
+    });
+
+    inputComprobante.addEventListener('change', function () {
+        if (inputComprobante.files.length > 0 && checkConforme.checked) {
+            const file = inputComprobante.files[0];
+
+            // Validar que el archivo sea un PDF
+            if (file.type === 'application/pdf') {
+                divboton.style.display = 'block';
+            } else {
+                alert('Por favor, suba un archivo en formato PDF.');
+                inputComprobante.value = '';
+                divboton.style.display = 'none';
+            }
+        }
+    });
+
+    btnGenerarAcuse.addEventListener('click', function () {
+        if (!checkConforme.checked) {
+            alert('Debe aceptar los términos antes de continuar.');
+            return;
+        }
+
+        if (!inputComprobante.files.length) {
+            alert('Debe subir un comprobante de pago.');
+            return;
+        }
+
+        // logica para enviar datos.
+        alert('Renovación completada con éxito.');
+    });
 }
