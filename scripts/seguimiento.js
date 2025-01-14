@@ -119,15 +119,16 @@ function cargarreno(boleta) {
             alert('Debe aceptar los términos antes de continuar.');
             return;
         }
-
+    
         if (!inputComprobante.files.length) {
             alert('Debe subir un comprobante de pago.');
             return;
         }
-
-        // logica para enviar datos.
-        alert('Renovación completada con éxito.');
+    
+        // Redirigir al usuario a Pdf_acuse.php
+        window.location.href = '/ProyectoWeb/php/acuse/Pdf_acuse.php';
     });
+    
 }
 
 // Función para cargar los modales de PRIMERA VEZ
@@ -189,13 +190,14 @@ function cargaprimv(boleta){
             alert('Debe aceptar los términos antes de continuar.');
             return;
         }
-
+    
         if (!inputComprobante.files.length) {
             alert('Debe subir un comprobante de pago.');
             return;
         }
-
-        // logica para enviar datos.
-        alert('Renovación completada con éxito.');
+    
+        // Redirigir al usuario a Pdf_acuse.php
+        window.location.href = '/ProyectoWeb/php/acuse/Pdf_acuse.php';
     });
+    
 }
