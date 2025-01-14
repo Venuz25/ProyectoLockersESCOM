@@ -5,13 +5,18 @@
     if (isset($_SESSION['solicitud']) && isset($_SESSION['estadosolicitud'])) {
         $solicitud = $_SESSION['solicitud'];
         $estadoSolicitud = $_SESSION['estadosolicitud'];
+        $comprobante = $_SESSION['comprobante'];
         
         $htmlFile = '';
 
         if ($solicitud === 'Primera vez') {
             switch ($estadoSolicitud) {
                 case 'Aprobada':
-                    $htmlFile = '/ProyectoWeb/seguimiento.html';
+                    if($comprobante !== null){
+                        $htmlFile = '/ProyectoWeb/exito.html';
+                    }else{
+                        $htmlFile = '/ProyectoWeb/seguimiento.html';
+                    }
                     break;
                 case 'Pendiente':
                     $htmlFile = '/ProyectoWeb/pendientes.html';
@@ -29,9 +34,17 @@
                 case 'Aprobada':
                     include 'revisiontiempo.php';
                     if (verificarPlazo24Horas()) {
-                        $htmlFile = '/ProyectoWeb/seguimiento.html';
+                        if($comprobante !== null){
+                            $htmlFile = '/ProyectoWeb/exito.html';
+                        }else{
+                            $htmlFile = '/ProyectoWeb/seguimiento.html';
+                        }
                     } else {
-                        $htmlFile = '/ProyectoWeb/pendientes.html';
+                        if($comprobante !== null){
+                            $htmlFile = '/ProyectoWeb/exito.html';
+                        }else{
+                            $htmlFile = '/ProyectoWeb/pendientes.html';
+                        }
                     }
                     break;
                 case 'Pendiente':
