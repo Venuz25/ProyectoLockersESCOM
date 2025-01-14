@@ -57,6 +57,48 @@ document.addEventListener('DOMContentLoaded', function () {
         });
 });
 
+//Función para el envio de datos
+function procesarAcuse(inputComprobante, urlSubir, urlPDF, urlExito) {
+    if (!inputComprobante.files.length) {
+        alert('Debe subir un comprobante de pago.');
+        return;
+    }
+
+    const file = inputComprobante.files[0];
+    const formData = new FormData();
+    formData.append('comprobante', file);
+
+    //Enviar información a la base de datos
+    fetch(urlSubir, {
+        method: 'POST',
+        body: formData,
+    })
+        .then(response => {
+            console.log(response); // Para ver si la respuesta es OK
+            if (!response.ok) {
+                throw new Error('Error al guardar los datos en la base de datos.');
+            }
+            return response.json();
+        })
+        .then(data => {
+            console.log(data); // Para inspeccionar los datos recibidos
+            if (data.error) {
+                alert('Error: ' + data.error);
+                return;
+            }
+    
+            // Generar el PDF
+            window.open(urlPDF, '_blank');
+    
+            // Redirigir a la página de éxito
+            window.location.href = urlExito;
+        })
+        .catch(error => {
+            console.error('Error:', error);
+            alert('Ocurrió un error. Por favor, inténtelo de nuevo.');
+        });
+}
+
 // Función para cargar los modales de renovación
 function cargarreno(boleta) {
     const inputComprobante = document.getElementById('comprobanteRenovacion');
@@ -119,14 +161,14 @@ function cargarreno(boleta) {
             alert('Debe aceptar los términos antes de continuar.');
             return;
         }
-    
-        if (!inputComprobante.files.length) {
-            alert('Debe subir un comprobante de pago.');
-            return;
-        }
-    
-        // Redirigir al usuario a Pdf_acuse.php
-        window.location.href = '/ProyectoWeb/php/acuse/Pdf_acuse.php';
+
+        // Llamar a la función genérica
+        procesarAcuse(
+            inputComprobante,
+            '/ProyectoWeb/php/acuse/subCompro.php',
+            '/ProyectoWeb/php/acuse/Pdf_acuse.php',
+            '/ProyectoWeb/exito.html'
+        );
     });
     
 }
@@ -190,14 +232,13 @@ function cargaprimv(boleta){
             alert('Debe aceptar los términos antes de continuar.');
             return;
         }
-    
-        if (!inputComprobante.files.length) {
-            alert('Debe subir un comprobante de pago.');
-            return;
-        }
-    
-        // Redirigir al usuario a Pdf_acuse.php
-        window.location.href = '/ProyectoWeb/php/acuse/Pdf_acuse.php';
+
+        // Llamar a la función genérica
+        procesarAcuse(
+            inputComprobante,
+            '/ProyectoWeb/php/acuse/subCompro.php',
+            '/ProyectoWeb/php/acuse/Pdf_acuse.php',
+            '/ProyectoWeb/exito.html'
+        );
     });
-    
 }
