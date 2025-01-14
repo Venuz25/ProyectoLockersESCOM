@@ -43,7 +43,8 @@
                         if($comprobante !== null){
                             $htmlFile = '/ProyectoWeb/exito.html';
                         }else{
-                            $htmlFile = '/ProyectoWeb/pendientes.html';
+                            echo "<script>alert('Lo sentimos, tu tiempo de subida de documentos ha expirado. Se revisará tu solicitud conforme a los casilleros disponibles.');</script>";
+                            echo "<script>window.location.href = 'cambioEstado.php';</script>";
                         }
                     }
                     break;
