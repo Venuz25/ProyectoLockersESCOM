@@ -4,6 +4,8 @@ session_start();
 // Incluir conexión a la base de datos
 include_once '../conexion.php';
 
+$enTransaccion = false;
+
 try {
     // Validar que se haya enviado un archivo y que sea un POST
     if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
@@ -34,7 +36,6 @@ try {
     // Generar ruta relativa para guardar en la base de datos
     $rutaRelativa = '/ProyectoWeb/Docs/Comprobantes/'.$nombreArchivo;
 
-    $enTransaccion = false;
     // Actualizar BD
     $conn->begin_transaction();
     $enTransaccion = true;
