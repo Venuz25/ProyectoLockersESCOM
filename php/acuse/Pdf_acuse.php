@@ -88,8 +88,10 @@
 
     // Salida del PDF
     try {
-        $pdf->Output();
+        $nombreArchivo = $boleta . '.pdf';
+        $pdf->Output('D', $nombreArchivo);
     } catch (Exception $e) {
         die('Error al generar el PDF: ' . $e->getMessage());
     }
+    
 ?>
