@@ -30,6 +30,20 @@ document.addEventListener("DOMContentLoaded", function () {
     });
 });
 
+//Funcion para actualizar solicitudes en caso de ya no haber casilleros disponibles
+function verificarSolicitudes() {
+    fetch('/ProyectoWeb/php/admin/actualizarSolicitudes.php')
+        .then((response) => response.json())
+        .then((data) => {
+            if (data.success) {
+                alert(data.message);
+            } else {
+                console.log(data.message);
+            }
+        })
+        .catch((error) => console.error('Error:', error));
+}
+
 //Logica Crud
 document.addEventListener("DOMContentLoaded", function () {
     const tableSelect = document.getElementById('tableSelect');
@@ -56,6 +70,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
     // Cargar registros de la tabla seleccionada
     function loadTableData(table) {
+        verificarSolicitudes();
         fetch(`/ProyectoWeb/php/admin/CRUD/getTableData.php?table=${table}`)
             .then(response => response.json())
             .then(data => {
@@ -148,40 +163,57 @@ document.addEventListener("DOMContentLoaded", function () {
                 const campoCasillero = document.getElementById('numero-casillero');
                 campoCasillero.required = true;
 
-                //Muestra el campo casillero-anterior segun se cambie el select
+                // Muestra el campo casillero-anterior según se cambie el select
                 document.getElementById('tipo_solicitud').addEventListener('change', function () {
                     const tipoSolicitud = this.value;
                     const casilleroAnterior = document.getElementById('casillero-anterior');
 
                     if (tipoSolicitud === 'Renovación') {
                         casilleroAnterior.style.display = 'block';
-
-                        const campoCasillero = document.getElementById('numero-casillero');
                         campoCasillero.required = true;
                     } else {
                         casilleroAnterior.style.display = 'none';
-
-                        const campoCasillero = document.getElementById('numero-casillero');
-                         campoCasillero.required = false;
+                        campoCasillero.required = false;
                     }
                 });
             } else if (table === 'casilleros') {
                 const campoBoletaAsignada = document.getElementById('boletaAsignada');
                 campoBoletaAsignada.required = true;
 
-                //Muestra el campo de boleta asignada segun el select
+                // Llamar al servidor para obtener las boletas no aprobadas
+                fetch('/ProyectoWeb/php/admin/CRUD/getBoletasDisponibles.php')
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        // Limpiar las opciones existentes en el select
+                        campoBoletaAsignada.innerHTML = '<option value="">Seleccione una boleta</option>';
+
+                        // Agregar las opciones al select con los datos que ya vienen filtrados y ordenados desde PHP
+                        data.boletas.forEach(boleta => {
+                            const option = document.createElement('option');
+                            option.value = boleta.noBoleta;
+                            option.textContent = `${boleta.noBoleta} || ${boleta.nombreCompleto}`;
+                            campoBoletaAsignada.appendChild(option);
+                        });
+                    } else {
+                        console.error('Error al cargar las boletas:', data.message);
+                    }
+                })
+                .catch(error => {
+                    console.error('Error al obtener las boletas:', error);
+                });
+
+                // Muestra el campo de boleta asignada según el select
                 document.getElementById('estado').addEventListener('change', function () {
                     const estado = this.value;
                     const divBoleta = document.getElementById('divBoleta');
                 
                     if (estado !== 'Asignado') {
                         divBoleta.style.display = 'none';
-
                         const campoBoletaAsignada = document.getElementById('boletaAsignada');
                         campoBoletaAsignada.required = true;
                     } else {
                         divBoleta.style.display = 'block';
-
                         const campoBoletaAsignada = document.getElementById('boletaAsignada');
                         campoBoletaAsignada.required = false;
                     }
@@ -203,63 +235,80 @@ document.addEventListener("DOMContentLoaded", function () {
                         crudForm.innerHTML = contForms(recordId, table, data.obtData);
 
                         if (table === 'alumnos') {
-                            //Muestra el campo casillero-anterior segun se obtenga en la db
+                            // Muestra el campo casillero-anterior según se obtenga en la db
                             if (data.obtData.solicitud === 'Renovación') {
                                 document.getElementById('casillero-anterior').style.display = 'block';
-
                                 const campoCasillero = document.getElementById('numero-casillero');
                                 campoCasillero.required = true;
-                            }else{
+                            } else {
                                 document.getElementById('casillero-anterior').style.display = 'none';
-
                                 const campoCasillero = document.getElementById('numero-casillero');
                                 campoCasillero.required = false;
                             }
 
-                            //Muestra el campo casillero-anterior segun se cambie el select
+                            // Muestra el campo casillero-anterior según se cambie el select
                             document.getElementById('tipo_solicitud').addEventListener('change', function () {
                                 const tipoSolicitud = this.value;
                                 const casilleroAnterior = document.getElementById('casillero-anterior');
-            
+
                                 if (tipoSolicitud === 'Renovación') {
                                     casilleroAnterior.style.display = 'block';
-
                                     const campoCasillero = document.getElementById('numero-casillero');
                                     campoCasillero.required = true;
                                 } else {
                                     casilleroAnterior.style.display = 'none';
-
                                     const campoCasillero = document.getElementById('numero-casillero');
-                                     campoCasillero.required = false;
+                                    campoCasillero.required = false;
                                 }
                             });
                         } else if (table === 'casilleros') {
-                            //Muestra el campo de boleta asignada segun se obtenga en la db
+                            const campoBoletaAsignada = document.getElementById('boletaAsignada');
+                            
+                            // Llamar al servidor para obtener las boletas no aprobadas
+                            fetch('/ProyectoWeb/php/admin/CRUD/getBoletasDisponibles.php')
+                            .then(response => response.json())
+                            .then(data => {
+                                if (data.success) {
+                                    // Limpiar las opciones existentes en el select
+                                    campoBoletaAsignada.innerHTML = '<option value="">Seleccione una boleta</option>';
+
+                                    // Agregar las opciones al select con los datos que ya vienen filtrados y ordenados desde PHP
+                                    data.boletas.forEach(boleta => {
+                                        const option = document.createElement('option');
+                                        option.value = boleta.noBoleta;
+                                        option.textContent = `${boleta.nombreCompleto} - ${boleta.noBoleta}`;
+                                        campoBoletaAsignada.appendChild(option);
+                                    });
+                                } else {
+                                    console.error('Error al cargar las boletas:', data.message);
+                                }
+                            })
+                            .catch(error => {
+                                console.error('Error al obtener las boletas:', error);
+                            });
+
+                            // Muestra el campo de boleta asignada según se obtenga en la db
                             if (data.obtData.estado === 'Asignado') {
                                 document.getElementById('divBoleta').style.display = 'block';
-
                                 const campoBoletaAsignada = document.getElementById('boletaAsignada');
                                 campoBoletaAsignada.required = true;
                             } else {
                                 document.getElementById('divBoleta').style.display = 'none';
-
                                 const campoBoletaAsignada = document.getElementById('boletaAsignada');
                                 campoBoletaAsignada.required = false;
                             }
 
-                            //Muestra el campo de boleta asignada segun el select
+                            // Muestra el campo de boleta asignada según el select
                             document.getElementById('estado').addEventListener('change', function () {
                                 const estado = this.value;
                                 const divBoleta = document.getElementById('divBoleta');
                             
                                 if (estado === 'Asignado') {
                                     divBoleta.style.display = 'block';
-
                                     const campoBoletaAsignada = document.getElementById('boletaAsignada');
                                     campoBoletaAsignada.required = true;
                                 } else {
                                     divBoleta.style.display = 'none';
-
                                     const campoBoletaAsignada = document.getElementById('boletaAsignada');
                                     campoBoletaAsignada.required = false;
                                 }
@@ -304,7 +353,7 @@ document.addEventListener("DOMContentLoaded", function () {
                                 }
                             });
                         }
-                        
+
                         document.getElementById('submitBtn').onclick = function () {
                             if (validateForm()) {
                                 handleSubmit('edit', table, recordId);
@@ -465,7 +514,9 @@ document.addEventListener("DOMContentLoaded", function () {
                         </div>
                         <div id="divBoleta" class="mt-3">
                             <label for="boletaAsignada" class="form-label">Boleta Asignada</label>
-                            <input type="text" id="boletaAsignada" name="boletaAsignada" class="form-control" pattern="^[0-9]{10}$" value="${data.boletaAsignada || ''}">
+                            <select id="boletaAsignada" name="boletaAsignada" class="form-control">
+                                <option value="">Cargando boletas...</option>
+                            </select>
                         </div>
                     </fieldset>
                     `;
@@ -484,7 +535,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
                         <div class="mb-3">
                             <label for="fechaRegistro" class="form-label">Fecha de Registro</label>
-                            <input type="datetime-local" id="fechaRegistro" name="fechaRegistro" class="form-control" value="${data.fechaRegistro || ''}">
+                            <input type="datetime-local" step="1" id="fechaRegistro" name="fechaRegistro" class="form-control" value="${data.fechaRegistro || ''}">
                         </div>
                     </fieldset>
 
@@ -503,7 +554,7 @@ document.addEventListener("DOMContentLoaded", function () {
                             <input type="number" id="noCasillero" name="noCasillero" class="form-control" min="1" value="${data.noCasillero || ''}"><br>
 
                             <label for="fechaAprobacion" class="form-label">Fecha de Aprobación</label>
-                            <input type="datetime-local" id="fechaAprobacion" name="fechaAprobacion" class="form-control" value="${data.fechaAprobacion || ''}">
+                            <input type="datetime-local" step="1" id="fechaAprobacion" name="fechaAprobacion" class="form-control" value="${data.fechaAprobacion || ''}">
                         </div>
                     </fieldset>
                     

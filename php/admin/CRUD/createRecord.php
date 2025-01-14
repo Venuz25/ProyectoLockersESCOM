@@ -47,11 +47,9 @@
             $contrasena = $_POST['contraseña'];
             $boleta = $_POST['boleta'];
 
-            // Subir archivos
-            $credencial = $_FILES['credencial']['name'];
-            $horario = $_FILES['horario']['name'];
-            $credencialPath = '/ProyectoWeb/Docs/Credenciales/' . $credencial;
-            $horarioPath = '/ProyectoWeb/Docs/Horarios/' . $horario;
+            // Ruta del directorio donde se guardarán los archivos
+            $targetDirCredencial = $_SERVER['DOCUMENT_ROOT'] . '/ProyectoWeb/Docs/Credenciales/';
+            $targetDirHorario = $_SERVER['DOCUMENT_ROOT'] . '/ProyectoWeb/Docs/Horarios/';
 
             // Verificar si la boleta o el usuario ya están registrados
             $stmtVerificar = $conn->prepare("SELECT COUNT(*) AS total FROM alumnos WHERE boleta = ? OR usuario = ?");
@@ -71,10 +69,34 @@
             $ocupados = $resultCasillerosOcupados['ocupados'];
             $estadoSolicitud = ($totalCasilleros == $ocupados) ? 'Lista de espera' : (($tipoSolicitud == 'Renovación') ? 'Aprobada' : 'Pendiente');
 
-            if (!move_uploaded_file($_FILES['credencial']['tmp_name'], $_SERVER['DOCUMENT_ROOT'] . $credencialPath) ||
-                !move_uploaded_file($_FILES['horario']['tmp_name'], $_SERVER['DOCUMENT_ROOT'] . $horarioPath)) {
-                    echo json_encode(['success' => false, 'message' => 'Error al subir los archivos.']);
+            // Subida y renombrado de la credencial
+            if (isset($_FILES['credencial']) && $_FILES['credencial']['error'] === UPLOAD_ERR_OK) {
+                $credencialTmpName = $_FILES['credencial']['tmp_name'];
+                $credencialExt = pathinfo($_FILES['credencial']['name'], PATHINFO_EXTENSION);
+                $credencialNewName = $boleta . "_credencial." . $credencialExt;
+                $credencialTargetFile = $targetDirCredencial . $credencialNewName;
+
+                if (move_uploaded_file($credencialTmpName, $credencialTargetFile)) {
+                    $credencialPath = '/ProyectoWeb/Docs/Credenciales/' . $credencialNewName;
+                } else {
+                    echo json_encode(['success' => false, 'message' => 'Error al subir la credencial']);
                     exit;
+                }
+            }
+
+            // Subida y renombrado del horario
+            if (isset($_FILES['horario']) && $_FILES['horario']['error'] === UPLOAD_ERR_OK) {
+                $horarioTmpName = $_FILES['horario']['tmp_name'];
+                $horarioExt = pathinfo($_FILES['horario']['name'], PATHINFO_EXTENSION);
+                $horarioNewName = $boleta . "_horario." . $horarioExt; 
+                $horarioTargetFile = $targetDirHorario . $horarioNewName;
+
+                if (move_uploaded_file($horarioTmpName, $horarioTargetFile)) {
+                    $horarioPath = '/ProyectoWeb/Docs/Horarios/' . $horarioNewName;
+                } else {
+                    echo json_encode(['success' => false, 'message' => 'Error al subir el horario']);
+                    exit;
+                }
             }
             
             // Insertar datos en la tabla Alumnos
@@ -156,8 +178,9 @@
             }
             
             if($estado == 'Asignado'){
-                $stmtESolicitud = $conn->prepare("UPDATE solicitudes SET estadoSolicitud = 'Aprobada' WHERE noBoleta = ?");
-                $stmtESolicitud->bind_param("s", $boletaAsignada);
+                $fechaAprobacion = date("Y-m-d H:i:s");
+                $stmtESolicitud = $conn->prepare("UPDATE solicitudes SET estadoSolicitud = 'Aprobada', fechaAprobacion = ? WHERE noBoleta = ?");
+                $stmtESolicitud->bind_param("ss", $fechaAprobacion, $boletaAsignada);
                 if (!$stmtESolicitud->execute()) {
                     echo json_encode(['success' => false, 'message' => 'Error al actualizar los datos en la Solicitud.']);
                     exit;

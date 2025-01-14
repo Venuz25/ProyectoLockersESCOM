@@ -15,9 +15,6 @@
             if ($conn->query($sqlUpdateSolicitudes) === FALSE) {
                 throw new Exception("Error al actualizar solicitudes: " . $conn->error);
             }
-            echo json_encode(['success' => true, 'message' => 'Todas las solicitudes pendientes fueron actualizadas a Lista de espera.']);
-        } else {
-            echo json_encode(['success' => false, 'message' => 'Aún hay casilleros disponibles.']);
         }
     } catch (Exception $e) {
         echo json_encode(['success' => false, 'error' => $e->getMessage()]);

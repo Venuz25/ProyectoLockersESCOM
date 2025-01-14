@@ -19,7 +19,7 @@
         // Si hay un boleta asignada, actualizar la solicitud
         if ($boletaAsignada) {
             // Actualizar estado de la solicitud a 'Pendiente'
-            $sqlSolicitud = "UPDATE solicitudes SET estadoSolicitud = 'Pendiente', fechaAprobacion = NULL WHERE noBoleta = ?";
+            $sqlSolicitud = "UPDATE solicitudes SET estadoSolicitud = 'Pendiente', fechaAprobacion = NULL, comprobantePago = NULL WHERE noBoleta = ?";
             $stmtSolicitud = $conn->prepare($sqlSolicitud);
             $stmtSolicitud->bind_param("i", $boletaAsignada);
 

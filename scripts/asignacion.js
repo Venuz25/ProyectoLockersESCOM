@@ -118,31 +118,39 @@ function showLockerModal(data) {
     const asignadoA = data.boleta
         ? `${data.nombre} ${data.primerAp} ${data.segundoAp} <br>
             <strong>Boleta:</strong> ${data.boleta} <br> <br>
-            <button class="btn btn-outline-primary" onclick="mostrarDetallesAlumno(${data.boleta}, ${data.noCasillero})">Más</button>
-            `
+            <button class="btn btn-outline-primary" onclick="mostrarDetallesAlumno(${data.boleta}, ${data.noCasillero})">Más</button>`
         : 'Sin Asignar';
 
+    // Establece el contenido inicial
     modalTitle.textContent = `Casillero #${data.noCasillero}`;
     modalBody.innerHTML = `
         <p><strong>Estado:</strong> ${data.estado}</p>
         <p><strong>Altura:</strong> ${altura} (${data.altura}m)</p>
         <p><strong>Asignado a:</strong> ${asignadoA}</p>
+        ${data.estado === 'Disponible'? `
+            <br>
+            <h5>Lista de Alumnos</h5>
+            <div id="alumnos-placeholder" class="text-center">
+            <div class="spinner-border text-primary" role="status">
+                <span class="visually-hidden">Cargando...</span>
+            </div>
+        </div>` : ''}       
     `;
 
     if (data.estado === 'Disponible') {
-        modalFooter.innerHTML = `
-            <button type="button" id="asignar-btn" class="btn btn-primary">Asignar</button>
-        `;
-
-        document.getElementById('asignar-btn').addEventListener('click', () => {
-            listaAlumnos(data);
+        listaAlumnos(data).then((html) => {
+            const alumnosPlaceholder = document.getElementById('alumnos-placeholder');
+            if (alumnosPlaceholder) {
+                alumnosPlaceholder.outerHTML = html;
+            }
         });
+
+        modalFooter.innerHTML = '';
     } else {
         modalFooter.innerHTML = `
             <button type="button" id="reasignar-btn" class="btn btn-primary">Revocar</button>
         `;
 
-        // Lógica para Reasignar
         document.getElementById('reasignar-btn').addEventListener('click', () => {
             const confirmar = confirm(
                 `¿Estás seguro de que deseas revocar el casillero #${data.noCasillero} asignado a ${data.nombre}?`
@@ -153,21 +161,20 @@ function showLockerModal(data) {
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({ noCasillero: data.noCasillero })
                 })
-                .then(response => response.json())
-                .then(result => {
-                    if (result.success) {
-                        alert('El casillero ha sido revocado exitosamente.');
-                        location.reload();
-                    } else {
-                        alert('Ocurrió un error al intentar revocar el casillero.');
-                    }
-                })
-                .catch(error => console.error('Error al revocar el casillero:', error));
+                    .then((response) => response.json())
+                    .then((result) => {
+                        if (result.success) {
+                            alert('El casillero ha sido revocado exitosamente.');
+                            location.reload();
+                        } else {
+                            alert('Ocurrió un error al intentar revocar el casillero.');
+                        }
+                    })
+                    .catch((error) => console.error('Error al revocar el casillero:', error));
             }
         });
     }
 
-    //Correccion de bug de modal
     const modalInstance = bootstrap.Modal.getInstance(modalElement);
     if (modalInstance) {
         modalInstance.dispose();
@@ -177,46 +184,40 @@ function showLockerModal(data) {
     modal.show();
 }
 
-//Funcion para mostrar lista de alumnos
-function listaAlumnos(data) {
-    fetch(`/ProyectoWeb/php/admin/listaAlumnos.php?noCasillero=${data.noCasillero}`)
-        .then((response) => response.json())
-        .then((alumnos) => {    
-            const modalElement = document.getElementById('lockerModal');
-            const modalBody = document.querySelector('.modal-body');
-            const modalFooter = document.querySelector('.modal-footer');
+// Función para mostrar lista de alumnos
+async function listaAlumnos(data) {
+    try {
+        const response = await fetch(`/ProyectoWeb/php/admin/listaAlumnos.php?noCasillero=${data.noCasillero}`);
+        const alumnos = await response.json();
 
-            const alumnosFiltrados = alumnos.filter(
-                (alumno) =>
-                    data.altura <= 0.55 || (data.altura > 0.55 && alumno.estatura > 1.60)
-            );
+        const alumnosFiltrados = alumnos.filter(
+            (alumno) => data.altura <= 0.55 || (data.altura > 0.55 && alumno.estatura > 1.60)
+        );
 
-            if (alumnosFiltrados.length === 0) {
-                modalBody.innerHTML = `
-                    <h5>Lista de Alumnos</h5>
-                    <div class="alert alert-warning text-center" role="alert">
-                        No hay alumnos que cumplan las condiciones de altura.
-                    </div>
-                `;
-            } else {
-                modalBody.innerHTML = `
-                    <h5>Lista de Alumnos</h5>
-                    <table class="table table-striped">
-                        <thead>
-                            <tr>
-                                <th>Fecha de Solicitud</th>
-                                <th>Boleta</th>
-                                <th>Nombre</th>
-                                <th>Tipo</th>
-                                <th>Estado</th>
-                                <th></th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            ${alumnosFiltrados
-                                .map(
-                                    (alumno) => `
-                                    <tr>
+        if (alumnosFiltrados.length === 0) {
+            return `
+                <div class="alert alert-warning text-center" role="alert">
+                    No hay alumnos que cumplan las condiciones de altura.
+                </div>
+            `;
+        } else {
+            return `
+                <table class="table table-striped">
+                    <thead>
+                        <tr>
+                            <th>Fecha de Solicitud</th>
+                            <th>Boleta</th>
+                            <th>Nombre</th>
+                            <th>Tipo</th>
+                            <th>Estado</th>
+                            <th></th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        ${alumnosFiltrados
+                            .map(
+                                (alumno) => `
+                                    <tr style="${alumno.casilleroAnt == data.noCasillero ? 'font-weight: bold;' : ''}">
                                         <td>${alumno.fechaRegistro}</td>
                                         <td>${alumno.boleta}</td>
                                         <td>${alumno.nombre}</td>
@@ -227,27 +228,22 @@ function listaAlumnos(data) {
                                         </td>
                                     </tr>
                                 `
-                                )
-                                .join('')}
-                        </tbody>
-                    </table>
-                `;
-            }
-
-            const tableBody = document.querySelector('table tbody');
-            if (!tableBody || tableBody.children.length === 0) {
-                modalBody.innerHTML = `
-                    <h5>Lista de Alumnos</h5>
-                    <div class="alert alert-warning text-center" role="alert">
-                        Sin solicitudes pendientes.
-                    </div>`
-                ;
-            }
-
-            modalFooter.innerHTML = '';
-
-        });
+                            )
+                            .join('')}
+                    </tbody>
+                </table>
+            `;
+        }
+    } catch (error) {
+        console.error('Error al cargar la lista de alumnos:', error);
+        return `
+            <div class="alert alert-danger text-center" role="alert">
+                Error al cargar la lista de alumnos. Intente nuevamente.
+            </div>
+        `;
+    }
 }
+
 
 //Funcion para mostrar detalles del alumno
 function mostrarDetallesAlumno(boleta, noCasillero) {
@@ -357,7 +353,7 @@ function mostrarDetallesAlumno(boleta, noCasillero) {
                 document.getElementById('regresar-btn').addEventListener('click', () => {
                     fetch(`/ProyectoWeb/php/admin/modal.php?noCasillero=${noCasillero}`)
                         .then(response => response.json())
-                        .then(modalData => {listaAlumnos(modalData);});
+                        .then(modalData => {showLockerModal(modalData);});
                 });
             }
         })

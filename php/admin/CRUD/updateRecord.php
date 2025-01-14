@@ -50,7 +50,7 @@
             $stmtConsulta->bind_param("s", $recordId);
             $stmtConsulta->execute();
             $resultConsulta = $stmtConsulta->get_result();
-        
+
             if ($resultConsulta->num_rows > 0) {
                 $row = $resultConsulta->fetch_assoc();
                 $credencialPath = $row['credencial'];
@@ -59,18 +59,39 @@
                 echo json_encode(['success' => false, 'message' => 'Registro no encontrado']);
                 exit;
             }
-        
-            // Actualizar archivos si se han enviado nuevos
+
+            // Ruta del directorio donde se guardarán los archivos
+            $targetDirCredencial = $_SERVER['DOCUMENT_ROOT'] . '/ProyectoWeb/Docs/Credenciales/';
+            $targetDirHorario = $_SERVER['DOCUMENT_ROOT'] . '/ProyectoWeb/Docs/Horarios/';
+
+            // Subida y renombrado de la credencial
             if (isset($_FILES['credencial']) && $_FILES['credencial']['error'] === UPLOAD_ERR_OK) {
-                $credencial = $_FILES['credencial']['name'];
-                $credencialPath = '/ProyectoWeb/Docs/Credenciales/' . $credencial;
-                move_uploaded_file($_FILES['credencial']['tmp_name'], $_SERVER['DOCUMENT_ROOT'] . $credencialPath);
+                $credencialTmpName = $_FILES['credencial']['tmp_name'];
+                $credencialExt = pathinfo($_FILES['credencial']['name'], PATHINFO_EXTENSION);
+                $credencialNewName = $recordId . "_credencial." . $credencialExt;
+                $credencialTargetFile = $targetDirCredencial . $credencialNewName;
+
+                if (move_uploaded_file($credencialTmpName, $credencialTargetFile)) {
+                    $credencialPath = '/ProyectoWeb/Docs/Credenciales/' . $credencialNewName;
+                } else {
+                    echo json_encode(['success' => false, 'message' => 'Error al subir la credencial']);
+                    exit;
+                }
             }
-        
+
+            // Subida y renombrado del horario
             if (isset($_FILES['horario']) && $_FILES['horario']['error'] === UPLOAD_ERR_OK) {
-                $horario = $_FILES['horario']['name'];
-                $horarioPath = '/ProyectoWeb/Docs/Horarios/' . $horario;
-                move_uploaded_file($_FILES['horario']['tmp_name'], $_SERVER['DOCUMENT_ROOT'] . $horarioPath);
+                $horarioTmpName = $_FILES['horario']['tmp_name'];
+                $horarioExt = pathinfo($_FILES['horario']['name'], PATHINFO_EXTENSION);
+                $horarioNewName = $recordId . "_horario." . $horarioExt; 
+                $horarioTargetFile = $targetDirHorario . $horarioNewName;
+
+                if (move_uploaded_file($horarioTmpName, $horarioTargetFile)) {
+                    $horarioPath = '/ProyectoWeb/Docs/Horarios/' . $horarioNewName;
+                } else {
+                    echo json_encode(['success' => false, 'message' => 'Error al subir el horario']);
+                    exit;
+                }
             }
         
             // Si la solicitud es "Renovación"
@@ -136,7 +157,7 @@
                     echo json_encode(['success' => false, 'message' => 'La boleta no existe. Verifique los datos.']);
                     exit;
                 }
-                
+            
                 // Verificar si la boletaAsignada ya está asignada a otro casillero
                 $stmtVerificarBoleta = $conn->prepare("SELECT boletaAsignada FROM casilleros WHERE boletaAsignada = ? AND noCasillero != ?");
                 $stmtVerificarBoleta->bind_param("si", $boletaAsignada, $recordId);
@@ -146,28 +167,47 @@
                     echo json_encode(['success' => false, 'message' => 'La boleta ya está asignada a otro casillero. Verifique los datos.']);
                     exit;
                 }
-        
-                // Actualizar el casillero
+            
+                // Verificar si el casillero ya tiene una boleta asignada
+                $stmtCasilleroActual = $conn->prepare("SELECT boletaAsignada FROM casilleros WHERE noCasillero = ?");
+                $stmtCasilleroActual->bind_param("i", $recordId);
+                $stmtCasilleroActual->execute();
+                $resultCasilleroActual = $stmtCasilleroActual->get_result();
+            
+                if ($resultCasilleroActual->num_rows > 0) {
+                    $rowCasilleroActual = $resultCasilleroActual->fetch_assoc();
+                    $boletaActual = $rowCasilleroActual['boletaAsignada'];
+                    // Revocar la asignación de la boleta actual
+                    if ($boletaActual) {
+                        $stmtRevocarSolicitud = $conn->prepare("UPDATE solicitudes SET estadoSolicitud = 'Pendiente', fechaAprobacion = NULL, comprobantePago = NULL WHERE noBoleta = ?");
+                        $stmtRevocarSolicitud->bind_param("s", $boletaActual);
+                        if (!$stmtRevocarSolicitud->execute()) {
+                            echo json_encode(['success' => false, 'message' => 'Error al revocar la boleta anterior.']);
+                            exit;
+                        }
+                    }
+                }
+            
+                // Actualizar el casillero con la nueva boleta
                 $stmtActualizarCasillero = $conn->prepare("UPDATE casilleros SET altura = ?, estado = 'Asignado', boletaAsignada = ? WHERE noCasillero = ?");
                 $stmtActualizarCasillero->bind_param("dsi", $altura, $boletaAsignada, $recordId);
                 if (!$stmtActualizarCasillero->execute()) {
                     echo json_encode(['success' => false, 'message' => 'Error al asignar el casillero.']);
                     exit;
                 }
-
-                // Actualizar el solicitud
+            
+                // Actualizar la solicitud de la nueva boleta
                 $fechaAprobacion = date("Y-m-d H:i:s");
-                $stmtActualizarSolicitud = $conn->prepare("UPDATE solicitudes SET estadoSolicitud = 'Aprobada', fechaAprobacion = ? WHERE noBoleta = ?");
+                $stmtActualizarSolicitud = $conn->prepare(" UPDATE solicitudes SET estadoSolicitud = 'Aprobada', fechaAprobacion = ? WHERE noBoleta = ?");
                 $stmtActualizarSolicitud->bind_param("ss", $fechaAprobacion, $boletaAsignada);
                 if (!$stmtActualizarSolicitud->execute()) {
                     echo json_encode(['success' => false, 'message' => 'Error al actualizar el estado de la solicitud.']);
                     exit;
                 }
-
+            
                 echo json_encode(['success' => true, 'message' => 'Casillero actualizado exitosamente']);
-
             } else { // Si el estado es "Disponible"
-                // Obtener la boletaAsignada del casillero
+                // Obtener la boletaAsignada del casillero, si tiene
                 $stmtObtenerBoleta = $conn->prepare("SELECT boletaAsignada FROM casilleros WHERE noCasillero = ?");
                 $stmtObtenerBoleta->bind_param("i", $recordId);
                 $stmtObtenerBoleta->execute();
@@ -179,7 +219,7 @@
             
                     if (!empty($boletaAsignada)) {
                         // Cambiar el estado de la solicitud asociada a la boleta
-                        $stmtActualizarSolicitud = $conn->prepare("UPDATE solicitudes SET estadoSolicitud = 'Pendiente', fechaAprobacion = NULL WHERE noBoleta = ?");
+                        $stmtActualizarSolicitud = $conn->prepare("UPDATE solicitudes SET estadoSolicitud = 'Pendiente', fechaAprobacion = NULL, comprobantePago = NULL WHERE noBoleta = ?");
                         $stmtActualizarSolicitud->bind_param("s", $boletaAsignada);
                         if (!$stmtActualizarSolicitud->execute()) {
                             echo json_encode(['success' => false, 'message' => 'Error al actualizar la solicitud.']);
@@ -201,7 +241,6 @@
             
                 echo json_encode(['success' => true, 'message' => 'Casillero actualizado exitosamente']);
             }
-        
             break;
             
         case 'solicitudes':
@@ -216,7 +255,7 @@
             $stmtConsulta->bind_param("i", $recordId);
             $stmtConsulta->execute();
             $resultConsulta = $stmtConsulta->get_result();
-        
+
             if ($resultConsulta->num_rows > 0) {
                 $row = $resultConsulta->fetch_assoc();
                 $comprobantePath = $row['comprobantePago'];
@@ -224,12 +263,22 @@
                 echo json_encode(['success' => false, 'message' => 'Registro no encontrado']);
                 exit;
             }
-        
-            // Actualizar archivos si se han enviado nuevos
+
+            $targetDirComprobante = $_SERVER['DOCUMENT_ROOT'] . '/ProyectoWeb/Docs/Comprobantes/';
+
+            // Subida y renombrado del comprobante de pago
             if (isset($_FILES['comprobantePago']) && $_FILES['comprobantePago']['error'] === UPLOAD_ERR_OK) {
-                $comprobante = $_FILES['comprobantePago']['name'];
-                $comprobantePath = '/ProyectoWeb/Docs/Comprobantes/' . $comprobante;
-                move_uploaded_file($_FILES['comprobantePago']['tmp_name'], $_SERVER['DOCUMENT_ROOT'] . $comprobantePath);
+                $comprobanteTmpName = $_FILES['comprobantePago']['tmp_name'];
+                $comprobanteExt = pathinfo($_FILES['comprobantePago']['name'], PATHINFO_EXTENSION);
+                $comprobanteNewName = $noBoleta . "_comprobante." . $comprobanteExt;
+                $comprobanteTargetFile = $targetDirComprobante . $comprobanteNewName;
+
+                if (move_uploaded_file($comprobanteTmpName, $comprobanteTargetFile)) {
+                    $comprobantePath = '/ProyectoWeb/Docs/Comprobantes/' . $comprobanteNewName;
+                } else {
+                    echo json_encode(['success' => false, 'message' => 'Error al subir el comprobante de pago']);
+                    exit;
+                }
             }
 
             //Si la solicitud esta aprobada
@@ -262,7 +311,6 @@
                 $stmtVerificarBoleta->bind_param("s", $noBoleta);
                 $stmtVerificarBoleta->execute();
                 $resultBoleta = $stmtVerificarBoleta->get_result();
-
                 if ($resultBoleta->num_rows > 0) {
                     $rowBoleta = $resultBoleta->fetch_assoc();
                     $casilleroActual = $rowBoleta['noCasillero'];
@@ -270,11 +318,11 @@
                     // Revocar el casillero anterior
                     $stmtLiberarCasillero = $conn->prepare("UPDATE casilleros SET estado = 'Disponible', boletaAsignada = NULL WHERE noCasillero = ?");
                     $stmtLiberarCasillero->bind_param("i", $casilleroActual);
-
                     if (!$stmtLiberarCasillero->execute()) {
                         echo json_encode(['success' => false, 'message' => 'Error al liberar el casillero actual.']);
                         exit;
                     }
+                    if ($casilleroActual != $noCasillero){$comprobantePath = NULL;}
                 }
 
                 // Asignar el nuevo casillero
@@ -290,9 +338,9 @@
                 $stmtActualizarSolicitud = $conn->prepare("UPDATE solicitudes SET fechaRegistro = ?, estadoSolicitud = ?, fechaAprobacion = ?, comprobantePago = ? WHERE id = ?");
                 $stmtActualizarSolicitud->bind_param("ssssi", $fechaRegistro, $estadoSolicitud, $fechaAprobacion, $comprobantePath, $recordId);
                 if ($stmtActualizarSolicitud->execute()) {
-                    echo json_encode(['success' => true, 'message' => 'Solicitud aprobada exitosamente.']);
+                    echo json_encode(['success' => true, 'message' => 'Solicitud actualizada exitosamente.']);
                 } else {
-                    echo json_encode(['success' => false, 'message' => 'Error al aprobar la solicitud.']);
+                    echo json_encode(['success' => false, 'message' => 'Error al actualizar la solicitud.']);
                 }
         
             } else { // Si la solicitud es "Pendiente" o "Lista de espera"
@@ -309,7 +357,6 @@
                     // Liberar el casillero actual
                     $stmtLiberarCasillero = $conn->prepare("UPDATE casilleros SET estado = 'Disponible', boletaAsignada = NULL WHERE noCasillero = ?");
                     $stmtLiberarCasillero->bind_param("i", $casilleroActual);
-        
                     if (!$stmtLiberarCasillero->execute()) {
                         echo json_encode(['success' => false, 'message' => 'Error al liberar el casillero actual.']);
                         exit;
@@ -317,12 +364,12 @@
                 }
         
                 // Actualizar la solicitud a "Pendiente" o "Lista de espera"
-                $stmtActualizarSolicitud = $conn->prepare("UPDATE solicitudes SET fechaRegistro = ?, estadoSolicitud = ?, fechaAprobacion = ?, comprobantePago = ? WHERE id = ?");
-                $stmtActualizarSolicitud->bind_param("ssssi", $fechaRegistro, $estadoSolicitud, $fechaAprobacion, $comprobantePath, $recordId);
+                $stmtActualizarSolicitud = $conn->prepare("UPDATE solicitudes SET fechaRegistro = ?, estadoSolicitud = ?, fechaAprobacion = ?, comprobantePago = NULL WHERE id = ?");
+                $stmtActualizarSolicitud->bind_param("sssi", $fechaRegistro, $estadoSolicitud, $fechaAprobacion, $recordId);
                 if ($stmtActualizarSolicitud->execute()) {
-                    echo json_encode(['success' => true, 'message' => 'Solicitud aprobada exitosamente.']);
+                    echo json_encode(['success' => true, 'message' => 'Solicitud actualizada exitosamente.']);
                 } else {
-                    echo json_encode(['success' => false, 'message' => 'Error al aprobar la solicitud.']);
+                    echo json_encode(['success' => false, 'message' => 'Error al actualizar la solicitud.']);
                 }
             }
             break;
