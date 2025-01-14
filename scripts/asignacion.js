@@ -244,7 +244,6 @@ async function listaAlumnos(data) {
     }
 }
 
-
 //Funcion para mostrar detalles del alumno
 function mostrarDetallesAlumno(boleta, noCasillero) {
     fetch(`/ProyectoWeb/php/admin/detallesAlumnos.php?boleta=${boleta}`)

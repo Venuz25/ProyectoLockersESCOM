@@ -46,10 +46,17 @@
             $usuario = $_POST['usuario'];
             $contrasena = $_POST['contraseña'];
             $boleta = $_POST['boleta'];
-
+            
             // Ruta del directorio donde se guardarán los archivos
             $targetDirCredencial = $_SERVER['DOCUMENT_ROOT'] . '/ProyectoWeb/Docs/Credenciales/';
             $targetDirHorario = $_SERVER['DOCUMENT_ROOT'] . '/ProyectoWeb/Docs/Horarios/';
+
+            // Verificar si todos los casilleros están ocupados
+            $resultTotalCasilleros = $conn->query("SELECT COUNT(*) AS total FROM casilleros")->fetch_assoc();
+            $resultCasillerosOcupados = $conn->query("SELECT COUNT(*) AS ocupados FROM casilleros WHERE estado = 'Asignado'")->fetch_assoc();
+            $totalCasilleros = $resultTotalCasilleros['total'];
+            $ocupados = $resultCasillerosOcupados['ocupados'];
+            $estadoSolicitud = ($totalCasilleros == $ocupados) ? 'Lista de espera' : (($tipoSolicitud == 'Renovación') ? 'Aprobada' : 'Pendiente');
 
             // Verificar si la boleta o el usuario ya están registrados
             $stmtVerificar = $conn->prepare("SELECT COUNT(*) AS total FROM alumnos WHERE boleta = ? OR usuario = ?");
@@ -61,13 +68,31 @@
                 exit;
             }
 
-            // Verificar si todos los casilleros están ocupados
-            $resultTotalCasilleros = $conn->query("SELECT COUNT(*) AS total FROM casilleros")->fetch_assoc();
-            $resultCasillerosOcupados = $conn->query("SELECT COUNT(*) AS ocupados FROM casilleros WHERE estado = 'Asignado'")->fetch_assoc();
+            // Verificar si el casillero existe
+            $stmtVerificarExistenciaCasillero = $conn->prepare("SELECT COUNT(*) AS total FROM casilleros WHERE noCasillero = ?");
+            $stmtVerificarExistenciaCasillero->bind_param("s", $casilleroAnt);
+            $stmtVerificarExistenciaCasillero->execute();
+            $resultVerificarExistenciaCasillero = $stmtVerificarExistenciaCasillero->get_result()->fetch_assoc();
+            if ($resultVerificarExistenciaCasillero['total'] == 0) {
+                echo json_encode([
+                    'success' => false,
+                    'message' => 'El casillero solicitado no existe en el sistema.'
+                ]);
+                exit;
+            }
 
-            $totalCasilleros = $resultTotalCasilleros['total'];
-            $ocupados = $resultCasillerosOcupados['ocupados'];
-            $estadoSolicitud = ($totalCasilleros == $ocupados) ? 'Lista de espera' : (($tipoSolicitud == 'Renovación') ? 'Aprobada' : 'Pendiente');
+            // Verificar si el casillero está asignado a otro alumno
+            $stmtVerificarCasillero = $conn->prepare("SELECT boletaAsignada FROM casilleros WHERE noCasillero = ? AND boletaAsignada != ?");
+            $stmtVerificarCasillero->bind_param("ss", $casilleroAnt, $boleta);
+            $stmtVerificarCasillero->execute();
+            $resultVerificarCasillero = $stmtVerificarCasillero->get_result();
+            if ($resultVerificarCasillero->num_rows > 0) {
+                echo json_encode([
+                    'success' => false,
+                    'message' => 'El casillero solicitado ya está asignado a otro alumno.'
+                ]);
+                exit;
+            }
 
             // Subida y renombrado de la credencial
             if (isset($_FILES['credencial']) && $_FILES['credencial']['error'] === UPLOAD_ERR_OK) {
@@ -122,7 +147,7 @@
                 $stmtCasillero = $conn->prepare("UPDATE casilleros SET estado = 'Asignado', boletaAsignada = ? WHERE noCasillero = ? AND estado = 'Disponible'");
                 $stmtCasillero->bind_param("ss", $boleta, $casilleroAnt);
                 if (!$stmtCasillero->execute() || $stmtCasillero->affected_rows == 0) {
-                    echo json_encode(['success' => false, 'message' => 'El casillero solicitado no está disponible o no existe.']);
+                    echo json_encode(['success' => false, 'message' => 'Error al actualizar el estado del casillero.']);
                     exit;
                 }
             }
