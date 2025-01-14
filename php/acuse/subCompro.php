@@ -27,9 +27,10 @@ try {
     // Ruta para guardar el archivo en el servidor
     $nombreArchivo = $archivo['name']; // Conservar el nombre original del archivo
     $rutaDestino = $_SERVER['DOCUMENT_ROOT'] . '/ProyectoWeb/Docs/Comprobantes/';
+    $rutaDestinoCom = $rutaDestino . $nombreArchivo;
 
     // Mover el archivo al servidor
-    if (!move_uploaded_file($archivo['tmp_name'], $rutaDestino)) {
+    if (!move_uploaded_file($archivo['tmp_name'], $rutaDestinoCom)) {
         throw new Exception('No se pudo guardar el archivo en el servidor.');
     }
 
@@ -40,7 +41,7 @@ try {
     $conn->begin_transaction();
     $enTransaccion = true;
 
-    $sql = "UPDATE solicitudes SET comprobantePago = ? WHERE boleta = ?";
+    $sql = "UPDATE solicitudes SET comprobantePago = ? WHERE noBoleta = ?";
     $stmt = $conn->prepare($sql);
     $stmt->bind_param('ss', $rutaRelativa, $boleta);
 
