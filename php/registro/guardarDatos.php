@@ -19,16 +19,10 @@
         $contrasena = $_POST['contraseña'];
         $boleta = $_POST['boleta'];
 
-        // Subir archivos
         $credencial = $_FILES['credencial']['name'];
         $horario = $_FILES['horario']['name'];
         $credencialPath = '/ProyectoWeb/Docs/Credenciales/' . $credencial;
         $horarioPath = '/ProyectoWeb/Docs/Horarios/' . $horario;
-
-        if (!move_uploaded_file($_FILES['credencial']['tmp_name'], $_SERVER['DOCUMENT_ROOT'] . $credencialPath) ||
-            !move_uploaded_file($_FILES['horario']['tmp_name'], $_SERVER['DOCUMENT_ROOT'] . $horarioPath)) {
-            throw new Exception("Error al subir los archivos.");
-        }
 
         // Verificar si todos los casilleros están ocupados
         $resultTotalCasilleros = $conn->query("SELECT COUNT(*) AS total FROM casilleros")->fetch_assoc();
@@ -45,6 +39,12 @@
         $resultVerificar = $stmtVerificar->get_result()->fetch_assoc();
         if ($resultVerificar['total'] > 0) {
             throw new Exception("La boleta o el usuario ya están registrados. Verifique los datos.");
+        }
+
+        // Subir archivos
+        if (!move_uploaded_file($_FILES['credencial']['tmp_name'], $_SERVER['DOCUMENT_ROOT'] . $credencialPath) ||
+            !move_uploaded_file($_FILES['horario']['tmp_name'], $_SERVER['DOCUMENT_ROOT'] . $horarioPath)) {
+            throw new Exception("Error al subir los archivos.");
         }
 
         // Insertar datos en la tabla Alumnos
@@ -81,7 +81,7 @@
 
     } catch (Exception $e) {
         $conn->rollback(); // Revertir cambios en caso de error
-        echo "<script>alert('" . $e->getMessage() . "');/*  window.history.back() */;</script>";
+        echo "<script>alert('" . $e->getMessage() . "'); window.history.back();</script>";
     } finally {
         $conn->close();
     }

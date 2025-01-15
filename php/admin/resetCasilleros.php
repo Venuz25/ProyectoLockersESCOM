@@ -6,7 +6,7 @@
     try {
         // Actualizar las solicitudes asociadas a esos casilleros a 'Pendiente'
         $sqlSolicitudes = "UPDATE solicitudes 
-                        SET estadoSolicitud = 'Pendiente', fechaAprobacion = NULL
+                        SET estadoSolicitud = 'Pendiente', fechaAprobacion = NULL, comprobantePago = null
                         WHERE noBoleta IN (
                             SELECT boletaAsignada 
                             FROM casilleros
