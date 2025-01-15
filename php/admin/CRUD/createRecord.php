@@ -17,7 +17,7 @@
             $resultVerificar = $stmtVerificar->get_result()->fetch_assoc();
 
             if ($resultVerificar['total'] > 0) {
-                echo json_encode(['success' => false, 'message' => 'La id o el usuario ya están registrados. Verifique los datos.']);
+                echo json_encode(['success' => false, 'message' => 'El id o el usuario ya están registrados. Verifique los datos.']);
                 exit;
             }
 
