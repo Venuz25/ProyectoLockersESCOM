@@ -38,7 +38,7 @@
 
     if ($result && $result->num_rows > 0) {
         $row = $result->fetch_assoc();
-        $nombreCompleto = mb_convert_encoding($row['nombre'] . ' ' . $row['primerAp'] . ' ' . $row['segundoAp'], "ISO-8859-1", "UTF-8");
+        $nombreCompleto = $row['nombre'] . ' ' . $row['primerAp'] . ' ' . $row['segundoAp'];
         $casillero = $row['noCasillero'];
     } else {
         $nombreCompleto = mb_convert_encoding('Información no encontrada', "ISO-8859-1", "UTF-8");
