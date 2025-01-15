@@ -269,9 +269,6 @@ document.addEventListener("DOMContentLoaded", function () {
                             .then(response => response.json())
                             .then(data => {
                                 if (data.success) {
-                                    // Limpiar las opciones existentes en el select
-                                    campoBoletaAsignada.innerHTML = '<option value="">Seleccione una boleta</option>';
-
                                     // Agregar las opciones al select con los datos que ya vienen filtrados y ordenados desde PHP
                                     data.boletas.forEach(boleta => {
                                         const option = document.createElement('option');
@@ -515,7 +512,7 @@ document.addEventListener("DOMContentLoaded", function () {
                         <div id="divBoleta" class="mt-3">
                             <label for="boletaAsignada" class="form-label">Boleta Asignada</label>
                             <select id="boletaAsignada" name="boletaAsignada" class="form-control">
-                                <option value="">Cargando boletas...</option>
+                                <option value="${data.boletaAsignada || ''}" selected>${data.boletaAsignada || 'Boletas...'}</option>
                             </select>
                         </div>
                     </fieldset>
