@@ -58,7 +58,6 @@
         // Insertar datos en la tabla Solicitudes
         $fechaRegistro = date("Y-m-d H:i:s");
         $fechaAprobacion = $estadoSolicitud == 'Aprobada' ? date("Y-m-d H:i:s") : NULL;
-
         $stmtSolicitud = $conn->prepare("INSERT INTO solicitudes (noBoleta, fechaRegistro, estadoSolicitud, fechaAprobacion, comprobantePago) VALUES (?, ?, ?, ?, NULL)");
         $stmtSolicitud->bind_param("ssss", $boleta, $fechaRegistro, $estadoSolicitud, $fechaAprobacion);
         if (!$stmtSolicitud->execute()) {
