@@ -3,19 +3,39 @@
     width: calc(100% - 20px); 
 }
 
+.imgExt {
+    max-width: 1000px;
+    width: calc(100% - 25px); 
+    margin: 20px;
+}
+
+.iFrameDoc {
+    max-width: 1000px;
+    width: calc(100% - 50px);
+}
+
+.subirDoc {
+    max-width: 500px;
+    margin: 0 auto;
+}
+
 #renovacion, #p_vez {
     display: none;
 }
 
 main {
-    display: flex;
     flex-direction: column;
     justify-content: center;
     align-items: center;
     text-align: center;
     position: relative;
-    min-height: 80vh; 
-    padding: 20px; 
+    padding: 50px;
+    width: 95%;
+    min-height: 600px;
+    margin: 0 auto;
+    background: white;
+    border-radius: 12px;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
 }
 
 #texto {

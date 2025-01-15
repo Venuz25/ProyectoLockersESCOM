@@ -135,8 +135,9 @@
 
             // Insertar datos en la tabla Solicitudes
             $fechaRegistro = date("Y-m-d H:i:s");
-            $stmtSolicitud = $conn->prepare("INSERT INTO solicitudes (noBoleta, fechaRegistro, estadoSolicitud, comprobantePago) VALUES (?, ?, ?, NULL)");
-            $stmtSolicitud->bind_param("sss", $boleta, $fechaRegistro, $estadoSolicitud);
+            $fechaAprobacion = ($tipoSolicitud == 'Renovación') ? date("Y-m-d H:i:s") : null;
+            $stmtSolicitud = $conn->prepare("INSERT INTO solicitudes (noBoleta, fechaRegistro, estadoSolicitud, fechaAprobacion, comprobantePago) VALUES (?, ?, ?, ?, NULL)");
+            $stmtSolicitud->bind_param("ssss", $boleta, $fechaRegistro, $estadoSolicitud, $fechaAprobacion);
             if (!$stmtSolicitud->execute()) {
                 echo json_encode(['success' => false, 'message' => 'Error al insertar los datos en la tabla Solicitudes.']);
                 exit;
