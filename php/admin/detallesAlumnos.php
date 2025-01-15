@@ -22,16 +22,9 @@
             WHERE a.boleta = ?";
 
     $stmt = $conn->prepare($sql);
-
-    if (!$stmt) {
-        echo json_encode(['error' => 'Error en la preparación de la consulta.']);
-        exit();
-    }
-
     $stmt->bind_param("s", $boleta);
     $stmt->execute();
     $result = $stmt->get_result();
-
     if ($result->num_rows > 0) {
         $alumno = $result->fetch_assoc();
         echo json_encode($alumno);

@@ -32,10 +32,12 @@ function verificarSolicitudes() {
 //funcion para mostrar casilleros
 document.addEventListener('DOMContentLoaded', () => {
     verificarSolicitudes();
+
     fetch('/ProyectoWeb/php/admin/casilleros.php')
         .then(response => response.json())
         .then(data => {
             const container = document.getElementById('locker-container');
+            container.innerHTML = '';
 
             data.forEach(locker => {
                 const lockerDiv = document.createElement('div');

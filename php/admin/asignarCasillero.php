@@ -12,7 +12,6 @@
     $stmt->bind_param("i", $noCasillero);
     $stmt->execute();
     $result = $stmt->get_result();
-
     if ($result->num_rows > 0) {
         $row = $result->fetch_assoc();
         if ($row['estado'] !== 'Disponible') {
@@ -26,7 +25,6 @@
     $sql = "UPDATE casilleros SET estado = 'Asignado', boletaAsignada = ? WHERE noCasillero = ?";
     $stmt = $conn->prepare($sql);
     $stmt->bind_param("si", $boleta, $noCasillero);
-
     if ($stmt->execute()) {
         $fechaAprobacion = date("Y-m-d H:i:s");
         $sql = "UPDATE solicitudes SET estadoSolicitud = 'Aprobada',fechaAprobacion = ? WHERE noBoleta = ?";

@@ -6,7 +6,6 @@
     $query = $data['query'];
 
     $response = [];
-
     if (!$query) {
         echo json_encode(['success' => false, 'message' => 'No query provided']);
         exit;

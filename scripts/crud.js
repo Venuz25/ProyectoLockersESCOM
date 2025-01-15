@@ -554,12 +554,8 @@ document.addEventListener("DOMContentLoaded", function () {
                             <input type="number" id="noCasillero" name="noCasillero" class="form-control" min="1" value="${data.noCasillero || ''}"><br>
 
                             <label for="fechaAprobacion" class="form-label">Fecha de Aprobación</label>
-                            <input type="datetime-local" step="1" id="fechaAprobacion" name="fechaAprobacion" class="form-control" value="${data.fechaAprobacion || ''}">
-                        </div>
-                    </fieldset>
-                    
-                    <fieldset class="border p-3 mb-4">
-                        <div class="mb-3">
+                            <input type="datetime-local" step="1" id="fechaAprobacion" name="fechaAprobacion" class="form-control" value="${data.fechaAprobacion || ''}"><br>
+
                             <label for="comprobantePago" class="form-label">Comprobante de Pago (${data.comprobantePago? `<a href="${data.comprobantePago}" id="fileLink" target="_blank">Ver archivo actual</a>`: 'Sin Archivo'})</label>
                             <input type="file" name="comprobantePago" id="comprobantePago" class="form-control" accept=".pdf">
                         </div>

@@ -11,7 +11,6 @@
     $stmt->bind_param("ss", $usuario, $contrasena);
     $stmt->execute();
     $result = $stmt->get_result();
-
     if ($result->num_rows > 0) {
         $_SESSION['usuario'] = $usuario;
         header("Location: /ProyectoWeb/asignacion.html");

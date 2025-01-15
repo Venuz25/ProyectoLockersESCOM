@@ -15,7 +15,6 @@
             $stmtVerificar->bind_param("si", $usuario, $recordId);
             $stmtVerificar->execute();
             $resultVerificar = $stmtVerificar->get_result()->fetch_assoc();
-        
             if ($resultVerificar['total'] > 0) {
                 echo json_encode(['success' => false, 'message' => 'El usuario ya esta registrado. Verifique los datos.']);
                 exit;
@@ -24,7 +23,6 @@
             // Actualizar los datos en la tabla
             $stmtActualizar = $conn->prepare("UPDATE administradores SET usuario = ?, contrasena = ? WHERE id = ?");
             $stmtActualizar->bind_param("ssi", $usuario, $contrasena, $recordId);
-        
             if ($stmtActualizar->execute()) {
                 echo json_encode(['success' => true, 'message' => 'Administrador actualizado exitosamente']);
             } else {
@@ -50,7 +48,6 @@
             $stmtConsulta->bind_param("s", $recordId);
             $stmtConsulta->execute();
             $resultConsulta = $stmtConsulta->get_result();
-
             if ($resultConsulta->num_rows > 0) {
                 $row = $resultConsulta->fetch_assoc();
                 $credencialPath = $row['credencial'];
@@ -63,6 +60,40 @@
             // Ruta del directorio donde se guardarán los archivos
             $targetDirCredencial = $_SERVER['DOCUMENT_ROOT'] . '/ProyectoWeb/Docs/Credenciales/';
             $targetDirHorario = $_SERVER['DOCUMENT_ROOT'] . '/ProyectoWeb/Docs/Horarios/';
+        
+            // Si la solicitud es "Renovación"
+            if ($tipoSolicitud == 'Renovación' && $casilleroAnt) {
+                // Verificar si el casillero ya está asignado
+                $stmtVerificarCasillero = $conn->prepare("SELECT boletaAsignada FROM casilleros WHERE noCasillero = ?");
+                $stmtVerificarCasillero->bind_param("i", $casilleroAnt);
+                $stmtVerificarCasillero->execute();
+                $resultCasillero = $stmtVerificarCasillero->get_result();
+                if ($resultCasillero->num_rows > 0) {
+                    $rowCasillero = $resultCasillero->fetch_assoc();
+                    // Verificar si el casillero ya tiene una boleta asignada y que sea diferente a la actual
+                    if (!empty($rowCasillero['boletaAsignada']) && $rowCasillero['boletaAsignada'] != $recordId) {
+                        echo json_encode(['success' => false, 'message' => 'El casillero ya está asignado a otro alumno. Verifique los datos.']);
+                        exit;
+                    }
+                }
+
+                // Asignar el casillero y actualizar su estado
+                $stmtAsignarCasillero = $conn->prepare("UPDATE casilleros SET boletaAsignada = ?, estado = 'Asignado' WHERE noCasillero = ?");
+                $stmtAsignarCasillero->bind_param("si", $recordId, $casilleroAnt);
+                if (!$stmtAsignarCasillero->execute()) {
+                    echo json_encode(['success' => false, 'message' => 'Error al asignar el casillero.']);
+                    exit;
+                }
+        
+                // Actualizar el estado de la solicitud a "Aprobada"
+                $fechaAprobacion = date("Y-m-d H:i:s");
+                $stmtActualizarSolicitud = $conn->prepare("UPDATE solicitudes SET estadoSolicitud = 'Aprobada', fechaAprobacion = ? WHERE noBoleta = ?");
+                $stmtActualizarSolicitud->bind_param("ss", $fechaAprobacion, $recordId);
+                if (!$stmtActualizarSolicitud->execute()) {
+                    echo json_encode(['success' => false, 'message' => 'Error al actualizar el estado de la solicitud.']);
+                    exit;
+                }
+            }
 
             // Subida y renombrado de la credencial
             if (isset($_FILES['credencial']) && $_FILES['credencial']['error'] === UPLOAD_ERR_OK) {
@@ -90,42 +121,6 @@
                     $horarioPath = '/ProyectoWeb/Docs/Horarios/' . $horarioNewName;
                 } else {
                     echo json_encode(['success' => false, 'message' => 'Error al subir el horario']);
-                    exit;
-                }
-            }
-        
-            // Si la solicitud es "Renovación"
-            if ($tipoSolicitud == 'Renovación' && $casilleroAnt) {
-                // Verificar si el casillero ya está asignado
-                $stmtVerificarCasillero = $conn->prepare("SELECT boletaAsignada FROM casilleros WHERE noCasillero = ?");
-                $stmtVerificarCasillero->bind_param("i", $casilleroAnt);
-                $stmtVerificarCasillero->execute();
-                $resultCasillero = $stmtVerificarCasillero->get_result();
-
-                if ($resultCasillero->num_rows > 0) {
-                    $rowCasillero = $resultCasillero->fetch_assoc();
-                    
-                    // Verificar si el casillero ya tiene una boleta asignada y que sea diferente a la actual
-                    if (!empty($rowCasillero['boletaAsignada']) && $rowCasillero['boletaAsignada'] != $recordId) {
-                        echo json_encode(['success' => false, 'message' => 'El casillero ya está asignado a otro alumno. Verifique los datos.']);
-                        exit;
-                    }
-                }
-
-                // Asignar el casillero y actualizar su estado
-                $stmtAsignarCasillero = $conn->prepare("UPDATE casilleros SET boletaAsignada = ?, estado = 'Asignado' WHERE noCasillero = ?");
-                $stmtAsignarCasillero->bind_param("si", $recordId, $casilleroAnt);
-                if (!$stmtAsignarCasillero->execute()) {
-                    echo json_encode(['success' => false, 'message' => 'Error al asignar el casillero.']);
-                    exit;
-                }
-        
-                // Actualizar el estado de la solicitud a "Aprobada"
-                $fechaAprobacion = date("Y-m-d H:i:s");
-                $stmtActualizarSolicitud = $conn->prepare("UPDATE solicitudes SET estadoSolicitud = 'Aprobada', fechaAprobacion = ? WHERE noBoleta = ?");
-                $stmtActualizarSolicitud->bind_param("ss", $fechaAprobacion, $recordId);
-                if (!$stmtActualizarSolicitud->execute()) {
-                    echo json_encode(['success' => false, 'message' => 'Error al actualizar el estado de la solicitud.']);
                     exit;
                 }
             }
@@ -212,7 +207,6 @@
                 $stmtObtenerBoleta->bind_param("i", $recordId);
                 $stmtObtenerBoleta->execute();
                 $resultObtenerBoleta = $stmtObtenerBoleta->get_result();
-            
                 if ($resultObtenerBoleta->num_rows > 0) {
                     $rowBoleta = $resultObtenerBoleta->fetch_assoc();
                     $boletaAsignada = $rowBoleta['boletaAsignada'];
@@ -255,7 +249,6 @@
             $stmtConsulta->bind_param("i", $recordId);
             $stmtConsulta->execute();
             $resultConsulta = $stmtConsulta->get_result();
-
             if ($resultConsulta->num_rows > 0) {
                 $row = $resultConsulta->fetch_assoc();
                 $comprobantePath = $row['comprobantePago'];
@@ -265,21 +258,6 @@
             }
 
             $targetDirComprobante = $_SERVER['DOCUMENT_ROOT'] . '/ProyectoWeb/Docs/Comprobantes/';
-
-            // Subida y renombrado del comprobante de pago
-            if (isset($_FILES['comprobantePago']) && $_FILES['comprobantePago']['error'] === UPLOAD_ERR_OK) {
-                $comprobanteTmpName = $_FILES['comprobantePago']['tmp_name'];
-                $comprobanteExt = pathinfo($_FILES['comprobantePago']['name'], PATHINFO_EXTENSION);
-                $comprobanteNewName = $noBoleta . "_comprobante." . $comprobanteExt;
-                $comprobanteTargetFile = $targetDirComprobante . $comprobanteNewName;
-
-                if (move_uploaded_file($comprobanteTmpName, $comprobanteTargetFile)) {
-                    $comprobantePath = '/ProyectoWeb/Docs/Comprobantes/' . $comprobanteNewName;
-                } else {
-                    echo json_encode(['success' => false, 'message' => 'Error al subir el comprobante de pago']);
-                    exit;
-                }
-            }
 
             //Si la solicitud esta aprobada
             if ($estadoSolicitud === 'Aprobada') {      
@@ -332,6 +310,21 @@
                 if (!$stmtAsignarCasillero->execute()) {
                     echo json_encode(['success' => false, 'message' => 'Error al asignar el nuevo casillero.']);
                     exit;
+                }
+
+                // Subida y renombrado del comprobante de pago
+                if (isset($_FILES['comprobantePago']) && $_FILES['comprobantePago']['error'] === UPLOAD_ERR_OK) {
+                    $comprobanteTmpName = $_FILES['comprobantePago']['tmp_name'];
+                    $comprobanteExt = pathinfo($_FILES['comprobantePago']['name'], PATHINFO_EXTENSION);
+                    $comprobanteNewName = $noBoleta . "_comprobante." . $comprobanteExt;
+                    $comprobanteTargetFile = $targetDirComprobante . $comprobanteNewName;
+
+                    if (move_uploaded_file($comprobanteTmpName, $comprobanteTargetFile)) {
+                        $comprobantePath = '/ProyectoWeb/Docs/Comprobantes/' . $comprobanteNewName;
+                    } else {
+                        echo json_encode(['success' => false, 'message' => 'Error al subir el comprobante de pago']);
+                        exit;
+                    }
                 }
         
                 // Actualizar la solicitud a "Aprobada"
