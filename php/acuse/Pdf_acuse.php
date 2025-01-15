@@ -61,7 +61,7 @@
     $pdf->Cell(50, 15, mb_convert_encoding('No. de Boleta:', "ISO-8859-1", "UTF-8"), 0, 0, 'L');
     $pdf->Cell(40, 15, $boleta, 0, 1, 'L');
     $pdf->Cell(50, 15, mb_convert_encoding('Nombre del estudiante:', "ISO-8859-1", "UTF-8"), 0, 0, 'L');
-    $pdf->MultiCell(40, 15, mb_convert_encoding($nombreCompleto, "ISO-8859-1", "UTF-8"), 0, 1, 'L');
+    $pdf->MultiCell(40, 15, mb_convert_encoding($nombreCompleto, "ISO-8859-1", "UTF-8"), 0, 'L');
     // Mensaje inicial
     $pdf->SetFont('helvetica', '', 12);
     $pdf->MultiCell(0, 10, mb_convert_encoding('Felicidades, tus documentos han sido correctamente recibidos y validados. Nos complace informarte que se te ha asignado el casillero número:', "ISO-8859-1", "UTF-8"), 0, 'L');
@@ -84,7 +84,7 @@
         $pdf->Cell(0, 10, 'Firma del Estudiante:', 0, 1, "C");
         $pdf->Ln(10);
         $pdf->Cell(0, 10, '____________________________', 0, 1, "C");
-        $pdf->Cell(0, 10, mb_convert_encoding($nombreCompleto, "ISO-8859-1", "UTF-8"), 0, 1, "C");
+        $pdf->MultiCell(40, 15, mb_convert_encoding($nombreCompleto, "ISO-8859-1", "UTF-8"), 0, 'L');
 
     // Salida del PDF
     try {
