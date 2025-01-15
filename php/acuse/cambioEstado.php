@@ -19,12 +19,19 @@
         $conn->begin_transaction();
         $enTransaccion = true;
         
-        $sql = "UPDATE solicitudes SET estadoSolicitud = ? WHERE noBoleta = ?";
+        $sql = "UPDATE solicitudes SET estadoSolicitud = ?, fechaAprobacion = null WHERE noBoleta = ?";
         $stmt = $conn->prepare($sql);
         $stmt->bind_param('ss', $estatus, $boleta);
-        
         if (!$stmt->execute()) {
             throw new Exception('Error al actualizar los datos en la base de datos.');
+        }
+
+        // Revocar el casillero anterior
+        $stmtLiberarCasillero = $conn->prepare("UPDATE casilleros SET estado = 'Disponible', boletaAsignada = NULL WHERE boletaAsignada = ?");
+        $stmtLiberarCasillero->bind_param("s", $boleta);
+        if (!$stmtLiberarCasillero->execute()) {
+            echo json_encode(['success' => false, 'message' => 'Error al liberar el casillero actual.']);
+            exit;
         }
         
         $conn->commit();
